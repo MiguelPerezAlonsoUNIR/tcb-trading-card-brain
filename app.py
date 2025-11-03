@@ -5,10 +5,16 @@ Uses AI to help build optimal decks for One Piece Trading Card Game
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import json
+import os
+import logging
 from deck_builder import OnePieceDeckBuilder
 
 app = Flask(__name__)
 CORS(app)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize the deck builder
 deck_builder = OnePieceDeckBuilder()
@@ -38,9 +44,10 @@ def build_deck():
             'deck': deck
         })
     except Exception as e:
+        logger.error(f"Error building deck: {e}", exc_info=True)
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Failed to build deck. Please try again.'
         }), 400
 
 @app.route('/api/analyze-deck', methods=['POST'])
@@ -56,10 +63,13 @@ def analyze_deck():
             'analysis': analysis
         })
     except Exception as e:
+        logger.error(f"Error analyzing deck: {e}", exc_info=True)
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': 'Failed to analyze deck. Please try again.'
         }), 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Only enable debug mode in development
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
