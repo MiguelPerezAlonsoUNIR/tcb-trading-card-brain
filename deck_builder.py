@@ -90,10 +90,24 @@ class OnePieceDeckBuilder:
             main_deck = self._build_balanced_deck(available_cards)
         
         # Ensure deck is exactly 50 cards
-        while len(main_deck) < self.deck_size:
+        attempts = 0
+        while len(main_deck) < self.deck_size and attempts < 200:
+            if not available_cards:
+                break
             card = random.choice(available_cards)
             if self._count_card_copies(main_deck, card) < self.max_copies:
                 main_deck.append(card)
+            attempts += 1
+        
+        # If we couldn't reach 50 cards with max copies, fill with any available cards
+        if len(main_deck) < self.deck_size:
+            all_non_leader_cards = [c for c in self.cards if c['type'] != 'Leader']
+            attempts = 0
+            while len(main_deck) < self.deck_size and attempts < 200:
+                card = random.choice(all_non_leader_cards)
+                if self._count_card_copies(main_deck, card) < self.max_copies:
+                    main_deck.append(card)
+                attempts += 1
         
         return main_deck[:self.deck_size]
     
@@ -106,18 +120,22 @@ class OnePieceDeckBuilder:
         events = [c for c in cards if c['type'] == 'Event']
         
         # Add characters (70% of deck)
-        for _ in range(35):
+        attempts = 0
+        while len(deck) < 35 and attempts < 100:
             if characters:
                 card = random.choice(characters)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         # Add events (30% of deck)
-        for _ in range(15):
+        attempts = 0
+        while len(deck) < 50 and attempts < 100:
             if events:
                 card = random.choice(events)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         return deck
     
@@ -130,18 +148,22 @@ class OnePieceDeckBuilder:
         characters = [c for c in cards if c['type'] == 'Character' and c['cost'] >= 4]
         
         # Add events (40% of deck)
-        for _ in range(20):
+        attempts = 0
+        while len(deck) < 20 and attempts < 100:
             if events:
                 card = random.choice(events)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         # Add characters (60% of deck)
-        for _ in range(30):
+        attempts = 0
+        while len(deck) < 50 and attempts < 100:
             if characters:
                 card = random.choice(characters)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         return deck
     
@@ -154,25 +176,31 @@ class OnePieceDeckBuilder:
         stages = [c for c in cards if c['type'] == 'Stage']
         
         # Add characters (65% of deck)
-        for _ in range(32):
+        attempts = 0
+        while len(deck) < 32 and attempts < 100:
             if characters:
                 card = random.choice(characters)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         # Add events (30% of deck)
-        for _ in range(15):
+        attempts = 0
+        while len(deck) < 47 and attempts < 100:
             if events:
                 card = random.choice(events)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         # Add stages (5% of deck)
-        for _ in range(3):
+        attempts = 0
+        while len(deck) < 50 and attempts < 100:
             if stages:
                 card = random.choice(stages)
                 if self._count_card_copies(deck, card) < self.max_copies:
                     deck.append(card)
+            attempts += 1
         
         return deck
     
