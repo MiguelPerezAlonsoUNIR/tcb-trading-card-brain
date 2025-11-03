@@ -1,5 +1,11 @@
 // One Piece TCG Deck Builder - Frontend JavaScript
 
+// Constants
+const LOADING_MESSAGES = {
+    buildDeck: 'Building your deck',
+    analyzeDeck: 'Analyzing your deck'
+};
+
 let currentDeck = null;
 
 // Initialize the application
@@ -31,7 +37,7 @@ async function handleBuildDeck(e) {
     // Show loading state
     const deckDisplay = document.getElementById('deck-display');
     deckDisplay.style.display = 'block';
-    deckDisplay.innerHTML = '<div class="loading">Building your deck</div>';
+    deckDisplay.innerHTML = `<div class="loading">${LOADING_MESSAGES.buildDeck}</div>`;
 
     try {
         const response = await fetch('/api/build-deck', {
@@ -265,7 +271,7 @@ async function handleAnalyzeDeck() {
 
     const analysisSection = document.getElementById('analysis-section');
     analysisSection.style.display = 'block';
-    analysisSection.innerHTML = '<div class="loading">Analyzing your deck</div>';
+    analysisSection.innerHTML = `<div class="loading">${LOADING_MESSAGES.analyzeDeck}</div>`;
 
     try {
         const response = await fetch('/api/analyze-deck', {

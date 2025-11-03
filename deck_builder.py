@@ -254,7 +254,7 @@ class OnePieceDeckBuilder:
         return analysis
     
     def _analyze_cost_curve(self, deck: List[Dict]) -> Dict:
-        """Analyze the mana cost distribution"""
+        """Analyze the cost distribution"""
         curve = {}
         for card in deck:
             cost = card.get('cost', 0)
