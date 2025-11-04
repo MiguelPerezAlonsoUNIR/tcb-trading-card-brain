@@ -128,18 +128,29 @@ function createCardHTML(card, isLeader = false) {
     const powerHTML = card.power ? `<span class="card-power">PWR: ${card.power}</span>` : '';
     const costHTML = !isLeader ? `<span class="card-cost">Cost: ${card.cost}</span>` : '';
     const lifeHTML = isLeader ? `<span class="card-power">Life: ${card.life}</span>` : '';
+    
+    // Add card image if available
+    const imageHTML = card.image_url ? `
+        <div class="card-image-container">
+            <img src="${card.image_url}" alt="${card.name}" class="card-image" 
+                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x420/667eea/ffffff?text=${encodeURIComponent(card.name)}'; this.classList.add('placeholder-image');">
+        </div>
+    ` : '';
 
     return `
-        <div class="card" data-type="${card.type}">
-            <div class="card-name">${card.name}</div>
-            <div class="card-meta">
-                <span class="card-type">${card.type}</span>
-                ${costHTML}
-                ${powerHTML}
-                ${lifeHTML}
+        <div class="card ${isLeader ? 'leader-card' : ''}" data-type="${card.type}">
+            ${imageHTML}
+            <div class="card-content">
+                <div class="card-name">${card.name}</div>
+                <div class="card-meta">
+                    <span class="card-type">${card.type}</span>
+                    ${costHTML}
+                    ${powerHTML}
+                    ${lifeHTML}
+                </div>
+                <div class="card-colors">${colorsHTML}</div>
+                <div class="card-effect">${card.effect || ''}</div>
             </div>
-            <div class="card-colors">${colorsHTML}</div>
-            <div class="card-effect">${card.effect || ''}</div>
         </div>
     `;
 }
@@ -223,17 +234,28 @@ function displayMainDeck(mainDeck) {
         ).join('');
 
         const powerHTML = card.power ? `<span class="card-power">PWR: ${card.power}</span>` : '';
+        
+        // Add card image if available
+        const imageHTML = card.image_url ? `
+            <div class="card-image-container">
+                <img src="${card.image_url}" alt="${card.name}" class="card-image" 
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x420/667eea/ffffff?text=${encodeURIComponent(card.name)}'; this.classList.add('placeholder-image');">
+            </div>
+        ` : '';
 
         cardsHTML += `
             <div class="card" data-type="${card.type}">
-                <div class="card-name">${card.name} ${count > 1 ? `(x${count})` : ''}</div>
-                <div class="card-meta">
-                    <span class="card-type">${card.type}</span>
-                    <span class="card-cost">Cost: ${card.cost}</span>
-                    ${powerHTML}
+                ${imageHTML}
+                <div class="card-content">
+                    <div class="card-name">${card.name} ${count > 1 ? `(x${count})` : ''}</div>
+                    <div class="card-meta">
+                        <span class="card-type">${card.type}</span>
+                        <span class="card-cost">Cost: ${card.cost}</span>
+                        ${powerHTML}
+                    </div>
+                    <div class="card-colors">${colorsHTML}</div>
+                    <div class="card-effect">${card.effect || ''}</div>
                 </div>
-                <div class="card-colors">${colorsHTML}</div>
-                <div class="card-effect">${card.effect || ''}</div>
             </div>
         `;
     }

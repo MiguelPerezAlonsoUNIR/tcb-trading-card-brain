@@ -9,6 +9,18 @@ CARD_TYPES = ['Leader', 'Character', 'Event', 'Stage']
 # Available colors in One Piece TCG
 COLORS = ['Red', 'Blue', 'Green', 'Purple', 'Black', 'Yellow']
 
+# Base URL for card images - using a public One Piece TCG image API
+# Format: {BASE_IMAGE_URL}/{set}-{card_id}.jpg
+BASE_IMAGE_URL = 'https://en.onepiece-cardgame.com/images/cardlist'
+
+def get_card_image_url(card_set, card_number):
+    """
+    Generate image URL for a card based on set and card number
+    Falls back to a placeholder if image is not available
+    """
+    # Format: OP01-001.png for card number 001 from set OP01
+    return f"{BASE_IMAGE_URL}/{card_set}-{card_number}.png"
+
 # Sample One Piece TCG cards database
 ONEPIECE_CARDS = [
     # Leaders
@@ -22,7 +34,9 @@ ONEPIECE_CARDS = [
         'cost': 0,
         'effect': 'Your Characters gain +1000 power during your turn.',
         'set': 'ST01',
-        'rarity': 'Leader'
+        'card_number': '001',
+        'rarity': 'Leader',
+        'image_url': get_card_image_url('ST01', '001')
     },
     {
         'name': 'Roronoa Zoro',
@@ -34,7 +48,9 @@ ONEPIECE_CARDS = [
         'cost': 0,
         'effect': 'When attacking, you may trash 1 card from your hand to give this Leader +1000 power during this battle.',
         'set': 'ST02',
-        'rarity': 'Leader'
+        'card_number': '001',
+        'rarity': 'Leader',
+        'image_url': get_card_image_url('ST02', '001')
     },
     {
         'name': 'Nami',
@@ -46,7 +62,9 @@ ONEPIECE_CARDS = [
         'cost': 0,
         'effect': 'Once per turn, you may return 1 of your Characters to your hand to draw 1 card.',
         'set': 'ST03',
-        'rarity': 'Leader'
+        'card_number': '001',
+        'rarity': 'Leader',
+        'image_url': get_card_image_url('ST03', '001')
     },
     {
         'name': 'Kaido',
@@ -58,7 +76,9 @@ ONEPIECE_CARDS = [
         'cost': 0,
         'effect': 'Once per turn, you may trash 1 card from your hand to give all your Characters +1000 power during this turn.',
         'set': 'ST04',
-        'rarity': 'Leader'
+        'card_number': '001',
+        'rarity': 'Leader',
+        'image_url': get_card_image_url('ST04', '001')
     },
     {
         'name': 'Trafalgar Law',
@@ -70,7 +90,9 @@ ONEPIECE_CARDS = [
         'cost': 0,
         'effect': 'Once per turn, you may pay 2 to play 1 Character card with a cost of 3 or less from your hand.',
         'set': 'OP01',
-        'rarity': 'Leader'
+        'card_number': '002',
+        'rarity': 'Leader',
+        'image_url': get_card_image_url('OP01', '002')
     },
     
     # Red Characters
@@ -83,7 +105,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: KO 1 of your opponent\'s Characters with a cost of 3 or less.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '003',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '003')
     },
     {
         'name': 'Sabo',
@@ -94,7 +118,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: Draw 1 card if you have 3 or fewer cards in your hand.',
         'set': 'OP01',
-        'rarity': 'Rare'
+        'card_number': '004',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '004')
     },
     {
         'name': 'Shanks',
@@ -105,7 +131,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Slash',
         'effect': 'Rush. On Play: Return all Characters with a cost of 5 or less to their owner\'s hands.',
         'set': 'OP01',
-        'rarity': 'Secret Rare'
+        'card_number': '005',
+        'rarity': 'Secret Rare',
+        'image_url': get_card_image_url('OP01', '005')
     },
     {
         'name': 'Koby',
@@ -116,7 +144,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'Blocker.',
         'set': 'ST01',
-        'rarity': 'Common'
+        'card_number': '002',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST01', '002')
     },
     {
         'name': 'Eustass Kid',
@@ -127,7 +157,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'On Play: Deal 1 damage to your opponent\'s Leader.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '006',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '006')
     },
     {
         'name': 'Uta',
@@ -138,7 +170,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'When attacking, this Character gains +2000 power.',
         'set': 'OP02',
-        'rarity': 'Rare'
+        'card_number': '003',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP02', '003')
     },
     {
         'name': 'Garp',
@@ -149,7 +183,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'Blocker. On Play: Draw 1 card and trash 1 card from your hand.',
         'set': 'OP02',
-        'rarity': 'Super Rare'
+        'card_number': '004',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP02', '004')
     },
     
     # Blue Characters
@@ -162,7 +198,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: Return 1 Character with a cost of 4 or less to its owner\'s hand.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '007',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '007')
     },
     {
         'name': 'Nico Robin',
@@ -173,7 +211,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: Look at the top 3 cards of your deck and rearrange them in any order.',
         'set': 'ST03',
-        'rarity': 'Rare'
+        'card_number': '002',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST03', '002')
     },
     {
         'name': 'Tony Tony Chopper',
@@ -184,7 +224,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Wisdom',
         'effect': 'On Play: Draw 1 card if you have 3 or fewer cards in your hand.',
         'set': 'ST03',
-        'rarity': 'Common'
+        'card_number': '003',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST03', '003')
     },
     {
         'name': 'Jinbe',
@@ -195,7 +237,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'Blocker. This Character cannot be KO\'d in battle by an opposing Character with 6000 power or less.',
         'set': 'OP01',
-        'rarity': 'Rare'
+        'card_number': '008',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '008')
     },
     {
         'name': 'Marco',
@@ -206,7 +250,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On K.O.: Play this card from your trash rested.',
         'set': 'OP02',
-        'rarity': 'Super Rare'
+        'card_number': '005',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP02', '005')
     },
     
     # Green Characters
@@ -219,7 +265,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Slash',
         'effect': 'Rush. When attacking, you may trash 1 card from your hand to give this Character +2000 power.',
         'set': 'OP01',
-        'rarity': 'Secret Rare'
+        'card_number': '009',
+        'rarity': 'Secret Rare',
+        'image_url': get_card_image_url('OP01', '009')
     },
     {
         'name': 'Sanji',
@@ -230,7 +278,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'On Play: If your Leader is Zoro, this Character gains +2000 power during this turn.',
         'set': 'ST02',
-        'rarity': 'Rare'
+        'card_number': '002',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST02', '002')
     },
     {
         'name': 'Usopp',
@@ -241,7 +291,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Ranged',
         'effect': 'On Play: You may trash 1 card from your hand to draw 2 cards.',
         'set': 'ST02',
-        'rarity': 'Common'
+        'card_number': '003',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST02', '003')
     },
     {
         'name': 'Oden Kozuki',
@@ -252,7 +304,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Slash',
         'effect': 'Rush. Double Attack.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '010',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '010')
     },
     {
         'name': 'Yamato',
@@ -263,7 +317,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'Rush. On Play: Trash the top 3 cards of your deck.',
         'set': 'OP02',
-        'rarity': 'Rare'
+        'card_number': '006',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP02', '006')
     },
     
     # Purple Characters
@@ -276,7 +332,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: Draw 1 card and trash 1 card from your hand.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '011',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '011')
     },
     {
         'name': 'Big Mom',
@@ -287,7 +345,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'On Play: Trash the top 3 cards of your deck, then play 1 Character with a cost of 5 or less from your trash.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '012',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '012')
     },
     {
         'name': 'Perospero',
@@ -298,7 +358,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: Look at the top 3 cards of your deck and place them back in any order.',
         'set': 'OP01',
-        'rarity': 'Rare'
+        'card_number': '013',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '013')
     },
     {
         'name': 'Smoothie',
@@ -309,7 +371,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Slash',
         'effect': 'Blocker.',
         'set': 'ST04',
-        'rarity': 'Common'
+        'card_number': '002',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST04', '002')
     },
     
     # Black Characters
@@ -322,7 +386,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Special',
         'effect': 'On Play: KO 1 of your opponent\'s Characters with 3000 power or less.',
         'set': 'OP01',
-        'rarity': 'Rare'
+        'card_number': '014',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '014')
     },
     {
         'name': 'Rob Lucci',
@@ -333,7 +399,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'Rush. On K.O.: Draw 1 card.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '015',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '015')
     },
     {
         'name': 'Bartholomew Kuma',
@@ -344,7 +412,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Strike',
         'effect': 'On Play: Return 1 Character to its owner\'s hand.',
         'set': 'OP02',
-        'rarity': 'Super Rare'
+        'card_number': '007',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP02', '007')
     },
     
     # Yellow Characters
@@ -357,7 +427,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Ranged',
         'effect': 'Blocker. On Play: KO 1 of your opponent\'s rested Characters with a cost of 4 or less.',
         'set': 'OP01',
-        'rarity': 'Super Rare'
+        'card_number': '016',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('OP01', '016')
     },
     {
         'name': 'Issho',
@@ -368,7 +440,9 @@ ONEPIECE_CARDS = [
         'attribute': 'Slash',
         'effect': 'On Play: Rest 1 of your opponent\'s Characters with a cost of 5 or less.',
         'set': 'OP01',
-        'rarity': 'Rare'
+        'card_number': '017',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '017')
     },
     
     # Events
@@ -379,7 +453,9 @@ ONEPIECE_CARDS = [
         'cost': 3,
         'effect': 'KO 1 of your opponent\'s Characters with a cost of 4 or less.',
         'set': 'ST01',
-        'rarity': 'Common'
+        'card_number': '010',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST01', '010')
     },
     {
         'name': 'Radical Beam',
@@ -388,7 +464,9 @@ ONEPIECE_CARDS = [
         'cost': 2,
         'effect': 'Deal 2 damage to your opponent\'s Leader.',
         'set': 'OP01',
-        'rarity': 'Uncommon'
+        'card_number': '018',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('OP01', '018')
     },
     {
         'name': 'Gum-Gum Giant',
@@ -397,7 +475,9 @@ ONEPIECE_CARDS = [
         'cost': 5,
         'effect': 'KO 1 of your opponent\'s Characters with a cost of 7 or less.',
         'set': 'OP02',
-        'rarity': 'Rare'
+        'card_number': '010',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP02', '010')
     },
     {
         'name': 'Water Shot',
@@ -406,7 +486,9 @@ ONEPIECE_CARDS = [
         'cost': 1,
         'effect': 'Return 1 Character with a cost of 2 or less to its owner\'s hand.',
         'set': 'ST03',
-        'rarity': 'Common'
+        'card_number': '010',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST03', '010')
     },
     {
         'name': 'Tact',
@@ -415,7 +497,9 @@ ONEPIECE_CARDS = [
         'cost': 3,
         'effect': 'Return 1 Character with a cost of 5 or less to its owner\'s hand.',
         'set': 'OP01',
-        'rarity': 'Uncommon'
+        'card_number': '019',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('OP01', '019')
     },
     {
         'name': 'Shambles',
@@ -424,7 +508,9 @@ ONEPIECE_CARDS = [
         'cost': 2,
         'effect': 'Draw 2 cards, then place 1 card from your hand on the top or bottom of your deck.',
         'set': 'OP02',
-        'rarity': 'Rare'
+        'card_number': '011',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP02', '011')
     },
     {
         'name': 'Three Sword Style: Purgatory Onigiri',
@@ -433,7 +519,9 @@ ONEPIECE_CARDS = [
         'cost': 2,
         'effect': 'Give 1 of your Characters +2000 power during this turn.',
         'set': 'ST02',
-        'rarity': 'Common'
+        'card_number': '010',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST02', '010')
     },
     {
         'name': 'Bird Strike',
@@ -442,7 +530,9 @@ ONEPIECE_CARDS = [
         'cost': 4,
         'effect': 'KO 1 of your opponent\'s rested Characters with a cost of 6 or less.',
         'set': 'OP01',
-        'rarity': 'Uncommon'
+        'card_number': '020',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('OP01', '020')
     },
     {
         'name': 'Mochi Tsuki',
@@ -451,7 +541,9 @@ ONEPIECE_CARDS = [
         'cost': 1,
         'effect': 'Draw 1 card and trash 1 card from your hand.',
         'set': 'OP01',
-        'rarity': 'Common'
+        'card_number': '021',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('OP01', '021')
     },
     {
         'name': 'Soul Pocus',
@@ -460,7 +552,9 @@ ONEPIECE_CARDS = [
         'cost': 3,
         'effect': 'Play 1 Character card with a cost of 4 or less from your trash.',
         'set': 'ST04',
-        'rarity': 'Uncommon'
+        'card_number': '010',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST04', '010')
     },
     {
         'name': 'Sables',
@@ -469,7 +563,9 @@ ONEPIECE_CARDS = [
         'cost': 2,
         'effect': 'KO 1 of your opponent\'s Characters with 4000 power or less.',
         'set': 'OP01',
-        'rarity': 'Common'
+        'card_number': '022',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('OP01', '022')
     },
     {
         'name': 'Ice Age',
@@ -478,7 +574,9 @@ ONEPIECE_CARDS = [
         'cost': 3,
         'effect': 'Rest up to 2 of your opponent\'s Characters with a cost of 3 or less.',
         'set': 'OP01',
-        'rarity': 'Uncommon'
+        'card_number': '023',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('OP01', '023')
     },
     
     # Stages
@@ -489,7 +587,9 @@ ONEPIECE_CARDS = [
         'cost': 1,
         'effect': 'Once per turn, you may rest this Stage to give 1 of your Characters +1000 power during this turn.',
         'set': 'ST01',
-        'rarity': 'Uncommon'
+        'card_number': '015',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST01', '015')
     },
     {
         'name': 'Baratie',
@@ -498,7 +598,9 @@ ONEPIECE_CARDS = [
         'cost': 2,
         'effect': 'Once per turn, you may rest this Stage to draw 1 card, then place 1 card from your hand on the bottom of your deck.',
         'set': 'ST03',
-        'rarity': 'Uncommon'
+        'card_number': '015',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST03', '015')
     },
     {
         'name': 'Whole Cake Island',
@@ -507,7 +609,9 @@ ONEPIECE_CARDS = [
         'cost': 1,
         'effect': 'Once per turn, you may rest this Stage to look at the top 3 cards of your deck and trash 1 of them.',
         'set': 'ST04',
-        'rarity': 'Uncommon'
+        'card_number': '015',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST04', '015')
     },
     {
         'name': 'Punk Hazard',
@@ -516,6 +620,8 @@ ONEPIECE_CARDS = [
         'cost': 2,
         'effect': 'Once per turn, you may rest this Stage and trash 1 card from your hand to draw 2 cards.',
         'set': 'OP01',
-        'rarity': 'Rare'
+        'card_number': '024',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '024')
     },
 ]
