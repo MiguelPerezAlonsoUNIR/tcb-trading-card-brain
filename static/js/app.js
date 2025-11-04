@@ -54,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-card-form').addEventListener('submit', handleAddCard);
     document.getElementById('suggest-deck-btn').addEventListener('click', handleSuggestDeck);
 
+    // Combat simulation
+    document.getElementById('simulate-combat-btn').addEventListener('click', openSimulationModal);
+
     // Check if user is logged in
     checkAuthStatus();
     
@@ -853,4 +856,206 @@ function handleExportDeck() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+// Combat Simulation Functions
+async function openSimulationModal() {
+    if (!currentDeck) {
+        showErrorMessage('Please build a deck first before running a simulation');
+        return;
+    }
+    
+    openModal('simulation-modal');
+    
+    // Reset simulation results
+    document.getElementById('simulation-results').style.display = 'none';
+    document.getElementById('opponent-selection').style.display = 'block';
+    
+    // Load opponent decks
+    await loadOpponentDecks();
+}
+
+async function loadOpponentDecks() {
+    const listDiv = document.getElementById('opponent-decks-list');
+    listDiv.innerHTML = '<div class="loading">Loading opponent decks...</div>';
+    
+    try {
+        const response = await fetch('/api/opponent-decks');
+        const data = await response.json();
+        
+        if (data.success && data.decks.length > 0) {
+            listDiv.innerHTML = data.decks.map(deck => `
+                <div class="opponent-deck-card" onclick="selectOpponentDeck('${deck.id}')">
+                    <h4>${deck.name}</h4>
+                    <p class="deck-strategy"><strong>Strategy:</strong> ${deck.strategy}</p>
+                    <p class="deck-color"><strong>Color:</strong> ${deck.color}</p>
+                    <p class="deck-description">${deck.description}</p>
+                    <p class="deck-winrate">🏆 Tournament Win Rate: <strong>${deck.win_rate}%</strong></p>
+                    <button class="btn btn-primary btn-small">Select Opponent</button>
+                </div>
+            `).join('');
+        } else {
+            listDiv.innerHTML = '<p>No opponent decks available.</p>';
+        }
+    } catch (error) {
+        listDiv.innerHTML = '<p>Failed to load opponent decks.</p>';
+        console.error('Error loading opponent decks:', error);
+    }
+}
+
+async function selectOpponentDeck(opponentDeckId) {
+    const listDiv = document.getElementById('opponent-decks-list');
+    listDiv.innerHTML = '<div class="loading">Running simulation... This may take a moment.</div>';
+    
+    try {
+        const response = await fetch('/api/simulate-combat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                player_deck: currentDeck,
+                opponent_deck_id: opponentDeckId,
+                num_simulations: 1000
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displaySimulationResults(data.results);
+        } else {
+            showErrorMessage(data.error || 'Failed to run simulation');
+            await loadOpponentDecks();
+        }
+    } catch (error) {
+        showErrorMessage('Failed to run simulation. Please try again.');
+        console.error('Error running simulation:', error);
+        await loadOpponentDecks();
+    }
+}
+
+function displaySimulationResults(results) {
+    // Hide opponent selection and show results
+    document.getElementById('opponent-selection').style.display = 'none';
+    document.getElementById('simulation-results').style.display = 'block';
+    
+    const statsDiv = document.getElementById('simulation-stats');
+    const insightsDiv = document.getElementById('simulation-insights');
+    
+    // Determine win rate color
+    let winRateClass = 'neutral';
+    if (results.win_rate >= 65) {
+        winRateClass = 'high';
+    } else if (results.win_rate >= 55) {
+        winRateClass = 'good';
+    } else if (results.win_rate >= 45) {
+        winRateClass = 'neutral';
+    } else if (results.win_rate >= 35) {
+        winRateClass = 'low';
+    } else {
+        winRateClass = 'very-low';
+    }
+    
+    // Display statistics
+    statsDiv.innerHTML = `
+        <div class="simulation-header">
+            <h3>Your Deck vs ${results.opponent_name}</h3>
+            <p class="opponent-desc">${results.opponent_description}</p>
+        </div>
+        
+        <div class="simulation-matchup">
+            <h4>Matchup: ${results.matchup_type}</h4>
+        </div>
+        
+        <div class="simulation-winrate winrate-${winRateClass}">
+            <div class="winrate-label">Predicted Win Rate</div>
+            <div class="winrate-value">${results.win_rate}%</div>
+            <div class="winrate-bar">
+                <div class="winrate-fill" style="width: ${results.win_rate}%"></div>
+            </div>
+        </div>
+        
+        <div class="simulation-details">
+            <div class="stat-card">
+                <div class="stat-label">Simulations Run</div>
+                <div class="stat-value">${results.simulations_run.toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Wins</div>
+                <div class="stat-value stat-positive">${results.wins.toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Losses</div>
+                <div class="stat-value stat-negative">${results.losses.toLocaleString()}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Win Turns</div>
+                <div class="stat-value">${results.avg_win_turns}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Loss Turns</div>
+                <div class="stat-value">${results.avg_loss_turns}</div>
+            </div>
+        </div>
+        
+        <div class="deck-comparison">
+            <div class="deck-info">
+                <h4>Your Deck</h4>
+                <p>Strategy: <strong>${results.deck1_stats.strategy}</strong></p>
+                <p>Primary Color: <strong>${results.deck1_stats.color}</strong></p>
+                <p>Avg Cost: <strong>${results.deck1_stats.avg_cost.toFixed(2)}</strong></p>
+                <p>Character Ratio: <strong>${(results.deck1_stats.character_ratio * 100).toFixed(1)}%</strong></p>
+            </div>
+            <div class="vs-divider">VS</div>
+            <div class="deck-info">
+                <h4>Opponent Deck</h4>
+                <p>Strategy: <strong>${results.deck2_stats.strategy}</strong></p>
+                <p>Primary Color: <strong>${results.deck2_stats.color}</strong></p>
+                <p>Avg Cost: <strong>${results.deck2_stats.avg_cost.toFixed(2)}</strong></p>
+                <p>Character Ratio: <strong>${(results.deck2_stats.character_ratio * 100).toFixed(1)}%</strong></p>
+            </div>
+        </div>
+    `;
+    
+    // Display insights
+    let insightsHTML = '<h4>AI Insights</h4><div class="insights-list">';
+    results.insights.forEach(insight => {
+        insightsHTML += `<div class="insight-item">${insight}</div>`;
+    });
+    insightsHTML += '</div>';
+    
+    // Display key cards if available
+    if (results.key_cards) {
+        insightsHTML += '<h4>Key Cards in Your Deck</h4><div class="key-cards">';
+        
+        if (results.key_cards.high_power && results.key_cards.high_power.length > 0) {
+            insightsHTML += `<div class="key-card-group">
+                <strong>High Power Threats:</strong> ${results.key_cards.high_power.join(', ')}
+            </div>`;
+        }
+        
+        if (results.key_cards.low_cost && results.key_cards.low_cost.length > 0) {
+            insightsHTML += `<div class="key-card-group">
+                <strong>Early Game Cards:</strong> ${results.key_cards.low_cost.join(', ')}
+            </div>`;
+        }
+        
+        if (results.key_cards.events && results.key_cards.events.length > 0) {
+            insightsHTML += `<div class="key-card-group">
+                <strong>Key Events:</strong> ${results.key_cards.events.join(', ')}
+            </div>`;
+        }
+        
+        insightsHTML += '</div>';
+    }
+    
+    insightsDiv.innerHTML = insightsHTML;
+    
+    // Setup "Run Another Simulation" button
+    document.getElementById('run-another-simulation').onclick = async () => {
+        document.getElementById('simulation-results').style.display = 'none';
+        document.getElementById('opponent-selection').style.display = 'block';
+        await loadOpponentDecks();
+    };
 }

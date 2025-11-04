@@ -11,6 +11,7 @@ import logging
 from deck_builder import OnePieceDeckBuilder
 from models import db, User, Deck, UserCollection
 from auth import hash_password, verify_password, login_required_api
+from combat_simulator import CombatSimulator
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -30,8 +31,9 @@ login_manager.login_view = 'index'
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize the deck builder
+# Initialize the deck builder and combat simulator
 deck_builder = OnePieceDeckBuilder()
+combat_simulator = CombatSimulator()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -446,6 +448,82 @@ def suggest_deck_from_collection():
         return jsonify({
             'success': False,
             'error': 'Failed to suggest deck. Please try again.'
+        }), 400
+
+@app.route('/api/opponent-decks', methods=['GET'])
+def get_opponent_decks():
+    """Get list of available opponent decks for simulation"""
+    try:
+        opponent_decks = combat_simulator.get_available_opponent_decks()
+        return jsonify({
+            'success': True,
+            'decks': opponent_decks
+        })
+    except Exception as e:
+        logger.error(f"Error getting opponent decks: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to load opponent decks'
+        }), 500
+
+@app.route('/api/simulate-combat', methods=['POST'])
+def simulate_combat():
+    """Simulate combat between player's deck and an opponent deck"""
+    data = request.json
+    player_deck = data.get('player_deck')
+    opponent_deck_id = data.get('opponent_deck_id')
+    num_simulations = data.get('num_simulations', 1000)
+    
+    if not player_deck:
+        return jsonify({
+            'success': False,
+            'error': 'Player deck is required'
+        }), 400
+    
+    if not opponent_deck_id:
+        return jsonify({
+            'success': False,
+            'error': 'Opponent deck selection is required'
+        }), 400
+    
+    try:
+        # Build opponent deck based on selection
+        opponent_decks_info = combat_simulator.get_available_opponent_decks()
+        opponent_info = next((d for d in opponent_decks_info if d['id'] == opponent_deck_id), None)
+        
+        if not opponent_info:
+            return jsonify({
+                'success': False,
+                'error': 'Invalid opponent deck selection'
+            }), 400
+        
+        # Build the actual opponent deck
+        opponent_deck = deck_builder.build_deck(
+            strategy=opponent_info['strategy'],
+            color=opponent_info['color']
+        )
+        
+        # Run simulation
+        results = combat_simulator.simulate_combat(
+            player_deck,
+            opponent_deck,
+            num_simulations=num_simulations
+        )
+        
+        # Add opponent info to results
+        results['opponent_name'] = opponent_info['name']
+        results['opponent_description'] = opponent_info['description']
+        results['opponent_tournament_win_rate'] = opponent_info['win_rate']
+        
+        return jsonify({
+            'success': True,
+            'results': results
+        })
+    except Exception as e:
+        logger.error(f"Error simulating combat: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to simulate combat. Please try again.'
         }), 400
 
 if __name__ == '__main__':

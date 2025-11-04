@@ -89,6 +89,7 @@
                 </div>
 
                 <div class="deck-actions">
+                    <button id="simulate-combat-btn" class="btn btn-primary">⚔️ Simulation</button>
                     <button id="analyze-deck-btn" class="btn btn-secondary">Analyze Deck</button>
                     <button id="export-deck-btn" class="btn btn-secondary">Export Deck</button>
                     <button id="save-deck-btn" class="btn btn-primary" style="display: none;">Save Deck</button>
@@ -196,6 +197,29 @@
                 <button type="submit" class="btn btn-primary">Add</button>
                 <div id="add-card-error" class="error-message" style="display: none;"></div>
             </form>
+        </div>
+    </div>
+
+    <!-- Combat Simulation Modal -->
+    <div id="simulation-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2>⚔️ Combat Simulation</h2>
+            <p>Select an opponent deck to simulate combat and see how your deck performs!</p>
+            
+            <div id="opponent-selection" style="margin: 20px 0;">
+                <h3>Select Opponent Deck:</h3>
+                <div id="opponent-decks-list" class="opponent-decks-grid">
+                    <div class="loading">Loading opponent decks...</div>
+                </div>
+            </div>
+            
+            <div id="simulation-results" style="display: none;">
+                <h3>Simulation Results</h3>
+                <div id="simulation-stats" class="simulation-stats"></div>
+                <div id="simulation-insights" class="simulation-insights"></div>
+                <button id="run-another-simulation" class="btn btn-secondary">Run Another Simulation</button>
+            </div>
         </div>
     </div>
 
