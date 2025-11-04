@@ -6,6 +6,7 @@ An AI-powered web application for building optimized decks for Trading Card Game
 
 - **AI-Powered Deck Building**: Intelligent deck construction based on strategy and color preferences
 - **One Piece TCG Support**: Built-in database of One Piece Trading Card Game cards
+- **Card Images**: Visual card display with images from official One Piece TCG API
 - **Strategy Options**: Choose from Aggressive, Balanced, or Control strategies
 - **Color Filtering**: Build decks focused on specific colors or multi-color combinations
 - **Deck Analysis**: Get AI-powered insights and suggestions for your deck
@@ -124,7 +125,20 @@ tcb-trading-card-brain/
 Returns the main application interface
 
 ### GET /api/cards
-Returns all available One Piece TCG cards
+Returns all available One Piece TCG cards with image URLs
+```json
+[
+  {
+    "name": "Monkey D. Luffy",
+    "type": "Leader",
+    "colors": ["Red"],
+    "power": 5000,
+    "cost": 0,
+    "image_url": "https://en.onepiece-cardgame.com/images/cardlist/ST01-001.png",
+    ...
+  }
+]
+```
 
 ### POST /api/build-deck
 Builds a deck based on preferences
@@ -159,9 +173,13 @@ Edit `cards_data.py` and add card objects to the `ONEPIECE_CARDS` list:
     'cost': 4,
     'effect': 'Card effect text',
     'set': 'OP01',
-    'rarity': 'Common|Rare|Super Rare|Secret Rare'
+    'card_number': '025',
+    'rarity': 'Common|Rare|Super Rare|Secret Rare',
+    'image_url': get_card_image_url('OP01', '025')
 }
 ```
+
+The `get_card_image_url()` function automatically generates the correct image URL based on the card set and number.
 
 ### Adding New TCGs
 
@@ -207,8 +225,8 @@ Contributions are welcome! Areas for improvement:
 - Machine learning integration
 - Tournament-level deck optimization
 - Deck sharing and community features
-- Card image integration
 - Advanced filtering and search
+- Card image caching for better performance
 
 ## License
 
