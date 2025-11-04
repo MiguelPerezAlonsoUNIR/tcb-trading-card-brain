@@ -4,21 +4,16 @@ Authentication utilities
 from functools import wraps
 from flask import jsonify
 from flask_login import current_user
-import hashlib
-import secrets
+from werkzeug.security import generate_password_hash, check_password_hash
 
 def hash_password(password):
-    """Hash a password using SHA-256 with salt"""
-    salt = secrets.token_hex(16)
-    pwd_hash = hashlib.sha256((password + salt).encode()).hexdigest()
-    return f"{salt}${pwd_hash}"
+    """Hash a password using werkzeug's secure password hashing (pbkdf2)"""
+    return generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
 
 def verify_password(password, stored_hash):
     """Verify a password against a stored hash"""
     try:
-        salt, pwd_hash = stored_hash.split('$')
-        test_hash = hashlib.sha256((password + salt).encode()).hexdigest()
-        return test_hash == pwd_hash
+        return check_password_hash(stored_hash, password)
     except (ValueError, AttributeError):
         return False
 
