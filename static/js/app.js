@@ -200,7 +200,7 @@ async function handleSaveDeck(e) {
             closeModal('save-deck-modal');
             document.getElementById('save-deck-form').reset();
             errorDiv.style.display = 'none';
-            alert('Deck saved successfully!');
+            showSuccessMessage('Deck saved successfully!');
         } else {
             errorDiv.textContent = data.error;
             errorDiv.style.display = 'block';
@@ -253,9 +253,10 @@ async function loadDeck(deckId) {
             currentDeck = data.deck;
             displayDeck(currentDeck);
             hideAllSections();
+            showSuccessMessage('Deck loaded successfully!');
         }
     } catch (error) {
-        alert('Failed to load deck');
+        showErrorMessage('Failed to load deck');
     }
 }
 
@@ -271,11 +272,12 @@ async function deleteDeck(deckId) {
         
         if (data.success) {
             showMyDecks();
+            showSuccessMessage('Deck deleted successfully!');
         } else {
-            alert('Failed to delete deck');
+            showErrorMessage('Failed to delete deck');
         }
     } catch (error) {
-        alert('Failed to delete deck');
+        showErrorMessage('Failed to delete deck');
     }
 }
 
@@ -444,6 +446,25 @@ function hideAllSections() {
     document.getElementById('analysis-section').style.display = 'none';
     document.getElementById('user-decks-section').style.display = 'none';
     document.getElementById('user-collection-section').style.display = 'none';
+}
+
+function showSuccessMessage(message) {
+    const messageDiv = createMessageDiv(message, 'success');
+    document.body.appendChild(messageDiv);
+    setTimeout(() => messageDiv.remove(), 3000);
+}
+
+function showErrorMessage(message) {
+    const messageDiv = createMessageDiv(message, 'error');
+    document.body.appendChild(messageDiv);
+    setTimeout(() => messageDiv.remove(), 4000);
+}
+
+function createMessageDiv(message, type) {
+    const div = document.createElement('div');
+    div.className = `toast-message toast-${type}`;
+    div.textContent = message;
+    return div;
 }
 
 // Handle deck building

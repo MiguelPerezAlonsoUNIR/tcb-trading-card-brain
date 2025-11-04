@@ -19,7 +19,7 @@ def verify_password(password, stored_hash):
         salt, pwd_hash = stored_hash.split('$')
         test_hash = hashlib.sha256((password + salt).encode()).hexdigest()
         return test_hash == pwd_hash
-    except:
+    except (ValueError, AttributeError):
         return False
 
 def login_required_api(f):
