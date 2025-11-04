@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece TCG Deck Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏴‍☠️ One Piece TCG Deck Builder</h1>
+            <p>AI-Powered Deck Building for One Piece Trading Card Game</p>
+        </header>
+
+        <main>
+            <section class="deck-builder">
+                <h2>Build Your Deck</h2>
+                <form id="deck-builder-form">
+                    <div class="form-group">
+                        <label for="strategy">Strategy:</label>
+                        <select id="strategy" name="strategy">
+                            <option value="balanced">Balanced</option>
+                            <option value="aggressive">Aggressive</option>
+                            <option value="control">Control</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Primary Color:</label>
+                        <select id="color" name="color">
+                            <option value="any">Any</option>
+                            <option value="Red">Red</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Green">Green</option>
+                            <option value="Purple">Purple</option>
+                            <option value="Black">Black</option>
+                            <option value="Yellow">Yellow</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leader">Leader (Optional):</label>
+                        <input type="text" id="leader" name="leader" placeholder="e.g., Monkey D. Luffy">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Build Deck</button>
+                </form>
+            </section>
+
+            <section class="deck-display" id="deck-display" style="display: none;">
+                <h2>Your Deck</h2>
+                
+                <div class="leader-section">
+                    <h3>Leader</h3>
+                    <div id="leader-card" class="card-display"></div>
+                </div>
+
+                <div class="deck-stats">
+                    <h3>Deck Statistics</h3>
+                    <div id="deck-stats-content"></div>
+                </div>
+
+                <div class="main-deck">
+                    <h3>Main Deck (50 cards)</h3>
+                    <div class="card-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="Character">Characters</button>
+                        <button class="filter-btn" data-filter="Event">Events</button>
+                        <button class="filter-btn" data-filter="Stage">Stages</button>
+                    </div>
+                    <div id="main-deck-cards" class="cards-grid"></div>
+                </div>
+
+                <div class="deck-actions">
+                    <button id="analyze-deck-btn" class="btn btn-secondary">Analyze Deck</button>
+                    <button id="export-deck-btn" class="btn btn-secondary">Export Deck</button>
+                </div>
+            </section>
+
+            <section class="analysis-section" id="analysis-section" style="display: none;">
+                <h2>Deck Analysis</h2>
+                <div id="analysis-content"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>One Piece TCG Deck Builder - Powered by AI</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
