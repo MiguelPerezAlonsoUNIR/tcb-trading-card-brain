@@ -211,6 +211,13 @@ class CombatSimulator:
         else:
             return (random.choice([1, 2]), state.turn_count)
     
+    def _deal_damage_to_opponent(self, state: GameState, is_player1: bool, damage: int = 1):
+        """Deal damage to the opponent's leader"""
+        if is_player1:
+            state.player2_life -= damage
+        else:
+            state.player1_life -= damage
+    
     def _play_turn(self, state: GameState, hand: List[Dict], deck: List[Dict], 
                    my_leader: Dict, opp_leader: Dict, is_player1: bool):
         """
@@ -228,17 +235,18 @@ class CombatSimulator:
         
         # Play characters from hand (simplified AI - play highest cost affordable card)
         characters_to_play = []
-        for card in hand:
+        for card in hand[:]:  # Iterate over a copy
             if card.get('type') == 'Character' and card.get('cost', 0) <= my_don:
                 characters_to_play.append(card)
         
         # Sort by cost (play higher cost first for more power)
         characters_to_play.sort(key=lambda x: x.get('cost', 0), reverse=True)
         
+        played_cards = []  # Track cards to remove from hand
         for card in characters_to_play:
             if card.get('cost', 0) <= my_don:
                 my_board.append(deepcopy(card))
-                hand.remove(card)
+                played_cards.append(card)
                 my_don -= card.get('cost', 0)
                 
                 # Handle "On Play" effects
@@ -246,10 +254,7 @@ class CombatSimulator:
                 if 'on play' in effect:
                     # Deal damage to opponent's leader
                     if 'deal 1 damage' in effect:
-                        if is_player1:
-                            state.player2_life -= 1
-                        else:
-                            state.player1_life -= 1
+                        self._deal_damage_to_opponent(state, is_player1, 1)
                     # KO opponent's character effects (simplified - KO lowest power)
                     elif 'ko' in effect and opp_board:
                         # Find characters that match the KO condition
@@ -257,6 +262,11 @@ class CombatSimulator:
                             targets = [c for c in opp_board if c.get('cost', 0) <= 3]
                             if targets:
                                 opp_board.remove(targets[0])
+        
+        # Remove played cards from hand
+        for card in played_cards:
+            if card in hand:
+                hand.remove(card)
         
         # Update DON!!
         if is_player1:
@@ -273,6 +283,9 @@ class CombatSimulator:
         random.shuffle(attackers)  # Randomize attack order
         
         for attacker in attackers:
+            # Skip if attacker was already KO'd earlier in the turn
+            if attacker not in my_board:
+                continue
             attacker_power = attacker.get('power', 0)
             
             # Apply power boosts from leader ability
@@ -332,10 +345,7 @@ class CombatSimulator:
                             my_board.remove(attacker)
                 else:
                     # Attack leader directly - deals 1 life damage
-                    if is_player1:
-                        state.player2_life -= 1
-                    else:
-                        state.player1_life -= 1
+                    self._deal_damage_to_opponent(state, is_player1, 1)
     
     def _extract_deck_stats(self, deck: Dict) -> Dict:
         """Extract relevant statistics from a deck"""
