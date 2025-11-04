@@ -68,7 +68,11 @@ TOURNAMENT_DATA = [
 
 
 class CombatSimulator:
-    """AI-powered combat simulator that learns from tournament data"""
+    """Combat simulator following One Piece TCG rules"""
+    
+    # Game configuration constants
+    MAX_TURNS = 30  # Maximum turns before game ends in a draw
+    CHARACTER_ATTACK_LEADER_CHANCE = 0.7  # 70% chance to attack leader when no blockers
     
     def __init__(self):
         """Initialize the combat simulator with tournament learning data"""
@@ -171,9 +175,7 @@ class CombatSimulator:
         deck1_cards = deck1_cards[5:]
         deck2_cards = deck2_cards[5:]
         
-        max_turns = 30  # Prevent infinite loops
-        
-        while state.turn_count < max_turns:
+        while state.turn_count < self.MAX_TURNS:
             state.turn_count += 1
             
             # DON!! phase - gain DON!! cards (up to turn number, max 10)
@@ -218,6 +220,52 @@ class CombatSimulator:
         else:
             state.player1_life -= damage
     
+    def _get_attack_power_boost(self, card: Dict) -> int:
+        """
+        Parse and return power boost from 'When attacking' effects
+        Returns the power boost value (0 if no boost)
+        """
+        effect = card.get('effect', '').lower()
+        if 'when attacking' not in effect:
+            return 0
+        
+        # Check for specific power boosts (check higher values first)
+        if '+3000 power' in effect:
+            return 3000
+        elif '+2000 power' in effect:
+            return 2000
+        elif '+1000 power' in effect:
+            return 1000
+        
+        return 0
+    
+    def _parse_on_play_effect(self, card: Dict) -> dict:
+        """
+        Parse 'On Play' effects into structured data
+        Returns dict with effect type and parameters
+        """
+        effect = card.get('effect', '').lower()
+        
+        if 'on play' not in effect:
+            return {'type': None}
+        
+        # Check for damage effect
+        if 'deal 1 damage' in effect:
+            return {'type': 'damage', 'amount': 1, 'target': 'leader'}
+        elif 'deal 2 damage' in effect:
+            return {'type': 'damage', 'amount': 2, 'target': 'leader'}
+        
+        # Check for KO effect
+        if 'ko' in effect:
+            if 'cost of 3 or less' in effect:
+                return {'type': 'ko', 'max_cost': 3}
+            elif 'cost of 4 or less' in effect:
+                return {'type': 'ko', 'max_cost': 4}
+            elif 'cost of 5 or less' in effect:
+                return {'type': 'ko', 'max_cost': 5}
+        
+        return {'type': 'other'}
+    
     def _play_turn(self, state: GameState, hand: List[Dict], deck: List[Dict], 
                    my_leader: Dict, opp_leader: Dict, is_player1: bool):
         """
@@ -249,19 +297,15 @@ class CombatSimulator:
                 played_cards.append(card)
                 my_don -= card.get('cost', 0)
                 
-                # Handle "On Play" effects
-                effect = card.get('effect', '').lower()
-                if 'on play' in effect:
-                    # Deal damage to opponent's leader
-                    if 'deal 1 damage' in effect:
-                        self._deal_damage_to_opponent(state, is_player1, 1)
-                    # KO opponent's character effects (simplified - KO lowest power)
-                    elif 'ko' in effect and opp_board:
-                        # Find characters that match the KO condition
-                        if 'cost of 3 or less' in effect:
-                            targets = [c for c in opp_board if c.get('cost', 0) <= 3]
-                            if targets:
-                                opp_board.remove(targets[0])
+                # Handle "On Play" effects using structured parser
+                on_play = self._parse_on_play_effect(card)
+                if on_play['type'] == 'damage':
+                    self._deal_damage_to_opponent(state, is_player1, on_play['amount'])
+                elif on_play['type'] == 'ko' and opp_board:
+                    # Find and KO a character matching the cost restriction
+                    targets = [c for c in opp_board if c.get('cost', 0) <= on_play['max_cost']]
+                    if targets:
+                        opp_board.remove(targets[0])
         
         # Remove played cards from hand
         for card in played_cards:
@@ -293,11 +337,7 @@ class CombatSimulator:
                 attacker_power += 1000
             
             # Apply attacker's own power boost effects
-            if 'when attacking' in attacker.get('effect', '').lower():
-                if '+2000 power' in attacker.get('effect', '').lower():
-                    attacker_power += 2000
-                elif '+1000 power' in attacker.get('effect', '').lower():
-                    attacker_power += 1000
+            attacker_power += self._get_attack_power_boost(attacker)
             
             # Check for blockers on opponent's board
             blockers = [c for c in opp_board if 'blocker' in c.get('effect', '').lower()]
@@ -326,8 +366,9 @@ class CombatSimulator:
                         my_board.remove(attacker)
             else:
                 # No blockers - can attack leader directly or other characters
-                # Simplified: 70% chance to attack leader, 30% to attack character if any exist
-                if opp_board and random.random() < 0.3:
+                # Use configured chance to attack leader vs characters
+                attack_character_chance = 1.0 - self.CHARACTER_ATTACK_LEADER_CHANCE
+                if opp_board and random.random() < attack_character_chance:
                     # Attack a character
                     defender = random.choice(opp_board)
                     defender_power = defender.get('power', 0)
