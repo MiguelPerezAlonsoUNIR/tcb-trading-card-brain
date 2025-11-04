@@ -15,6 +15,7 @@ class OnePieceDeckBuilder:
         self.cards = ONEPIECE_CARDS
         self.deck_size = 50  # Standard One Piece TCG deck size
         self.max_copies = 4  # Maximum copies of a card (except for leaders)
+        self.max_deck_build_attempts = 1000  # Maximum attempts to build a complete deck
         
     def get_all_cards(self) -> List[Dict]:
         """Return all available cards"""
@@ -75,10 +76,11 @@ class OnePieceDeckBuilder:
         main_deck = []
         
         # Filter cards by color (matching leader's colors)
+        # According to One Piece TCG rules, cards must share at least one color with the leader
         available_cards = [
             c for c in self.cards 
             if c['type'] != 'Leader' and 
-            (color == 'any' or any(lc in c['colors'] for lc in leader['colors']))
+            any(lc in c['colors'] for lc in leader['colors'])
         ]
         
         # Strategy-based card selection
@@ -90,24 +92,15 @@ class OnePieceDeckBuilder:
             main_deck = self._build_balanced_deck(available_cards)
         
         # Ensure deck is exactly 50 cards
+        # Only use cards that match the leader's colors (One Piece TCG rule)
         attempts = 0
-        while len(main_deck) < self.deck_size and attempts < 200:
+        while len(main_deck) < self.deck_size and attempts < self.max_deck_build_attempts:
             if not available_cards:
                 break
             card = random.choice(available_cards)
             if self._count_card_copies(main_deck, card) < self.max_copies:
                 main_deck.append(card)
             attempts += 1
-        
-        # If we couldn't reach 50 cards with max copies, fill with any available cards
-        if len(main_deck) < self.deck_size:
-            all_non_leader_cards = [c for c in self.cards if c['type'] != 'Leader']
-            attempts = 0
-            while len(main_deck) < self.deck_size and attempts < 200:
-                card = random.choice(all_non_leader_cards)
-                if self._count_card_copies(main_deck, card) < self.max_copies:
-                    main_deck.append(card)
-                attempts += 1
         
         return main_deck[:self.deck_size]
     

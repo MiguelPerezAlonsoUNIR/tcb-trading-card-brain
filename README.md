@@ -8,6 +8,7 @@ An AI-powered web application for building optimized decks for Trading Card Game
 - **Personal Deck Storage**: Save and manage your decks in your user profile
 - **Card Collection Tracking**: Track which cards you own for better deck suggestions
 - **AI-Powered Deck Building**: Intelligent deck construction based on strategy and color preferences
+- **One Piece TCG Rules Enforcement**: Follows official One Piece TCG deck building rules, including color matching
 - **Collection-Based Suggestions**: Get deck suggestions based on cards you already own
 - **One Piece TCG Support**: Built-in database of One Piece Trading Card Game cards
 - **Card Images**: Visual card display with images from official One Piece TCG API
@@ -134,6 +135,12 @@ The application can be configured using environment variables:
    - Leave empty for automatic leader selection
 
 4. Click "Build Deck" to generate your optimized 50-card deck
+
+**Important Note**: The deck builder follows official One Piece TCG rules:
+- All cards in your deck must share at least one color with your leader
+- Multi-color leaders (e.g., Trafalgar Law - Blue/Black) allow cards from any of their colors
+- Maximum 4 copies of any card (excluding the leader)
+- Deck size: 50 cards (some color combinations may have fewer cards due to database limitations)
 
 ### Saving Your Decks
 
@@ -286,6 +293,30 @@ Analyzes a deck and provides suggestions
   "deck": [array of card objects]
 }
 ```
+
+## One Piece TCG Rules Compliance
+
+This application follows the official One Piece TCG deck building rules as defined in the [One Piece TCG Rule Manual](https://en.onepiece-cardgame.com/pdf/rule_manual.pdf):
+
+### Deck Construction Rules
+
+1. **Leader Card**: Each deck must have exactly 1 Leader card
+2. **Deck Size**: Main deck must contain exactly 50 cards (excluding the Leader)
+3. **Card Copies**: Maximum of 4 copies of any single card (Leaders don't count toward this limit)
+4. **Color Matching Rule**: All cards in the deck must share at least one color with the Leader
+   - Single-color leaders (e.g., Monkey D. Luffy - Red): All cards must include Red in their colors
+   - Multi-color leaders (e.g., Trafalgar Law - Blue/Black): Cards can be Blue, Black, or both
+   - Multi-color cards are allowed as long as they share at least one color with the leader
+
+### AI Enforcement
+
+The deck builder AI automatically enforces these rules:
+- ✓ Cards are filtered to match the leader's colors
+- ✓ Maximum 4 copies per card is enforced
+- ✓ Deck analysis will warn if deck size is not exactly 50 cards
+- ✓ Color validation works for both single and multi-color leaders
+
+**Note**: Some color combinations may result in decks with fewer than 50 cards due to the current card database size. To build full 50-card decks, add more cards to `cards_data.py` that match the desired colors.
 
 ## Extending the Application
 
