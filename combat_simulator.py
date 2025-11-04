@@ -220,6 +220,27 @@ class CombatSimulator:
         else:
             state.player1_life -= damage
     
+    def _resolve_battle(self, attacker: Dict, attacker_power: int, defender: Dict, 
+                       defender_power: int, my_board: List[Dict], opp_board: List[Dict]):
+        """
+        Resolve battle between two characters based on power comparison
+        Higher power wins, equal power results in both being KO'd
+        """
+        if attacker_power > defender_power:
+            # Attacker wins - defender is KO'd
+            if defender in opp_board:
+                opp_board.remove(defender)
+        elif defender_power > attacker_power:
+            # Defender wins - attacker is KO'd
+            if attacker in my_board:
+                my_board.remove(attacker)
+        else:
+            # Equal power - both are KO'd
+            if defender in opp_board:
+                opp_board.remove(defender)
+            if attacker in my_board:
+                my_board.remove(attacker)
+    
     def _get_attack_power_boost(self, card: Dict) -> int:
         """
         Parse and return power boost from 'When attacking' effects
@@ -349,21 +370,9 @@ class CombatSimulator:
                 defender = random.choice(blockers)
                 defender_power = defender.get('power', 0)
                 
-                # Battle resolution - compare power
-                if attacker_power > defender_power:
-                    # Attacker wins - defender is KO'd
-                    if defender in opp_board:
-                        opp_board.remove(defender)
-                elif defender_power > attacker_power:
-                    # Defender wins - attacker is KO'd
-                    if attacker in my_board:
-                        my_board.remove(attacker)
-                else:
-                    # Equal power - both are KO'd
-                    if defender in opp_board:
-                        opp_board.remove(defender)
-                    if attacker in my_board:
-                        my_board.remove(attacker)
+                # Battle resolution - use helper method
+                self._resolve_battle(attacker, attacker_power, defender, defender_power, 
+                                    my_board, opp_board)
             else:
                 # No blockers - can attack leader directly or other characters
                 # Use configured chance to attack leader vs characters
@@ -373,17 +382,9 @@ class CombatSimulator:
                     defender = random.choice(opp_board)
                     defender_power = defender.get('power', 0)
                     
-                    if attacker_power > defender_power:
-                        if defender in opp_board:
-                            opp_board.remove(defender)
-                    elif defender_power > attacker_power:
-                        if attacker in my_board:
-                            my_board.remove(attacker)
-                    else:
-                        if defender in opp_board:
-                            opp_board.remove(defender)
-                        if attacker in my_board:
-                            my_board.remove(attacker)
+                    # Battle resolution - use helper method
+                    self._resolve_battle(attacker, attacker_power, defender, defender_power,
+                                        my_board, opp_board)
                 else:
                     # Attack leader directly - deals 1 life damage
                     self._deal_damage_to_opponent(state, is_player1, 1)
