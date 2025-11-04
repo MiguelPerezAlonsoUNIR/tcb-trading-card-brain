@@ -12,6 +12,7 @@ from deck_builder import OnePieceDeckBuilder
 from models import db, User, Deck, UserCollection
 from auth import hash_password, verify_password, login_required_api
 from combat_simulator import CombatSimulator
+from structure_decks import get_all_structure_decks, get_structure_deck, get_structure_deck_cards
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -449,6 +450,126 @@ def suggest_deck_from_collection():
             'success': False,
             'error': 'Failed to suggest deck. Please try again.'
         }), 400
+
+@app.route('/api/structure-decks', methods=['GET'])
+def get_structure_decks_list():
+    """Get list of all available structure decks"""
+    try:
+        decks = get_all_structure_decks()
+        # Return simplified info without full card lists
+        deck_list = [{
+            'code': deck['code'],
+            'name': deck['name'],
+            'description': deck['description'],
+            'color': deck['color'],
+            'leader': deck['leader']
+        } for deck in decks]
+        return jsonify({
+            'success': True,
+            'decks': deck_list
+        })
+    except Exception as e:
+        logger.error(f"Error getting structure decks: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to get structure decks'
+        }), 500
+
+@app.route('/api/structure-decks/<deck_code>', methods=['GET'])
+def get_structure_deck_details(deck_code):
+    """Get details of a specific structure deck including card list"""
+    try:
+        deck = get_structure_deck(deck_code)
+        if not deck:
+            return jsonify({
+                'success': False,
+                'error': 'Structure deck not found'
+            }), 404
+        
+        return jsonify({
+            'success': True,
+            'deck': deck
+        })
+    except Exception as e:
+        logger.error(f"Error getting structure deck: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to get structure deck'
+        }), 500
+
+@app.route('/api/collection/add-structure-deck', methods=['POST'])
+@login_required_api
+def add_structure_deck_to_collection():
+    """Add all cards from a structure deck to user's collection"""
+    data = request.json
+    deck_code = data.get('deck_code', '').strip().upper()
+    
+    if not deck_code:
+        return jsonify({
+            'success': False,
+            'error': 'Deck code is required'
+        }), 400
+    
+    # Get structure deck
+    deck_cards = get_structure_deck_cards(deck_code)
+    if not deck_cards:
+        return jsonify({
+            'success': False,
+            'error': f'Structure deck {deck_code} not found'
+        }), 404
+    
+    try:
+        added_cards = []
+        updated_cards = []
+        
+        # Add each card from the structure deck to the collection
+        for card_name, quantity in deck_cards.items():
+            # Check if card already exists in collection
+            collection_item = UserCollection.query.filter_by(
+                user_id=current_user.id,
+                card_name=card_name
+            ).first()
+            
+            if collection_item:
+                # Update quantity (add to existing)
+                old_quantity = collection_item.quantity
+                collection_item.quantity += quantity
+                updated_cards.append({
+                    'card_name': card_name,
+                    'added_quantity': quantity,
+                    'old_quantity': old_quantity,
+                    'new_quantity': collection_item.quantity
+                })
+            else:
+                # Add new card
+                collection_item = UserCollection(
+                    user_id=current_user.id,
+                    card_name=card_name,
+                    quantity=quantity
+                )
+                db.session.add(collection_item)
+                added_cards.append({
+                    'card_name': card_name,
+                    'quantity': quantity
+                })
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Successfully added structure deck {deck_code} to your collection',
+            'deck_code': deck_code,
+            'added_cards': added_cards,
+            'updated_cards': updated_cards,
+            'total_cards_modified': len(added_cards) + len(updated_cards)
+        })
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error adding structure deck to collection: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to add structure deck to collection'
+        }), 500
 
 @app.route('/api/opponent-decks', methods=['GET'])
 def get_opponent_decks():
