@@ -105,9 +105,31 @@
                 <h2>My Card Collection</h2>
                 <div class="collection-actions">
                     <button id="add-card-btn" class="btn btn-primary">Add Card to Collection</button>
+                    <button id="structure-decks-btn" class="btn btn-primary">Add Structure Deck</button>
                     <button id="suggest-deck-btn" class="btn btn-primary">Suggest Deck from Collection</button>
                 </div>
                 <div id="collection-list"></div>
+            </section>
+
+            <section class="structure-decks-section" id="structure-decks-section" style="display: none;">
+                <h2>Structure Decks</h2>
+                <p class="section-description">Browse and add complete structure decks to your collection. When you add a structure deck, all cards from that deck will be added to your collection.</p>
+                <div class="structure-decks-filters">
+                    <label for="structure-deck-color-filter">Filter by Color:</label>
+                    <select id="structure-deck-color-filter">
+                        <option value="all">All Colors</option>
+                        <option value="Red">Red</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Green">Green</option>
+                        <option value="Purple">Purple</option>
+                        <option value="Black">Black</option>
+                        <option value="Yellow">Yellow</option>
+                    </select>
+                </div>
+                <div id="structure-decks-list" class="structure-decks-grid">
+                    <div class="loading">Loading structure decks...</div>
+                </div>
+                <button id="back-to-collection-btn" class="btn btn-secondary">Back to Collection</button>
             </section>
 
             <section class="analysis-section" id="analysis-section" style="display: none;">
@@ -220,6 +242,23 @@
                 <div id="simulation-insights" class="simulation-insights"></div>
                 <button id="run-another-simulation" class="btn btn-secondary">Run Another Simulation</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Structure Deck Details Modal -->
+    <div id="structure-deck-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2 id="structure-deck-modal-title">Structure Deck Details</h2>
+            <div id="structure-deck-details">
+                <div id="structure-deck-info"></div>
+                <div id="structure-deck-cards-list" class="structure-deck-cards"></div>
+            </div>
+            <div class="modal-actions">
+                <button id="add-structure-deck-confirm-btn" class="btn btn-primary">Add to Collection</button>
+                <button id="cancel-structure-deck-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+            <div id="structure-deck-error" class="error-message" style="display: none;"></div>
         </div>
     </div>
 

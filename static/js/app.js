@@ -1059,3 +1059,194 @@ function displaySimulationResults(results) {
         await loadOpponentDecks();
     };
 }
+
+// Structure Deck Management
+let currentStructureDeck = null;
+let allStructureDecks = [];
+
+// Add event listeners for structure deck functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const structureDecksBtn = document.getElementById('structure-decks-btn');
+    if (structureDecksBtn) {
+        structureDecksBtn.addEventListener('click', showStructureDecks);
+    }
+    
+    const backToCollectionBtn = document.getElementById('back-to-collection-btn');
+    if (backToCollectionBtn) {
+        backToCollectionBtn.addEventListener('click', showMyCollection);
+    }
+    
+    const colorFilter = document.getElementById('structure-deck-color-filter');
+    if (colorFilter) {
+        colorFilter.addEventListener('change', filterStructureDecks);
+    }
+    
+    const addStructureDeckBtn = document.getElementById('add-structure-deck-confirm-btn');
+    if (addStructureDeckBtn) {
+        addStructureDeckBtn.addEventListener('click', handleAddStructureDeck);
+    }
+    
+    const cancelStructureDeckBtn = document.getElementById('cancel-structure-deck-btn');
+    if (cancelStructureDeckBtn) {
+        cancelStructureDeckBtn.addEventListener('click', () => closeModal('structure-deck-modal'));
+    }
+});
+
+async function showStructureDecks() {
+    if (!currentUser) {
+        alert('Please login to view structure decks');
+        return;
+    }
+    
+    hideAllSections();
+    const section = document.getElementById('structure-decks-section');
+    section.style.display = 'block';
+    const listDiv = document.getElementById('structure-decks-list');
+    listDiv.innerHTML = '<div class="loading">Loading structure decks...</div>';
+    
+    try {
+        const response = await fetch('/api/structure-decks');
+        const data = await response.json();
+        
+        if (data.success) {
+            allStructureDecks = data.decks;
+            displayStructureDecks(allStructureDecks);
+        } else {
+            listDiv.innerHTML = '<p>Failed to load structure decks.</p>';
+        }
+    } catch (error) {
+        console.error('Error loading structure decks:', error);
+        listDiv.innerHTML = '<p>Failed to load structure decks.</p>';
+    }
+}
+
+function displayStructureDecks(decks) {
+    const listDiv = document.getElementById('structure-decks-list');
+    
+    if (decks.length === 0) {
+        listDiv.innerHTML = '<p>No structure decks found matching your filter.</p>';
+        return;
+    }
+    
+    listDiv.innerHTML = decks.map(deck => `
+        <div class="structure-deck-card" onclick="showStructureDeckDetails('${deck.code}')">
+            <div class="structure-deck-header">
+                <h3>${deck.code}</h3>
+                <span class="color-badge color-${deck.color.toLowerCase()}">${deck.color}</span>
+            </div>
+            <h4>${deck.name}</h4>
+            <p class="structure-deck-description">${deck.description}</p>
+            <p class="structure-deck-leader"><strong>Leader:</strong> ${deck.leader}</p>
+            <button class="btn btn-primary" onclick="event.stopPropagation(); showStructureDeckDetails('${deck.code}')">
+                View Details
+            </button>
+        </div>
+    `).join('');
+}
+
+function filterStructureDecks() {
+    const colorFilter = document.getElementById('structure-deck-color-filter').value;
+    
+    let filteredDecks = allStructureDecks;
+    if (colorFilter !== 'all') {
+        filteredDecks = allStructureDecks.filter(deck => deck.color === colorFilter);
+    }
+    
+    displayStructureDecks(filteredDecks);
+}
+
+async function showStructureDeckDetails(deckCode) {
+    try {
+        const response = await fetch(`/api/structure-decks/${deckCode}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            currentStructureDeck = data.deck;
+            displayStructureDeckModal(data.deck);
+            openModal('structure-deck-modal');
+        } else {
+            alert('Failed to load structure deck details');
+        }
+    } catch (error) {
+        console.error('Error loading structure deck details:', error);
+        alert('Failed to load structure deck details');
+    }
+}
+
+function displayStructureDeckModal(deck) {
+    document.getElementById('structure-deck-modal-title').textContent = `${deck.code} - ${deck.name}`;
+    
+    const infoDiv = document.getElementById('structure-deck-info');
+    infoDiv.innerHTML = `
+        <div class="structure-deck-modal-info">
+            <p><strong>Color:</strong> <span class="color-badge color-${deck.color.toLowerCase()}">${deck.color}</span></p>
+            <p><strong>Leader:</strong> ${deck.leader}</p>
+            <p><strong>Description:</strong> ${deck.description}</p>
+            <p><strong>Total Cards:</strong> ${Object.values(deck.cards).reduce((sum, qty) => sum + qty, 0)}</p>
+        </div>
+    `;
+    
+    const cardsDiv = document.getElementById('structure-deck-cards-list');
+    const cardEntries = Object.entries(deck.cards).sort((a, b) => {
+        // Sort leader first, then by quantity descending
+        if (a[0] === deck.leader) return -1;
+        if (b[0] === deck.leader) return 1;
+        return b[1] - a[1];
+    });
+    
+    cardsDiv.innerHTML = `
+        <h3>Card List</h3>
+        <div class="structure-deck-cards-grid">
+            ${cardEntries.map(([cardName, quantity]) => `
+                <div class="structure-deck-card-item ${cardName === deck.leader ? 'leader-card' : ''}">
+                    <span class="card-quantity">×${quantity}</span>
+                    <span class="card-name">${cardName}</span>
+                    ${cardName === deck.leader ? '<span class="leader-badge">Leader</span>' : ''}
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+async function handleAddStructureDeck() {
+    if (!currentStructureDeck) {
+        alert('No structure deck selected');
+        return;
+    }
+    
+    const errorDiv = document.getElementById('structure-deck-error');
+    const addBtn = document.getElementById('add-structure-deck-confirm-btn');
+    
+    // Disable button and show loading
+    addBtn.disabled = true;
+    addBtn.textContent = 'Adding...';
+    errorDiv.style.display = 'none';
+    
+    try {
+        const response = await fetch('/api/collection/add-structure-deck', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ deck_code: currentStructureDeck.code })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            closeModal('structure-deck-modal');
+            alert(`Successfully added ${data.deck_code} to your collection!\n\nTotal cards modified: ${data.total_cards_modified}\nNew cards: ${data.added_cards.length}\nUpdated cards: ${data.updated_cards.length}`);
+            showMyCollection();
+        } else {
+            errorDiv.textContent = data.error || 'Failed to add structure deck';
+            errorDiv.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error adding structure deck:', error);
+        errorDiv.textContent = 'Failed to add structure deck. Please try again.';
+        errorDiv.style.display = 'block';
+    } finally {
+        // Re-enable button
+        addBtn.disabled = false;
+        addBtn.textContent = 'Add to Collection';
+    }
+}

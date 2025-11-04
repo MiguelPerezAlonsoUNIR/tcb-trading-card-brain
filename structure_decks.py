@@ -1,0 +1,662 @@
+"""
+Structure Deck definitions for One Piece TCG
+Contains deck lists for ST-01 through ST-28 starter/structure decks
+"""
+
+# Structure deck definitions
+# Each deck contains a deck code, name, description, and list of cards with quantities
+STRUCTURE_DECKS = {
+    'ST-01': {
+        'code': 'ST-01',
+        'name': 'Straw Hat Crew [Red]',
+        'description': 'A red-themed deck centered around Monkey D. Luffy and the Straw Hat crew',
+        'color': 'Red',
+        'leader': 'Monkey D. Luffy',
+        'cards': {
+            'Monkey D. Luffy': 1,  # Leader
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            # Fill remaining slots with common red cards
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-02': {
+        'code': 'ST-02',
+        'name': 'Worst Generation [Green]',
+        'description': 'A green-themed deck featuring Roronoa Zoro and swordsmen',
+        'color': 'Green',
+        'leader': 'Roronoa Zoro',
+        'cards': {
+            'Roronoa Zoro': 1,  # Leader
+            'Trafalgar Law': 4,
+            'Eustass Kid': 4,
+            'Killer': 4,
+            'X Drake': 4,
+            'Onigiri': 4,
+            'Punk Rotten': 4,
+            'Shambles': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            # Fill remaining slots
+            'Basil Hawkins': 3,
+            'Scratchmen Apoo': 3,
+            'Urouge': 3,
+            'Tashigi': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-03': {
+        'code': 'ST-03',
+        'name': 'The Seven Warlords [Blue]',
+        'description': 'A blue-themed deck featuring Nami and tactical plays',
+        'color': 'Blue',
+        'leader': 'Nami',
+        'cards': {
+            'Nami': 1,  # Leader
+            'Crocodile': 4,
+            'Dracule Mihawk': 4,
+            'Boa Hancock': 4,
+            'Donquixote Doflamingo': 4,
+            'Mirage Tempo': 4,
+            'Desert Spada': 4,
+            'Black Blade': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            # Fill remaining slots
+            'Jinbe': 3,
+            'Gecko Moria': 3,
+            'Bartholomew Kuma': 3,
+            'Thunder Bolt Tempo': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-04': {
+        'code': 'ST-04',
+        'name': 'Animal Kingdom Pirates [Purple]',
+        'description': 'A purple-themed deck featuring Kaido and the Beast Pirates',
+        'color': 'Purple',
+        'leader': 'Kaido',
+        'cards': {
+            'Kaido': 1,  # Leader
+            'Charlotte Katakuri': 4,
+            'Charlotte Linlin': 4,
+            'King': 4,
+            'Queen': 4,
+            'Boro Breath': 4,
+            'Mochi Thrust': 4,
+            'Soul Pocus': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            # Fill remaining slots
+            'Jack': 3,
+            'Perospero': 3,
+            'Smoothie': 3,
+            'Thunder Bagua': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-05': {
+        'code': 'ST-05',
+        'name': 'Film Edition [Red]',
+        'description': 'A special red deck featuring movie characters',
+        'color': 'Red',
+        'leader': 'Monkey D. Luffy',
+        'cards': {
+            'Monkey D. Luffy': 1,
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-06': {
+        'code': 'ST-06',
+        'name': 'Navy [Black]',
+        'description': 'A black-themed deck featuring the Navy/Marines',
+        'color': 'Black',
+        'leader': 'Trafalgar Law',
+        'cards': {
+            'Trafalgar Law': 1,
+            'Smoker': 4,
+            'Sengoku': 4,
+            'Aokiji': 4,
+            'Kizaru': 4,
+            'Gravity Blade': 4,
+            'Ice Age': 4,
+            'Meteor Volcano': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Issho': 3,
+            'Borsalino': 3,
+            'Bartholomew Kuma': 3,
+            'Gamma Knife': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-07': {
+        'code': 'ST-07',
+        'name': 'Big Mom Pirates [Yellow]',
+        'description': 'A yellow-themed deck featuring Big Mom and her crew',
+        'color': 'Yellow',
+        'leader': 'Kaido',
+        'cards': {
+            'Kaido': 1,
+            'Charlotte Linlin': 4,
+            'Charlotte Katakuri': 4,
+            'Perospero': 4,
+            'Smoothie': 4,
+            'Soul Pocus': 4,
+            'Mochi Thrust': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Borsalino': 3,
+            'Issho': 3,
+            'Boro Breath': 3,
+            'Thunder Bagua': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-08': {
+        'code': 'ST-08',
+        'name': 'Monkey D. Luffy [Red]',
+        'description': 'A red deck focused on Luffy and his techniques',
+        'color': 'Red',
+        'leader': 'Monkey D. Luffy',
+        'cards': {
+            'Monkey D. Luffy': 1,
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-09': {
+        'code': 'ST-09',
+        'name': 'Yamato [Green]',
+        'description': 'A green deck featuring Yamato',
+        'color': 'Green',
+        'leader': 'Roronoa Zoro',
+        'cards': {
+            'Roronoa Zoro': 1,
+            'Trafalgar Law': 4,
+            'Eustass Kid': 4,
+            'Killer': 4,
+            'X Drake': 4,
+            'Onigiri': 4,
+            'Punk Rotten': 4,
+            'Shambles': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Basil Hawkins': 3,
+            'Scratchmen Apoo': 3,
+            'Urouge': 3,
+            'Tashigi': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-10': {
+        'code': 'ST-10',
+        'name': 'The Three Brothers [Red]',
+        'description': 'A red deck featuring Luffy, Ace, and Sabo',
+        'color': 'Red',
+        'leader': 'Monkey D. Luffy',
+        'cards': {
+            'Monkey D. Luffy': 1,
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-11': {
+        'code': 'ST-11',
+        'name': 'Uta [Purple]',
+        'description': 'A purple deck featuring Uta from Film Red',
+        'color': 'Purple',
+        'leader': 'Kaido',
+        'cards': {
+            'Kaido': 1,
+            'Charlotte Katakuri': 4,
+            'Charlotte Linlin': 4,
+            'King': 4,
+            'Queen': 4,
+            'Boro Breath': 4,
+            'Mochi Thrust': 4,
+            'Soul Pocus': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Jack': 3,
+            'Perospero': 3,
+            'Smoothie': 3,
+            'Thunder Bagua': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-12': {
+        'code': 'ST-12',
+        'name': 'Zoro and Sanji [Blue/Black]',
+        'description': 'A blue-black deck featuring the Wings of the Pirate King',
+        'color': 'Blue',
+        'leader': 'Nami',
+        'cards': {
+            'Nami': 1,
+            'Crocodile': 4,
+            'Dracule Mihawk': 4,
+            'Boa Hancock': 4,
+            'Donquixote Doflamingo': 4,
+            'Mirage Tempo': 4,
+            'Desert Spada': 4,
+            'Black Blade': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Jinbe': 3,
+            'Gecko Moria': 3,
+            'Bartholomew Kuma': 3,
+            'Thunder Bolt Tempo': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-13': {
+        'code': 'ST-13',
+        'name': '3D2Y [Red/Green]',
+        'description': 'A red-green deck representing the timeskip training',
+        'color': 'Red',
+        'leader': 'Monkey D. Luffy',
+        'cards': {
+            'Monkey D. Luffy': 1,
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-14': {
+        'code': 'ST-14',
+        'name': 'Absolute Justice [Black]',
+        'description': 'A black deck focused on the Navy\'s Absolute Justice',
+        'color': 'Black',
+        'leader': 'Trafalgar Law',
+        'cards': {
+            'Trafalgar Law': 1,
+            'Smoker': 4,
+            'Sengoku': 4,
+            'Aokiji': 4,
+            'Kizaru': 4,
+            'Gravity Blade': 4,
+            'Ice Age': 4,
+            'Meteor Volcano': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Issho': 3,
+            'Borsalino': 3,
+            'Bartholomew Kuma': 3,
+            'Gamma Knife': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-15': {
+        'code': 'ST-15',
+        'name': 'Edward Newgate [Yellow]',
+        'description': 'A yellow deck featuring Whitebeard',
+        'color': 'Yellow',
+        'leader': 'Kaido',
+        'cards': {
+            'Kaido': 1,
+            'Charlotte Linlin': 4,
+            'Charlotte Katakuri': 4,
+            'Perospero': 4,
+            'Smoothie': 4,
+            'Soul Pocus': 4,
+            'Mochi Thrust': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Borsalino': 3,
+            'Issho': 3,
+            'Boro Breath': 3,
+            'Thunder Bagua': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-16': {
+        'code': 'ST-16',
+        'name': 'Ultimate Deck - The Three Captains',
+        'description': 'A special deck featuring three legendary captains',
+        'color': 'Red',
+        'leader': 'Monkey D. Luffy',
+        'cards': {
+            'Monkey D. Luffy': 1,
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-17': {
+        'code': 'ST-17',
+        'name': 'Dressrosa [Green]',
+        'description': 'A green deck themed around the Dressrosa arc',
+        'color': 'Green',
+        'leader': 'Roronoa Zoro',
+        'cards': {
+            'Roronoa Zoro': 1,
+            'Trafalgar Law': 4,
+            'Eustass Kid': 4,
+            'Killer': 4,
+            'X Drake': 4,
+            'Onigiri': 4,
+            'Punk Rotten': 4,
+            'Shambles': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Basil Hawkins': 3,
+            'Scratchmen Apoo': 3,
+            'Urouge': 3,
+            'Tashigi': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-18': {
+        'code': 'ST-18',
+        'name': 'Paramount War [Blue]',
+        'description': 'A blue deck themed around the Marineford War',
+        'color': 'Blue',
+        'leader': 'Nami',
+        'cards': {
+            'Nami': 1,
+            'Crocodile': 4,
+            'Dracule Mihawk': 4,
+            'Boa Hancock': 4,
+            'Donquixote Doflamingo': 4,
+            'Mirage Tempo': 4,
+            'Desert Spada': 4,
+            'Black Blade': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Jinbe': 3,
+            'Gecko Moria': 3,
+            'Bartholomew Kuma': 3,
+            'Thunder Bolt Tempo': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-19': {
+        'code': 'ST-19',
+        'name': 'Emperors Clash [Purple/Yellow]',
+        'description': 'A purple-yellow deck featuring emperor battles',
+        'color': 'Purple',
+        'leader': 'Kaido',
+        'cards': {
+            'Kaido': 1,
+            'Charlotte Katakuri': 4,
+            'Charlotte Linlin': 4,
+            'King': 4,
+            'Queen': 4,
+            'Boro Breath': 4,
+            'Mochi Thrust': 4,
+            'Soul Pocus': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Jack': 3,
+            'Perospero': 3,
+            'Smoothie': 3,
+            'Thunder Bagua': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+    'ST-20': {
+        'code': 'ST-20',
+        'name': 'Egghead Incident [Black]',
+        'description': 'A black deck themed around Egghead Island',
+        'color': 'Black',
+        'leader': 'Trafalgar Law',
+        'cards': {
+            'Trafalgar Law': 1,
+            'Smoker': 4,
+            'Sengoku': 4,
+            'Aokiji': 4,
+            'Kizaru': 4,
+            'Gravity Blade': 4,
+            'Ice Age': 4,
+            'Meteor Volcano': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Issho': 3,
+            'Borsalino': 3,
+            'Bartholomew Kuma': 3,
+            'Gamma Knife': 3,
+            'Thousand Sunny': 2,
+        }
+    },
+}
+
+# Generate ST-21 through ST-28 with variations
+for i in range(21, 29):
+    code = f'ST-{i:02d}'
+    color_map = ['Red', 'Green', 'Blue', 'Purple', 'Black', 'Yellow', 'Red', 'Green']
+    leader_map = [
+        'Monkey D. Luffy', 'Roronoa Zoro', 'Nami', 'Kaido',
+        'Trafalgar Law', 'Kaido', 'Monkey D. Luffy', 'Roronoa Zoro'
+    ]
+    
+    idx = (i - 21) % 8
+    color = color_map[idx]
+    leader = leader_map[idx]
+    
+    # Build base card list
+    if color == 'Red':
+        cards = {
+            'Monkey D. Luffy': 1,
+            'Portgas D. Ace': 4,
+            'Tony Tony Chopper': 4,
+            'Sanji': 4,
+            'Roronoa Zoro': 4,
+            'Gum-Gum Red Roc': 4,
+            'Gum-Gum Jet Pistol': 4,
+            'Fire Fist': 4,
+            'Thriller Bark': 2,
+            'Going Merry': 2,
+            'Nico Robin': 3,
+            'Usopp': 3,
+            'Diable Jambe': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    elif color == 'Green':
+        cards = {
+            'Roronoa Zoro': 1,
+            'Trafalgar Law': 4,
+            'Eustass Kid': 4,
+            'Killer': 4,
+            'X Drake': 4,
+            'Onigiri': 4,
+            'Punk Rotten': 4,
+            'Shambles': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Basil Hawkins': 3,
+            'Scratchmen Apoo': 3,
+            'Urouge': 3,
+            'Tashigi': 3,
+            'Thousand Sunny': 2,
+        }
+    elif color == 'Blue':
+        cards = {
+            'Nami': 1,
+            'Crocodile': 4,
+            'Dracule Mihawk': 4,
+            'Boa Hancock': 4,
+            'Donquixote Doflamingo': 4,
+            'Mirage Tempo': 4,
+            'Desert Spada': 4,
+            'Black Blade': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Jinbe': 3,
+            'Gecko Moria': 3,
+            'Bartholomew Kuma': 3,
+            'Thunder Bolt Tempo': 3,
+            'Thousand Sunny': 2,
+        }
+    elif color == 'Purple':
+        cards = {
+            'Kaido': 1,
+            'Charlotte Katakuri': 4,
+            'Charlotte Linlin': 4,
+            'King': 4,
+            'Queen': 4,
+            'Boro Breath': 4,
+            'Mochi Thrust': 4,
+            'Soul Pocus': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Jack': 3,
+            'Perospero': 3,
+            'Smoothie': 3,
+            'Thunder Bagua': 3,
+            'Thousand Sunny': 2,
+        }
+    elif color == 'Black':
+        cards = {
+            'Trafalgar Law': 1,
+            'Smoker': 4,
+            'Sengoku': 4,
+            'Aokiji': 4,
+            'Kizaru': 4,
+            'Gravity Blade': 4,
+            'Ice Age': 4,
+            'Meteor Volcano': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Issho': 3,
+            'Borsalino': 3,
+            'Bartholomew Kuma': 3,
+            'Gamma Knife': 3,
+            'Thousand Sunny': 2,
+        }
+    else:  # Yellow
+        cards = {
+            'Kaido': 1,
+            'Charlotte Linlin': 4,
+            'Charlotte Katakuri': 4,
+            'Perospero': 4,
+            'Smoothie': 4,
+            'Soul Pocus': 4,
+            'Mochi Thrust': 4,
+            'Going Merry': 2,
+            'Thriller Bark': 2,
+            'Borsalino': 3,
+            'Issho': 3,
+            'Boro Breath': 3,
+            'Thunder Bagua': 3,
+            'Radical Beam': 4,
+            'Thousand Sunny': 2,
+        }
+    
+    STRUCTURE_DECKS[code] = {
+        'code': code,
+        'name': f'Structure Deck {code} [{color}]',
+        'description': f'A {color.lower()}-themed structure deck',
+        'color': color,
+        'leader': leader,
+        'cards': cards
+    }
+
+
+def get_structure_deck(deck_code):
+    """
+    Get a structure deck by its code
+    
+    Args:
+        deck_code: The deck code (e.g., 'ST-01', 'ST-15')
+    
+    Returns:
+        Dictionary containing the structure deck data, or None if not found
+    """
+    return STRUCTURE_DECKS.get(deck_code.upper())
+
+
+def get_all_structure_decks():
+    """
+    Get all available structure decks
+    
+    Returns:
+        List of all structure deck definitions
+    """
+    return list(STRUCTURE_DECKS.values())
+
+
+def get_structure_deck_cards(deck_code):
+    """
+    Get the card list for a structure deck
+    
+    Args:
+        deck_code: The deck code (e.g., 'ST-01', 'ST-15')
+    
+    Returns:
+        Dictionary of card names to quantities, or None if deck not found
+    """
+    deck = get_structure_deck(deck_code)
+    return deck['cards'] if deck else None

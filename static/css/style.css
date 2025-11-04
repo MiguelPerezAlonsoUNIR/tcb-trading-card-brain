@@ -868,3 +868,217 @@ footer {
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 }
+
+/* Structure Decks Styling */
+.structure-decks-section {
+    animation: fadeIn 0.3s ease-in;
+}
+
+.section-description {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.structure-decks-filters {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.structure-decks-filters label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.structure-decks-filters select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.structure-decks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.structure-deck-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.structure-deck-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-color: #667eea;
+}
+
+.structure-deck-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.structure-deck-header h3 {
+    font-size: 1.2em;
+    color: #333;
+    margin: 0;
+}
+
+.color-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: white;
+}
+
+.color-badge.color-red {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+}
+
+.color-badge.color-blue {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.color-badge.color-green {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+.color-badge.color-purple {
+    background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+}
+
+.color-badge.color-black {
+    background: linear-gradient(135deg, #434343, #000000);
+}
+
+.color-badge.color-yellow {
+    background: linear-gradient(135deg, #f9d423, #ff4e50);
+}
+
+.structure-deck-card h4 {
+    font-size: 1.1em;
+    color: #667eea;
+    margin: 10px 0;
+}
+
+.structure-deck-description {
+    color: #666;
+    font-size: 0.95em;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.structure-deck-leader {
+    color: #444;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+.structure-deck-card .btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Structure Deck Modal Styling */
+.structure-deck-modal-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.structure-deck-modal-info p {
+    margin: 10px 0;
+    font-size: 1em;
+}
+
+.structure-deck-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.structure-deck-card-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.structure-deck-card-item:hover {
+    background: #e9ecef;
+    border-color: #667eea;
+}
+
+.structure-deck-card-item.leader-card {
+    background: linear-gradient(135deg, #667eea15, #764ba215);
+    border: 2px solid #667eea;
+    font-weight: bold;
+}
+
+.card-quantity {
+    font-weight: bold;
+    color: #667eea;
+    min-width: 30px;
+}
+
+.card-name {
+    flex: 1;
+}
+
+.leader-badge {
+    background: #667eea;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.modal-actions .btn {
+    flex: 0 0 auto;
+    min-width: 120px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .structure-decks-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .structure-deck-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .modal-actions .btn {
+        width: 100%;
+    }
+}
