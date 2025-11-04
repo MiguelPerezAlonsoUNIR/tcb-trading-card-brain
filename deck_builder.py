@@ -16,6 +16,7 @@ class OnePieceDeckBuilder:
         self.deck_size = 50  # Standard One Piece TCG deck size
         self.max_copies = 4  # Maximum copies of a card (except for leaders)
         self.max_deck_build_attempts = 1000  # Maximum attempts to build a complete deck
+        self.max_improvement_attempts = 200  # Maximum attempts to build improvement variations
         
     def get_all_cards(self) -> List[Dict]:
         """Return all available cards"""
@@ -426,7 +427,7 @@ class OnePieceDeckBuilder:
         
         # Add characters (65% = ~32 cards)
         attempts = 0
-        while len(new_deck) < int(self.deck_size * target_character_ratio) and attempts < 200:
+        while len(new_deck) < int(self.deck_size * target_character_ratio) and attempts < self.max_improvement_attempts:
             if characters:
                 card = characters[attempts % len(characters)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -435,7 +436,7 @@ class OnePieceDeckBuilder:
         
         # Add events (30% = ~15 cards)
         attempts = 0
-        while len(new_deck) < int(self.deck_size * (target_character_ratio + target_event_ratio)) and attempts < 200:
+        while len(new_deck) < int(self.deck_size * (target_character_ratio + target_event_ratio)) and attempts < self.max_improvement_attempts:
             if events:
                 card = events[attempts % len(events)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -444,7 +445,7 @@ class OnePieceDeckBuilder:
         
         # Add stages (5% = ~3 cards)
         attempts = 0
-        while len(new_deck) < self.deck_size and attempts < 200:
+        while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
             if stages:
                 card = stages[attempts % len(stages)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -453,7 +454,7 @@ class OnePieceDeckBuilder:
         
         # Fill to exactly 50 if needed
         attempts = 0
-        while len(new_deck) < self.deck_size and attempts < 200:
+        while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
             if available_cards:
                 card = random.choice(available_cards)
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -501,7 +502,7 @@ class OnePieceDeckBuilder:
         
         # Add low-cost characters (75% = ~37 cards)
         attempts = 0
-        while len(new_deck) < int(self.deck_size * target_character_ratio) and attempts < 200:
+        while len(new_deck) < int(self.deck_size * target_character_ratio) and attempts < self.max_improvement_attempts:
             if characters:
                 card = characters[attempts % len(characters)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -510,7 +511,7 @@ class OnePieceDeckBuilder:
         
         # Add low-cost events (25% = ~13 cards)
         attempts = 0
-        while len(new_deck) < self.deck_size and attempts < 200:
+        while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
             if events:
                 card = events[attempts % len(events)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -519,7 +520,7 @@ class OnePieceDeckBuilder:
         
         # Fill to exactly 50 if needed with any matching cards
         attempts = 0
-        while len(new_deck) < self.deck_size and attempts < 200:
+        while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
             if available_cards:
                 card = random.choice(available_cards)
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -577,8 +578,8 @@ class OnePieceDeckBuilder:
         
         # Add characters with good cost curve (65% = ~32 cards)
         attempts = 0
-        target_chars = 32
-        while len(new_deck) < target_chars and attempts < 200:
+        target_chars = int(self.deck_size * 0.65)  # 65% = ~32 cards
+        while len(new_deck) < target_chars and attempts < self.max_improvement_attempts:
             if characters:
                 card = characters[attempts % len(characters)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -587,8 +588,8 @@ class OnePieceDeckBuilder:
         
         # Add high-impact events (30% = ~15 cards)
         attempts = 0
-        target_events = 47
-        while len(new_deck) < target_events and attempts < 200:
+        target_events = target_chars + int(self.deck_size * 0.30)  # Add 30% more = ~47 total
+        while len(new_deck) < target_events and attempts < self.max_improvement_attempts:
             if events:
                 card = events[attempts % len(events)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -597,7 +598,7 @@ class OnePieceDeckBuilder:
         
         # Add stages (5% = ~3 cards)
         attempts = 0
-        while len(new_deck) < self.deck_size and attempts < 200:
+        while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
             if stages:
                 card = stages[attempts % len(stages)]
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -606,7 +607,7 @@ class OnePieceDeckBuilder:
         
         # Fill to exactly 50 if needed
         attempts = 0
-        while len(new_deck) < self.deck_size and attempts < 200:
+        while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
             if available_cards:
                 card = random.choice(available_cards)
                 if self._count_card_copies(new_deck, card) < self.max_copies:
@@ -657,7 +658,8 @@ class OnePieceDeckBuilder:
                 cards_removed.append({'name': card_name, 'quantity': old_count})
         
         total_changes = len(cards_added) + len(cards_removed) + len(cards_changed)
-        similarity_percentage = 100 - (total_changes / max(len(old_deck), len(new_deck)) * 100)
+        max_deck_size = max(len(old_deck), len(new_deck))
+        similarity_percentage = 100 - (total_changes / max_deck_size * 100) if max_deck_size > 0 else 100.0
         
         return {
             'cards_added': cards_added,

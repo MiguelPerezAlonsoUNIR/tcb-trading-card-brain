@@ -40,7 +40,7 @@ def test_improvements_api():
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = json.loads(response.data)
         
-        assert data['success'] == True, "Request should succeed"
+        assert data['success'] is True, "Request should succeed"
         assert 'improvements' in data, "Response should contain improvements"
         
         improvements = data['improvements']
@@ -70,7 +70,7 @@ def test_improvements_api():
         
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
         data = json.loads(response.data)
-        assert data['success'] == False, "Invalid request should fail"
+        assert data['success'] is False, "Invalid request should fail"
         print("  ✓ Invalid deck properly rejected")
         
         # Test 3: Request without deck
@@ -84,7 +84,7 @@ def test_improvements_api():
         
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
         data = json.loads(response.data)
-        assert data['success'] == False, "Missing deck should fail"
+        assert data['success'] is False, "Missing deck should fail"
         print("  ✓ Missing deck properly rejected")
         
         # Test 4: Verify improvement characteristics
