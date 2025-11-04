@@ -15,6 +15,7 @@ class OnePieceDeckBuilder:
         self.cards = ONEPIECE_CARDS
         self.deck_size = 50  # Standard One Piece TCG deck size
         self.max_copies = 4  # Maximum copies of a card (except for leaders)
+        self.max_deck_build_attempts = 1000  # Maximum attempts to build a complete deck
         
     def get_all_cards(self) -> List[Dict]:
         """Return all available cards"""
@@ -93,7 +94,7 @@ class OnePieceDeckBuilder:
         # Ensure deck is exactly 50 cards
         # Only use cards that match the leader's colors (One Piece TCG rule)
         attempts = 0
-        while len(main_deck) < self.deck_size and attempts < 1000:
+        while len(main_deck) < self.deck_size and attempts < self.max_deck_build_attempts:
             if not available_cards:
                 break
             card = random.choice(available_cards)

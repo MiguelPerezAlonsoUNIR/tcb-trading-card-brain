@@ -8,6 +8,20 @@ from deck_builder import OnePieceDeckBuilder
 from cards_data import ONEPIECE_CARDS
 
 
+def validate_cards_match_leader_colors(deck, leader):
+    """
+    Helper function to validate that all cards in deck match leader's colors
+    
+    Returns:
+        tuple: (is_valid, invalid_cards_list)
+    """
+    invalid_cards = []
+    for card in deck:
+        if not any(lc in card['colors'] for lc in leader['colors']):
+            invalid_cards.append(card)
+    return len(invalid_cards) == 0, invalid_cards
+
+
 def test_single_color_leader_rule():
     """Test that single-color leaders only get cards matching their color"""
     print("=" * 60)
@@ -23,12 +37,9 @@ def test_single_color_leader_rule():
     print(f"   Leader: {leader['name']} - Colors: {leader['colors']}")
     
     # Check that all cards in deck share at least one color with leader
-    invalid_cards = []
-    for card in deck['main_deck']:
-        if not any(lc in card['colors'] for lc in leader['colors']):
-            invalid_cards.append(card)
+    is_valid, invalid_cards = validate_cards_match_leader_colors(deck['main_deck'], leader)
     
-    if invalid_cards:
+    if not is_valid:
         print(f"   ✗ FAILED: Found {len(invalid_cards)} cards that don't match leader colors:")
         for card in invalid_cards[:5]:  # Show first 5
             print(f"     - {card['name']} ({card['colors']})")
@@ -42,12 +53,9 @@ def test_single_color_leader_rule():
     leader = deck['leader']
     print(f"   Leader: {leader['name']} - Colors: {leader['colors']}")
     
-    invalid_cards = []
-    for card in deck['main_deck']:
-        if not any(lc in card['colors'] for lc in leader['colors']):
-            invalid_cards.append(card)
+    is_valid, invalid_cards = validate_cards_match_leader_colors(deck['main_deck'], leader)
     
-    if invalid_cards:
+    if not is_valid:
         print(f"   ✗ FAILED: Found {len(invalid_cards)} cards that don't match leader colors:")
         for card in invalid_cards[:5]:
             print(f"     - {card['name']} ({card['colors']})")
@@ -73,25 +81,22 @@ def test_multi_color_leader_rule():
     print(f"   Leader: {leader['name']} - Colors: {leader['colors']}")
     
     # Check that all cards share at least one color with leader
-    invalid_cards = []
+    is_valid, invalid_cards = validate_cards_match_leader_colors(deck['main_deck'], leader)
+    
+    # Count distribution
     blue_cards = 0
     black_cards = 0
     multi_color_cards = 0
     
     for card in deck['main_deck']:
-        # Card must have at least one color matching the leader
-        if not any(lc in card['colors'] for lc in leader['colors']):
-            invalid_cards.append(card)
-        else:
-            # Count distribution
-            if 'Blue' in card['colors'] and 'Black' in card['colors']:
-                multi_color_cards += 1
-            elif 'Blue' in card['colors']:
-                blue_cards += 1
-            elif 'Black' in card['colors']:
-                black_cards += 1
+        if 'Blue' in card['colors'] and 'Black' in card['colors']:
+            multi_color_cards += 1
+        elif 'Blue' in card['colors']:
+            blue_cards += 1
+        elif 'Black' in card['colors']:
+            black_cards += 1
     
-    if invalid_cards:
+    if not is_valid:
         print(f"   ✗ FAILED: Found {len(invalid_cards)} cards that don't match leader colors:")
         for card in invalid_cards[:5]:
             print(f"     - {card['name']} ({card['colors']})")
@@ -118,12 +123,9 @@ def test_any_color_parameter():
     print(f"   Leader: {leader['name']} - Colors: {leader['colors']}")
     
     # All cards should still only be Green (or include Green in multi-color)
-    invalid_cards = []
-    for card in deck['main_deck']:
-        if not any(lc in card['colors'] for lc in leader['colors']):
-            invalid_cards.append(card)
+    is_valid, invalid_cards = validate_cards_match_leader_colors(deck['main_deck'], leader)
     
-    if invalid_cards:
+    if not is_valid:
         print(f"   ✗ FAILED: Found {len(invalid_cards)} cards that don't match leader colors:")
         for card in invalid_cards[:5]:
             print(f"     - {card['name']} ({card['colors']})")
@@ -161,12 +163,9 @@ def test_color_distribution():
         print(f"   Color distribution in deck: {color_counts}")
         
         # Verify all cards match leader
-        matches_leader = all(
-            any(lc in card['colors'] for lc in leader['colors'])
-            for card in deck['main_deck']
-        )
+        is_valid, _ = validate_cards_match_leader_colors(deck['main_deck'], leader)
         
-        if matches_leader:
+        if is_valid:
             print(f"   ✓ All cards match leader color(s)")
         else:
             print(f"   ✗ Some cards don't match leader color(s)")

@@ -15,7 +15,7 @@ https://en.onepiece-cardgame.com/pdf/rule_manual.pdf
 
 **Implementation**: 
 - Located in `deck_builder.py`, method `_build_main_deck()`
-- Line 77-82: Filters available cards to only include those that share at least one color with the leader
+- Filters available cards to only include those that share at least one color with the leader
 - The filter uses: `any(lc in c['colors'] for lc in leader['colors'])`
 - This works for both single-color and multi-color leaders
 
@@ -29,7 +29,7 @@ https://en.onepiece-cardgame.com/pdf/rule_manual.pdf
 
 **Implementation**:
 - Located in `deck_builder.py`, class variable `max_copies = 4`
-- Enforced in `_build_main_deck()` at line 99: `if self._count_card_copies(main_deck, card) < self.max_copies`
+- Enforced in `_build_main_deck()` method with condition: `if self._count_card_copies(main_deck, card) < self.max_copies`
 - Helper method `_count_card_copies()` counts instances of a card by name
 
 ### 3. Deck Size Rule
@@ -38,7 +38,7 @@ https://en.onepiece-cardgame.com/pdf/rule_manual.pdf
 
 **Implementation**:
 - Located in `deck_builder.py`, class variable `deck_size = 50`
-- Target enforced in `_build_main_deck()` at line 95: `while len(main_deck) < self.deck_size`
+- Target enforced in `_build_main_deck()` method: `while len(main_deck) < self.deck_size`
 - Deck analyzer warns if deck size is not exactly 50 cards
 
 **Note**: Due to limited card database, some color combinations may not reach 50 cards while respecting the color matching rule.
