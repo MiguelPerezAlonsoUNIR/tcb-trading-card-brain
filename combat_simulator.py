@@ -1,10 +1,23 @@
 """
 Combat Simulator for One Piece TCG
-AI-powered combat simulation that learns from tournament match data
+Simulates actual One Piece TCG combat following official game rules
 """
 import random
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
+from copy import deepcopy
+
+@dataclass
+class GameState:
+    """Represents the state of a One Piece TCG game"""
+    player1_life: int
+    player2_life: int
+    player1_don: int  # Available DON!! cards
+    player2_don: int
+    player1_board: List[Dict]  # Characters on board
+    player2_board: List[Dict]
+    turn_count: int
+    active_player: int  # 1 or 2
 
 @dataclass
 class TournamentMatch:
@@ -55,7 +68,11 @@ TOURNAMENT_DATA = [
 
 
 class CombatSimulator:
-    """AI-powered combat simulator that learns from tournament data"""
+    """Combat simulator following One Piece TCG rules"""
+    
+    # Game configuration constants
+    MAX_TURNS = 30  # Maximum turns before game ends in a draw
+    CHARACTER_ATTACK_LEADER_CHANCE = 0.7  # 70% chance to attack leader when no blockers
     
     def __init__(self):
         """Initialize the combat simulator with tournament learning data"""
@@ -63,7 +80,7 @@ class CombatSimulator:
         
     def simulate_combat(self, deck1: Dict, deck2: Dict, num_simulations: int = 1000) -> Dict:
         """
-        Simulate combat between two decks using AI learning
+        Simulate combat between two decks using One Piece TCG rules
         
         Args:
             deck1: First deck with leader and main_deck
@@ -77,26 +94,19 @@ class CombatSimulator:
         deck1_stats = self._extract_deck_stats(deck1)
         deck2_stats = self._extract_deck_stats(deck2)
         
-        # Calculate base win probability using AI learning
-        base_win_rate = self._calculate_win_probability(deck1_stats, deck2_stats)
-        
-        # Run Monte Carlo simulations with variance
+        # Run actual game simulations following One Piece TCG rules
         wins = 0
         win_turns = []
         loss_turns = []
         
         for _ in range(num_simulations):
-            # Add realistic variance to each simulation
-            variance = random.gauss(0, 0.1)  # 10% standard deviation
-            simulation_win_rate = max(0.0, min(1.0, base_win_rate + variance))
+            # Simulate an actual game with One Piece TCG rules
+            winner, turn_count = self.simulate_game_with_rules(deck1, deck2)
             
-            if random.random() < simulation_win_rate:
+            if winner == 1:
                 wins += 1
-                # Estimate turn count for wins
-                turn_count = self._estimate_turn_count(deck1_stats, deck2_stats, True)
                 win_turns.append(turn_count)
             else:
-                turn_count = self._estimate_turn_count(deck1_stats, deck2_stats, False)
                 loss_turns.append(turn_count)
         
         # Calculate statistics
@@ -123,6 +133,261 @@ class CombatSimulator:
             'deck2_stats': deck2_stats,
             'matchup_type': self._get_matchup_type(deck1_stats, deck2_stats)
         }
+    
+    def simulate_game_with_rules(self, deck1: Dict, deck2: Dict) -> Tuple[int, int]:
+        """
+        Simulate a single game following One Piece TCG rules
+        
+        Args:
+            deck1: First deck with leader and main_deck
+            deck2: Second deck with leader and main_deck
+            
+        Returns:
+            Tuple of (winner, turn_count) where winner is 1 or 2
+        """
+        # Initialize game state
+        leader1 = deck1.get('leader', {})
+        leader2 = deck2.get('leader', {})
+        
+        # Randomize who goes first for balance
+        starting_player = random.choice([1, 2])
+        
+        state = GameState(
+            player1_life=leader1.get('life', 5),
+            player2_life=leader2.get('life', 5),
+            player1_don=0,
+            player2_don=0,
+            player1_board=[],
+            player2_board=[],
+            turn_count=0,
+            active_player=starting_player
+        )
+        
+        # Create shuffled decks (simplified - using indices)
+        deck1_cards = deepcopy(deck1.get('main_deck', []))
+        deck2_cards = deepcopy(deck2.get('main_deck', []))
+        random.shuffle(deck1_cards)
+        random.shuffle(deck2_cards)
+        
+        # Initial hands
+        hand1 = deck1_cards[:5] if len(deck1_cards) >= 5 else deck1_cards[:]
+        hand2 = deck2_cards[:5] if len(deck2_cards) >= 5 else deck2_cards[:]
+        deck1_cards = deck1_cards[5:]
+        deck2_cards = deck2_cards[5:]
+        
+        while state.turn_count < self.MAX_TURNS:
+            state.turn_count += 1
+            
+            # DON!! phase - gain DON!! cards (up to turn number, max 10)
+            if state.active_player == 1:
+                state.player1_don = min(state.turn_count, 10)
+            else:
+                state.player2_don = min(state.turn_count, 10)
+            
+            # Draw phase
+            if state.active_player == 1 and deck1_cards:
+                hand1.append(deck1_cards.pop(0))
+            elif state.active_player == 2 and deck2_cards:
+                hand2.append(deck2_cards.pop(0))
+            
+            # Main phase - play characters and attack
+            if state.active_player == 1:
+                self._play_turn(state, hand1, deck1_cards, leader1, leader2, True)
+            else:
+                self._play_turn(state, hand2, deck2_cards, leader2, leader1, False)
+            
+            # Check win condition
+            if state.player1_life <= 0:
+                return (2, state.turn_count)
+            if state.player2_life <= 0:
+                return (1, state.turn_count)
+            
+            # Switch active player
+            state.active_player = 2 if state.active_player == 1 else 1
+        
+        # If game goes to max turns, player with more life wins
+        if state.player1_life > state.player2_life:
+            return (1, state.turn_count)
+        elif state.player2_life > state.player1_life:
+            return (2, state.turn_count)
+        else:
+            return (random.choice([1, 2]), state.turn_count)
+    
+    def _deal_damage_to_opponent(self, state: GameState, is_player1: bool, damage: int = 1):
+        """Deal damage to the opponent's leader"""
+        if is_player1:
+            state.player2_life -= damage
+        else:
+            state.player1_life -= damage
+    
+    def _resolve_battle(self, attacker: Dict, attacker_power: int, defender: Dict, 
+                       defender_power: int, my_board: List[Dict], opp_board: List[Dict]):
+        """
+        Resolve battle between two characters based on power comparison
+        Higher power wins, equal power results in both being KO'd
+        """
+        if attacker_power > defender_power:
+            # Attacker wins - defender is KO'd
+            if defender in opp_board:
+                opp_board.remove(defender)
+        elif defender_power > attacker_power:
+            # Defender wins - attacker is KO'd
+            if attacker in my_board:
+                my_board.remove(attacker)
+        else:
+            # Equal power - both are KO'd
+            if defender in opp_board:
+                opp_board.remove(defender)
+            if attacker in my_board:
+                my_board.remove(attacker)
+    
+    def _get_attack_power_boost(self, card: Dict) -> int:
+        """
+        Parse and return power boost from 'When attacking' effects
+        Returns the power boost value (0 if no boost)
+        """
+        effect = card.get('effect', '').lower()
+        if 'when attacking' not in effect:
+            return 0
+        
+        # Check for specific power boosts (check higher values first)
+        if '+3000 power' in effect:
+            return 3000
+        elif '+2000 power' in effect:
+            return 2000
+        elif '+1000 power' in effect:
+            return 1000
+        
+        return 0
+    
+    def _parse_on_play_effect(self, card: Dict) -> dict:
+        """
+        Parse 'On Play' effects into structured data
+        Returns dict with effect type and parameters
+        """
+        effect = card.get('effect', '').lower()
+        
+        if 'on play' not in effect:
+            return {'type': None}
+        
+        # Check for damage effect
+        if 'deal 1 damage' in effect:
+            return {'type': 'damage', 'amount': 1, 'target': 'leader'}
+        elif 'deal 2 damage' in effect:
+            return {'type': 'damage', 'amount': 2, 'target': 'leader'}
+        
+        # Check for KO effect
+        if 'ko' in effect:
+            if 'cost of 3 or less' in effect:
+                return {'type': 'ko', 'max_cost': 3}
+            elif 'cost of 4 or less' in effect:
+                return {'type': 'ko', 'max_cost': 4}
+            elif 'cost of 5 or less' in effect:
+                return {'type': 'ko', 'max_cost': 5}
+        
+        return {'type': 'other'}
+    
+    def _play_turn(self, state: GameState, hand: List[Dict], deck: List[Dict], 
+                   my_leader: Dict, opp_leader: Dict, is_player1: bool):
+        """
+        Simulate a player's turn following One Piece TCG rules
+        
+        In One Piece TCG:
+        - Characters can attack the turn they're played if they have Rush
+        - DON!! cards are used to pay costs and can be attached to characters for power
+        - Power determines battle outcomes
+        - Characters can attack leader directly or battle opponent's characters
+        """
+        my_board = state.player1_board if is_player1 else state.player2_board
+        opp_board = state.player2_board if is_player1 else state.player1_board
+        my_don = state.player1_don if is_player1 else state.player2_don
+        
+        # Play characters from hand (simplified AI - play highest cost affordable card)
+        characters_to_play = []
+        for card in hand[:]:  # Iterate over a copy
+            if card.get('type') == 'Character' and card.get('cost', 0) <= my_don:
+                characters_to_play.append(card)
+        
+        # Sort by cost (play higher cost first for more power)
+        characters_to_play.sort(key=lambda x: x.get('cost', 0), reverse=True)
+        
+        played_cards = []  # Track cards to remove from hand
+        for card in characters_to_play:
+            if card.get('cost', 0) <= my_don:
+                my_board.append(deepcopy(card))
+                played_cards.append(card)
+                my_don -= card.get('cost', 0)
+                
+                # Handle "On Play" effects using structured parser
+                on_play = self._parse_on_play_effect(card)
+                if on_play['type'] == 'damage':
+                    self._deal_damage_to_opponent(state, is_player1, on_play['amount'])
+                elif on_play['type'] == 'ko' and opp_board:
+                    # Find and KO a character matching the cost restriction
+                    targets = [c for c in opp_board if c.get('cost', 0) <= on_play['max_cost']]
+                    if targets:
+                        opp_board.remove(targets[0])
+        
+        # Remove played cards from hand
+        for card in played_cards:
+            if card in hand:
+                hand.remove(card)
+        
+        # Update DON!!
+        if is_player1:
+            state.player1_don = my_don
+        else:
+            state.player2_don = my_don
+        
+        # Attack phase - characters can attack
+        # In real One Piece TCG, only rested (untapped) characters can attack
+        # and they become active (tapped) after attacking
+        # For simplicity, we'll allow each character to attack once per turn
+        
+        attackers = my_board[:]
+        random.shuffle(attackers)  # Randomize attack order
+        
+        for attacker in attackers:
+            # Skip if attacker was already KO'd earlier in the turn
+            if attacker not in my_board:
+                continue
+            attacker_power = attacker.get('power', 0)
+            
+            # Apply power boosts from leader ability
+            if 'gain +1000 power' in my_leader.get('effect', '').lower():
+                attacker_power += 1000
+            
+            # Apply attacker's own power boost effects
+            attacker_power += self._get_attack_power_boost(attacker)
+            
+            # Check for blockers on opponent's board
+            blockers = [c for c in opp_board if 'blocker' in c.get('effect', '').lower()]
+            
+            # Decision: attack blocker, character, or leader
+            # Blockers must be attacked first if present
+            if blockers:
+                # Must attack a blocker
+                defender = random.choice(blockers)
+                defender_power = defender.get('power', 0)
+                
+                # Battle resolution - use helper method
+                self._resolve_battle(attacker, attacker_power, defender, defender_power, 
+                                    my_board, opp_board)
+            else:
+                # No blockers - can attack leader directly or other characters
+                # Use configured chance to attack leader vs characters
+                attack_character_chance = 1.0 - self.CHARACTER_ATTACK_LEADER_CHANCE
+                if opp_board and random.random() < attack_character_chance:
+                    # Attack a character
+                    defender = random.choice(opp_board)
+                    defender_power = defender.get('power', 0)
+                    
+                    # Battle resolution - use helper method
+                    self._resolve_battle(attacker, attacker_power, defender, defender_power,
+                                        my_board, opp_board)
+                else:
+                    # Attack leader directly - deals 1 life damage
+                    self._deal_damage_to_opponent(state, is_player1, 1)
     
     def _extract_deck_stats(self, deck: Dict) -> Dict:
         """Extract relevant statistics from a deck"""

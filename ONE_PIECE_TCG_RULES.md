@@ -105,15 +105,52 @@ Currently, the card database (`cards_data.py`) contains:
 
 To build full 50-card decks for all colors, more cards need to be added to the database. Multi-color leaders (like Trafalgar Law with Blue/Black) can combine card pools to reach 50 cards.
 
+## Combat Rules Implementation
+
+### 5. Combat Simulation Rules
+
+**Rules**: The combat simulator follows official One Piece TCG game mechanics.
+
+**Implementation**:
+- Located in `combat_simulator.py`, method `simulate_game_with_rules()`
+- Implements actual One Piece TCG turn structure and combat resolution
+- Key mechanics:
+  - **DON!! System**: Players gain DON!! cards each turn (up to 10) to pay for characters
+  - **Life System**: Leaders have life points, game ends when reduced to 0
+  - **Power-based Combat**: Characters battle based on power values, higher power wins
+  - **Blocker Mechanic**: Characters with Blocker ability must be attacked before leader
+  - **Leader Abilities**: Effects like "+1000 power during your turn" are applied
+  - **Character Effects**: "When attacking" effects modify power during combat
+
+**Combat Flow**:
+1. **DON!! Phase**: Active player gains DON!! equal to turn number (max 10)
+2. **Draw Phase**: Active player draws 1 card
+3. **Main Phase**: Player can play Character cards by paying their DON!! cost
+4. **Attack Phase**: 
+   - Characters can attack opponent's leader or characters
+   - Blockers must be dealt with before attacking leader
+   - Power comparison determines battle outcome
+   - Successful leader attacks deal 1 life damage
+
+**Examples**:
+- Character with 5000 power attacks blocker with 4000 power → Blocker is KO'd
+- Character with 4000 power attacks 5000 power character → Attacker is KO'd
+- Character with 5000 power attacks leader with no blockers → Leader takes 1 damage
+- Monkey D. Luffy's effect: Characters gain +1000 power during your turn
+
 ## Future Enhancements
 
 Potential improvements to rules enforcement:
 
-1. **Don Life Cards**: Implement the Don!! deck (10 cards)
-2. **Card Attributes**: Enforce attribute-based rules if any exist
-3. **Set Restrictions**: Implement tournament format restrictions (Standard, etc.)
-4. **Ban List**: Support for banned/restricted card lists
-5. **Enhanced Validation**: More comprehensive deck validation before saving
+1. **Counter System**: Implement counter card values for defensive plays
+2. **DON!! Attachments**: Allow attaching DON!! to characters to boost power
+3. **Event Card Effects**: Full implementation of event card timing and effects
+4. **Stage Cards**: Persistent effects from stage cards
+5. **Rush Keyword**: Characters with Rush can attack immediately when played
+6. **Card Attributes**: Enforce attribute-based rules if any exist
+7. **Set Restrictions**: Implement tournament format restrictions (Standard, etc.)
+8. **Ban List**: Support for banned/restricted card lists
+9. **Enhanced Validation**: More comprehensive deck validation before saving
 
 ## References
 
