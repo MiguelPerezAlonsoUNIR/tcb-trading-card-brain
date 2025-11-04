@@ -2,36 +2,36 @@
 
 ## Overview
 
-The Combat Simulation feature is an AI-powered system that allows users to simulate matches between their deck and tournament-level opponent decks. The AI learns from historical tournament data to provide realistic win rate predictions and strategic insights.
+The Combat Simulation feature simulates actual One Piece TCG matches between decks following the official game rules. The simulator implements proper game mechanics including DON!! card management, power-based combat resolution, life damage system, and character abilities to provide realistic match outcomes and strategic insights.
 
 ## Key Features
 
-### 1. AI Learning from Tournament Data
-- Trains on 16+ historical tournament matches
-- Considers multiple factors:
-  - Deck strategy matchups (Aggressive, Balanced, Control)
-  - Average cost curves
-  - Character-to-event ratios
-  - Color combinations
-- Uses matchup similarity scoring (0-100%) to weight tournament data relevance
+### 1. One Piece TCG Rules Implementation
+- **Turn-based simulation**: Follows official turn structure (DON!! phase, draw, main phase, attack phase)
+- **DON!! Card System**: Properly implements the 10 DON!! card resource management
+- **Life System**: Leaders have life points (typically 4-5), game ends when life reaches 0
+- **Power-based Combat**: Character battles resolved by comparing power values
+- **Character Abilities**: Implements power boosts from leader abilities and character effects
+- **Blocker Mechanics**: Blocker characters must be dealt with before attacking the leader
+- **Attack Resolution**: Characters can attack leader directly or battle opposing characters
 
 ### 2. Monte Carlo Simulation
 - Runs 1000 simulations per matchup (configurable)
-- Adds realistic variance (10% standard deviation)
+- Each simulation plays out a complete game with actual One Piece TCG rules
 - Provides statistical confidence through large sample size
 - Calculates:
-  - Win rate percentage
+  - Win rate percentage based on actual game outcomes
   - Average game length (turns) for wins and losses
   - Win/loss counts
 
 ### 3. Intelligent Matchup Analysis
-- **Strategy Matrix**: 
-  - Aggressive > Control (58% win rate)
-  - Control > Balanced (55% win rate)
-  - Balanced > Aggressive (54% win rate)
-  - Mirror matches: ~50% win rate
-- **Cost Curve Analysis**: Adjusts predictions based on cost differences
-- **Board Presence**: Factors in character density
+- **Realistic Strategy Dynamics**: 
+  - Aggressive strategies naturally beat control due to early pressure
+  - Control strategies can stabilize with high-power characters
+  - Balanced strategies adapt to matchup
+  - Mirror matches: ~50% win rate (randomized starting player)
+- **Cost Curve Impact**: Lower cost decks establish board presence faster
+- **Board Presence**: Character count and power values determine board control
 
 ### 4. AI Insights Generation
 Provides contextual strategic advice:
@@ -166,38 +166,47 @@ Returns:
   - Orange (≥35%): Slight disadvantage
   - Red (<35%): Difficult matchup
 
-## AI Algorithm Details
+## Game Simulation Algorithm
 
-### Win Probability Calculation
+### One Piece TCG Rules Implementation
 
-1. **Find Similar Matchups**:
+The combat simulator follows actual One Piece TCG rules:
+
+1. **Game Initialization**:
+   - Each player starts with their leader's life points (typically 4-5)
+   - Initial hand of 5 cards
+   - Randomly determine starting player for balance
+   - Each player has a deck of 10 DON!! cards
+
+2. **Turn Structure**:
    ```
-   similarity = 0.4 * strategy_match 
-              + 0.3 * cost_curve_similarity 
-              + 0.2 * character_ratio_similarity 
-              + 0.1 * color_match
-   ```
-
-2. **Weight Tournament Results**:
-   - Each tournament match weighted by similarity score
-   - Only considers matches with >50% similarity
-
-3. **Blend Predictions**:
-   ```
-   final_probability = 0.7 * learned_probability 
-                     + 0.3 * base_probability
+   DON!! Phase: Gain DON!! equal to turn number (max 10)
+   Draw Phase: Draw 1 card
+   Main Phase: Play characters by paying DON!! cost
+   Attack Phase: Characters attack leader or opposing characters
    ```
 
-4. **Clamp Results**:
-   - Min: 10% (no matchup is impossible)
-   - Max: 90% (no matchup is guaranteed)
+3. **Combat Resolution**:
+   - **Blocker Priority**: Blockers must be attacked before leader
+   - **Power Comparison**: Higher power wins the battle
+   - **Leader Damage**: Successful leader attacks deal 1 life damage
+   - **Character KO**: Losing characters are removed from play
 
-### Turn Count Estimation
-- Base turns: 10
-- Aggressive decks: -2 turns
-- Control mirrors: +6 turns
-- Single control: +3 turns
-- Random variance: ±2 turns
+4. **Power Modifications**:
+   - Leader abilities (e.g., "+1000 power during your turn")
+   - Character effects (e.g., "When attacking, +2000 power")
+   - DON!! attachments can boost power (not yet fully implemented)
+
+5. **Win Condition**:
+   - Game ends when a leader reaches 0 life
+   - If max turns (30) reached, player with more life wins
+
+### Simplified AI Decision Making
+
+The simulator uses simplified AI for card play and combat decisions:
+- **Character Play**: Prioritize playing highest cost affordable characters
+- **Attack Priority**: 70% chance to attack leader, 30% to attack characters
+- **Blocker Handling**: Blockers must be dealt with first (per rules)
 
 ## Testing
 
@@ -238,19 +247,22 @@ python demo_simulation.py
 ## Future Enhancements
 
 ### Potential Improvements
-1. **Expanded Tournament Data**: Add more historical matches
-2. **User Match Tracking**: Learn from user's actual games
-3. **Sideboard Simulation**: Test different sideboard configurations
-4. **Mulligan Analysis**: Optimal starting hand suggestions
-5. **Play Sequencing**: Turn-by-turn optimal plays
-6. **Meta Analysis**: Track which decks are winning most
-7. **Custom Opponent Decks**: Allow users to simulate against saved decks
-8. **Advanced Statistics**: 
-   - Confidence intervals
-   - Matchup volatility
-   - Key decision points
-9. **Machine Learning Integration**: Replace rule-based AI with trained models
-10. **Tournament Bracket Simulation**: Predict tournament performance
+1. **Counter Card System**: Implement counter values for defensive plays
+2. **DON!! Attachments**: Allow attaching DON!! to characters for power boosts
+3. **Event Cards**: Implement event card effects during battles
+4. **Stage Cards**: Add stage card effects that persist
+5. **Rush Keyword**: Characters with Rush can attack immediately
+6. **Advanced Effects**: Parse and implement more card effect text
+7. **Mulligan System**: Implement initial hand mulligan rules
+8. **Play Sequencing**: More intelligent AI for card play order
+9. **Meta Analysis**: Track which decks are winning most
+10. **Custom Opponent Decks**: Allow users to simulate against saved decks
+11. **Advanced Statistics**: 
+    - Confidence intervals
+    - Matchup volatility
+    - Key decision points
+12. **Machine Learning Integration**: Train models on real player decisions
+13. **Tournament Bracket Simulation**: Predict tournament performance
 
 ## Conclusion
 
