@@ -2,15 +2,29 @@
 One Piece TCG Deck Builder Web Application
 Uses AI to help build optimal decks for One Piece Trading Card Game
 """
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from flask_cors import CORS
+from flask_login import LoginManager, login_user, logout_user, current_user
 import json
 import os
 import logging
 from deck_builder import OnePieceDeckBuilder
+from models import db, User, Deck, UserCollection
+from auth import hash_password, verify_password, login_required_api
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
+
+# Configure app
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tcb.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize extensions
+db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'index'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,10 +33,132 @@ logger = logging.getLogger(__name__)
 # Initialize the deck builder
 deck_builder = OnePieceDeckBuilder()
 
+@login_manager.user_loader
+def load_user(user_id):
+    """Load user for Flask-Login"""
+    return User.query.get(int(user_id))
+
+# Create database tables
+with app.app_context():
+    db.create_all()
+
 @app.route('/')
 def index():
     """Serve the main application page"""
     return render_template('index.html')
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    """Register a new user"""
+    data = request.json
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+    
+    if not username or not password:
+        return jsonify({
+            'success': False,
+            'error': 'Username and password are required'
+        }), 400
+    
+    if len(username) < 3:
+        return jsonify({
+            'success': False,
+            'error': 'Username must be at least 3 characters'
+        }), 400
+    
+    if len(password) < 6:
+        return jsonify({
+            'success': False,
+            'error': 'Password must be at least 6 characters'
+        }), 400
+    
+    # Check if user already exists
+    if User.query.filter_by(username=username).first():
+        return jsonify({
+            'success': False,
+            'error': 'Username already exists'
+        }), 400
+    
+    try:
+        # Create new user
+        user = User(
+            username=username,
+            password_hash=hash_password(password)
+        )
+        db.session.add(user)
+        db.session.commit()
+        
+        # Log the user in
+        login_user(user)
+        
+        return jsonify({
+            'success': True,
+            'user': {
+                'id': user.id,
+                'username': user.username
+            }
+        })
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error registering user: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to register user'
+        }), 500
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    """Login a user"""
+    data = request.json
+    username = data.get('username', '').strip()
+    password = data.get('password', '')
+    
+    if not username or not password:
+        return jsonify({
+            'success': False,
+            'error': 'Username and password are required'
+        }), 400
+    
+    user = User.query.filter_by(username=username).first()
+    
+    if not user or not verify_password(password, user.password_hash):
+        return jsonify({
+            'success': False,
+            'error': 'Invalid username or password'
+        }), 401
+    
+    login_user(user)
+    
+    return jsonify({
+        'success': True,
+        'user': {
+            'id': user.id,
+            'username': user.username
+        }
+    })
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    """Logout the current user"""
+    logout_user()
+    return jsonify({
+        'success': True
+    })
+
+@app.route('/api/current-user', methods=['GET'])
+def get_current_user():
+    """Get the current logged-in user"""
+    if current_user.is_authenticated:
+        return jsonify({
+            'authenticated': True,
+            'user': {
+                'id': current_user.id,
+                'username': current_user.username
+            }
+        })
+    return jsonify({
+        'authenticated': False
+    })
 
 @app.route('/api/cards', methods=['GET'])
 def get_cards():
@@ -67,6 +203,249 @@ def analyze_deck():
         return jsonify({
             'success': False,
             'error': 'Failed to analyze deck. Please try again.'
+        }), 400
+
+@app.route('/api/decks', methods=['GET', 'POST'])
+@login_required_api
+def manage_decks():
+    """Get all user decks or create a new deck"""
+    if request.method == 'GET':
+        # Get all decks for the current user
+        decks = Deck.query.filter_by(user_id=current_user.id).order_by(Deck.updated_at.desc()).all()
+        return jsonify({
+            'success': True,
+            'decks': [deck.to_dict() for deck in decks]
+        })
+    
+    elif request.method == 'POST':
+        # Create a new deck
+        data = request.json
+        name = data.get('name', '').strip()
+        strategy = data.get('strategy', 'balanced')
+        color = data.get('color', 'any')
+        leader = data.get('leader')
+        main_deck = data.get('main_deck', [])
+        
+        if not name:
+            return jsonify({
+                'success': False,
+                'error': 'Deck name is required'
+            }), 400
+        
+        try:
+            deck = Deck(
+                user_id=current_user.id,
+                name=name,
+                strategy=strategy,
+                color=color
+            )
+            deck.set_leader(leader)
+            deck.set_main_deck(main_deck)
+            
+            db.session.add(deck)
+            db.session.commit()
+            
+            return jsonify({
+                'success': True,
+                'deck': deck.to_dict()
+            })
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error saving deck: {e}", exc_info=True)
+            return jsonify({
+                'success': False,
+                'error': 'Failed to save deck'
+            }), 500
+
+@app.route('/api/decks/<int:deck_id>', methods=['GET', 'PUT', 'DELETE'])
+@login_required_api
+def manage_single_deck(deck_id):
+    """Get, update, or delete a specific deck"""
+    deck = Deck.query.filter_by(id=deck_id, user_id=current_user.id).first()
+    
+    if not deck:
+        return jsonify({
+            'success': False,
+            'error': 'Deck not found'
+        }), 404
+    
+    if request.method == 'GET':
+        return jsonify({
+            'success': True,
+            'deck': deck.to_dict()
+        })
+    
+    elif request.method == 'PUT':
+        # Update deck
+        data = request.json
+        
+        if 'name' in data:
+            deck.name = data['name'].strip()
+        if 'strategy' in data:
+            deck.strategy = data['strategy']
+        if 'color' in data:
+            deck.color = data['color']
+        if 'leader' in data:
+            deck.set_leader(data['leader'])
+        if 'main_deck' in data:
+            deck.set_main_deck(data['main_deck'])
+        
+        try:
+            db.session.commit()
+            return jsonify({
+                'success': True,
+                'deck': deck.to_dict()
+            })
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error updating deck: {e}", exc_info=True)
+            return jsonify({
+                'success': False,
+                'error': 'Failed to update deck'
+            }), 500
+    
+    elif request.method == 'DELETE':
+        # Delete deck
+        try:
+            db.session.delete(deck)
+            db.session.commit()
+            return jsonify({
+                'success': True
+            })
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error deleting deck: {e}", exc_info=True)
+            return jsonify({
+                'success': False,
+                'error': 'Failed to delete deck'
+            }), 500
+
+@app.route('/api/collection', methods=['GET', 'POST'])
+@login_required_api
+def manage_collection():
+    """Get user's card collection or add cards"""
+    if request.method == 'GET':
+        # Get all cards in user's collection
+        collection = UserCollection.query.filter_by(user_id=current_user.id).all()
+        return jsonify({
+            'success': True,
+            'collection': [
+                {
+                    'id': item.id,
+                    'card_name': item.card_name,
+                    'quantity': item.quantity,
+                    'added_at': item.added_at.isoformat() if item.added_at else None
+                }
+                for item in collection
+            ]
+        })
+    
+    elif request.method == 'POST':
+        # Add or update card in collection
+        data = request.json
+        card_name = data.get('card_name', '').strip()
+        quantity = data.get('quantity', 1)
+        
+        if not card_name:
+            return jsonify({
+                'success': False,
+                'error': 'Card name is required'
+            }), 400
+        
+        try:
+            # Check if card already exists in collection
+            collection_item = UserCollection.query.filter_by(
+                user_id=current_user.id,
+                card_name=card_name
+            ).first()
+            
+            if collection_item:
+                # Update quantity
+                collection_item.quantity = quantity
+            else:
+                # Add new card
+                collection_item = UserCollection(
+                    user_id=current_user.id,
+                    card_name=card_name,
+                    quantity=quantity
+                )
+                db.session.add(collection_item)
+            
+            db.session.commit()
+            
+            return jsonify({
+                'success': True,
+                'collection_item': {
+                    'id': collection_item.id,
+                    'card_name': collection_item.card_name,
+                    'quantity': collection_item.quantity
+                }
+            })
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error updating collection: {e}", exc_info=True)
+            return jsonify({
+                'success': False,
+                'error': 'Failed to update collection'
+            }), 500
+
+@app.route('/api/collection/<int:item_id>', methods=['DELETE'])
+@login_required_api
+def remove_from_collection(item_id):
+    """Remove a card from user's collection"""
+    collection_item = UserCollection.query.filter_by(
+        id=item_id,
+        user_id=current_user.id
+    ).first()
+    
+    if not collection_item:
+        return jsonify({
+            'success': False,
+            'error': 'Collection item not found'
+        }), 404
+    
+    try:
+        db.session.delete(collection_item)
+        db.session.commit()
+        return jsonify({
+            'success': True
+        })
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error removing from collection: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to remove from collection'
+        }), 500
+
+@app.route('/api/suggest-deck', methods=['POST'])
+@login_required_api
+def suggest_deck_from_collection():
+    """Build a deck based on user's collection"""
+    data = request.json
+    strategy = data.get('strategy', 'balanced')
+    color = data.get('color', 'any')
+    
+    # Get user's collection
+    collection = UserCollection.query.filter_by(user_id=current_user.id).all()
+    owned_cards = {item.card_name: item.quantity for item in collection}
+    
+    try:
+        # Build deck with collection awareness
+        deck = deck_builder.build_deck_from_collection(
+            strategy=strategy,
+            color=color,
+            owned_cards=owned_cards
+        )
+        return jsonify({
+            'success': True,
+            'deck': deck
+        })
+    except Exception as e:
+        logger.error(f"Error suggesting deck: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to suggest deck. Please try again.'
         }), 400
 
 if __name__ == '__main__':

@@ -276,3 +276,74 @@ class OnePieceDeckBuilder:
             for color in card.get('colors', []):
                 distribution[color] = distribution.get(color, 0) + 1
         return distribution
+    
+    def build_deck_from_collection(self, strategy: str = 'balanced', 
+                                   color: str = 'any',
+                                   owned_cards: Dict[str, int] = None) -> Dict:
+        """
+        Build a deck prioritizing cards from user's collection
+        
+        Args:
+            strategy: Deck strategy ('aggressive', 'balanced', 'control')
+            color: Primary color
+            owned_cards: Dictionary mapping card names to quantities owned
+        
+        Returns:
+            Dictionary containing the built deck with collection info
+        """
+        if owned_cards is None:
+            owned_cards = {}
+        
+        # First, build a standard deck
+        deck = self.build_deck(strategy=strategy, color=color)
+        
+        # Analyze collection usage
+        collection_stats = self._analyze_collection_usage(
+            deck['main_deck'], 
+            owned_cards
+        )
+        
+        # Add collection statistics to deck
+        deck['collection_coverage'] = collection_stats
+        
+        return deck
+    
+    def _analyze_collection_usage(self, deck: List[Dict], 
+                                  owned_cards: Dict[str, int]) -> Dict:
+        """
+        Analyze how many cards from the deck the user owns
+        
+        Args:
+            deck: List of cards in the deck
+            owned_cards: Dictionary of owned card names to quantities
+        
+        Returns:
+            Dictionary with collection statistics
+        """
+        total_cards = len(deck)
+        cards_owned = 0
+        cards_needed = {}
+        
+        # Count card usage in deck
+        card_counts = {}
+        for card in deck:
+            card_name = card['name']
+            card_counts[card_name] = card_counts.get(card_name, 0) + 1
+        
+        # Check against collection
+        for card_name, needed_qty in card_counts.items():
+            owned_qty = owned_cards.get(card_name, 0)
+            if owned_qty >= needed_qty:
+                cards_owned += needed_qty
+            else:
+                cards_owned += owned_qty
+                cards_needed[card_name] = needed_qty - owned_qty
+        
+        coverage_percentage = (cards_owned / total_cards * 100) if total_cards > 0 else 0
+        
+        return {
+            'total_cards': total_cards,
+            'cards_owned': cards_owned,
+            'cards_needed': cards_needed,
+            'coverage_percentage': round(coverage_percentage, 2)
+        }

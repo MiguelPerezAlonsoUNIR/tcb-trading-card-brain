@@ -4,7 +4,11 @@ An AI-powered web application for building optimized decks for Trading Card Game
 
 ## Features
 
+- **User Authentication**: Secure user registration and login system
+- **Personal Deck Storage**: Save and manage your decks in your user profile
+- **Card Collection Tracking**: Track which cards you own for better deck suggestions
 - **AI-Powered Deck Building**: Intelligent deck construction based on strategy and color preferences
+- **Collection-Based Suggestions**: Get deck suggestions based on cards you already own
 - **One Piece TCG Support**: Built-in database of One Piece Trading Card Game cards
 - **Card Images**: Visual card display with images from official One Piece TCG API
 - **Strategy Options**: Choose from Aggressive, Balanced, or Control strategies
@@ -17,6 +21,8 @@ An AI-powered web application for building optimized decks for Trading Card Game
 ## Technology Stack
 
 - **Backend**: Python 3.11 with Flask
+- **Authentication**: Flask-Login for session management
+- **Database**: SQLAlchemy with SQLite (easily upgradable to PostgreSQL/MySQL)
 - **AI Library**: Python-based deck building algorithms (extensible to use ML models)
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
 - **Containerization**: Docker with multi-stage builds
@@ -58,14 +64,59 @@ docker-compose up
 pip install -r requirements.txt
 ```
 
-3. Run the application:
+3. (Optional) Set environment variables:
+```bash
+export SECRET_KEY="your-secret-key-here"  # For production
+export DATABASE_URL="sqlite:///tcb.db"     # Default database
+```
+
+4. Run the application:
 ```bash
 python app.py
 ```
 
-4. Open your browser and navigate to `http://localhost:5000`
+5. Open your browser and navigate to `http://localhost:5000`
+
+## Configuration
+
+The application can be configured using environment variables:
+
+- `SECRET_KEY`: Secret key for session management (default: 'dev-secret-key-change-in-production')
+- `DATABASE_URL`: Database connection string (default: 'sqlite:///tcb.db')
+- `FLASK_ENV`: Set to 'development' for debug mode
+
+**Important**: For production deployments, always set a strong `SECRET_KEY` and use a production-grade database.
 
 ## Usage Guide
+
+### User Authentication
+
+1. **Register an Account**:
+   - Click "Register" in the header
+   - Choose a username (minimum 3 characters)
+   - Create a password (minimum 6 characters)
+   - Your account is created and you're automatically logged in
+
+2. **Login to Existing Account**:
+   - Click "Login" in the header
+   - Enter your username and password
+   - Access your saved decks and collection
+
+### Managing Your Card Collection
+
+1. **Add Cards to Collection**:
+   - Click "My Collection" in the header (requires login)
+   - Click "Add Card to Collection"
+   - Enter the card name and quantity you own
+   - Track all cards you physically possess
+
+2. **Get Deck Suggestions Based on Your Collection**:
+   - Go to "My Collection"
+   - Click "Suggest Deck from Collection"
+   - The AI will build a deck and show you:
+     - What percentage of cards you already own
+     - Which cards you need to acquire
+     - Optimized deck based on your collection
 
 ### Building a Deck
 
@@ -83,6 +134,13 @@ python app.py
    - Leave empty for automatic leader selection
 
 4. Click "Build Deck" to generate your optimized 50-card deck
+
+### Saving Your Decks
+
+After building a deck (requires login):
+1. Click "Save Deck"
+2. Give your deck a name
+3. Access your saved decks anytime from "My Decks"
 
 ### Analyzing Your Deck
 
@@ -103,44 +161,115 @@ Click "Export Deck" to download your deck list as a text file, perfect for:
 
 ```
 tcb-trading-card-brain/
-├── app.py                  # Flask web application
+├── app.py                  # Flask web application with auth routes
+├── models.py               # Database models (User, Deck, Collection)
+├── auth.py                 # Authentication utilities
 ├── deck_builder.py         # AI deck building logic
 ├── cards_data.py           # One Piece TCG card database
 ├── requirements.txt        # Python dependencies
 ├── Dockerfile             # Docker configuration
 ├── docker-compose.yml     # Docker Compose configuration
 ├── templates/
-│   └── index.html        # Main web interface
+│   └── index.html        # Main web interface with auth UI
 ├── static/
 │   ├── css/
-│   │   └── style.css     # Styling
+│   │   └── style.css     # Styling with auth components
 │   └── js/
-│       └── app.js        # Frontend JavaScript
+│       └── app.js        # Frontend JavaScript with auth logic
+├── test_auth.py           # Authentication tests
+├── test_deck_builder.py   # Deck builder tests
 └── README.md             # This file
 ```
 
 ## API Endpoints
 
-### GET /
-Returns the main application interface
+### Authentication Endpoints
 
-### GET /api/cards
-Returns all available One Piece TCG cards with image URLs
+#### POST /api/register
+Register a new user
 ```json
-[
-  {
-    "name": "Monkey D. Luffy",
-    "type": "Leader",
-    "colors": ["Red"],
-    "power": 5000,
-    "cost": 0,
-    "image_url": "https://en.onepiece-cardgame.com/images/cardlist/ST01-001.png",
-    ...
-  }
-]
+{
+  "username": "string (min 3 chars)",
+  "password": "string (min 6 chars)"
+}
 ```
 
-### POST /api/build-deck
+#### POST /api/login
+Login with existing credentials
+```json
+{
+  "username": "string",
+  "password": "string"
+}
+```
+
+#### POST /api/logout
+Logout current user (no body required)
+
+#### GET /api/current-user
+Check authentication status and get current user info
+
+### Deck Management Endpoints (Requires Authentication)
+
+#### GET /api/decks
+Get all decks for the current user
+
+#### POST /api/decks
+Save a new deck
+```json
+{
+  "name": "string",
+  "strategy": "balanced|aggressive|control",
+  "color": "string",
+  "leader": {object},
+  "main_deck": [array of card objects]
+}
+```
+
+#### GET /api/decks/:id
+Get a specific deck by ID
+
+#### PUT /api/decks/:id
+Update a specific deck
+
+#### DELETE /api/decks/:id
+Delete a specific deck
+
+### Collection Management Endpoints (Requires Authentication)
+
+#### GET /api/collection
+Get user's card collection
+
+#### POST /api/collection
+Add or update card in collection
+```json
+{
+  "card_name": "string",
+  "quantity": number
+}
+```
+
+#### DELETE /api/collection/:id
+Remove a card from collection
+
+#### POST /api/suggest-deck
+Build a deck based on user's collection
+```json
+{
+  "strategy": "balanced|aggressive|control",
+  "color": "Red|Blue|Green|Purple|Black|Yellow|any"
+}
+```
+
+### Public Endpoints
+
+#### GET /
+Returns the main application interface
+
+#### GET /api/cards
+Returns all available One Piece TCG cards with image URLs
+
+#### POST /api/build-deck
 Builds a deck based on preferences
 ```json
 {
@@ -150,7 +279,7 @@ Builds a deck based on preferences
 }
 ```
 
-### POST /api/analyze-deck
+#### POST /api/analyze-deck
 Analyzes a deck and provides suggestions
 ```json
 {
