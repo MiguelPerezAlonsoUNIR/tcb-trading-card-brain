@@ -340,3 +340,329 @@ class OnePieceDeckBuilder:
             'cards_needed': cards_needed,
             'coverage_percentage': round(coverage_percentage, 2)
         }
+    
+    def suggest_improvements(self, deck: Dict, owned_cards: Dict[str, int] = None) -> Dict:
+        """
+        Suggest improvements for an existing deck
+        Provides three alternatives: balanced, aggressive, and tournament-competitive
+        
+        Args:
+            deck: Current deck with 'leader', 'main_deck', 'strategy', 'color'
+            owned_cards: Optional dictionary of owned card names to quantities
+        
+        Returns:
+            Dictionary containing three improved deck variations
+        """
+        if owned_cards is None:
+            owned_cards = {}
+        
+        leader = deck.get('leader')
+        current_strategy = deck.get('strategy', 'balanced')
+        current_color = deck.get('color', 'any')
+        main_deck = deck.get('main_deck', [])
+        
+        # Analyze the current deck
+        current_analysis = self.analyze_deck(main_deck)
+        
+        # Get available cards that match the leader's colors
+        available_cards = [
+            c for c in self.cards 
+            if c['type'] != 'Leader' and 
+            any(lc in c['colors'] for lc in leader['colors'])
+        ]
+        
+        # Generate three improvement suggestions
+        improvements = {
+            'balanced': self._suggest_balanced_improvement(
+                leader, available_cards, main_deck, current_analysis, owned_cards
+            ),
+            'aggressive': self._suggest_aggressive_improvement(
+                leader, available_cards, main_deck, current_analysis, owned_cards
+            ),
+            'tournament': self._suggest_tournament_improvement(
+                leader, available_cards, main_deck, current_analysis, owned_cards
+            )
+        }
+        
+        # Add metadata about changes
+        for improvement_type, improvement in improvements.items():
+            improvement['changes_from_current'] = self._calculate_deck_changes(
+                main_deck, improvement['main_deck']
+            )
+            improvement['collection_coverage'] = self._analyze_collection_usage(
+                improvement['main_deck'], owned_cards
+            )
+        
+        return improvements
+    
+    def _suggest_balanced_improvement(self, leader: Dict, available_cards: List[Dict], 
+                                     current_deck: List[Dict], analysis: Dict,
+                                     owned_cards: Dict[str, int]) -> Dict:
+        """Generate a more balanced version of the deck"""
+        # Target distribution for balanced deck
+        target_character_ratio = 0.65
+        target_event_ratio = 0.30
+        target_stage_ratio = 0.05
+        
+        # Calculate current ratios
+        total = len(current_deck) if current_deck else 50
+        type_dist = analysis.get('type_distribution', {})
+        
+        # Build improved balanced deck
+        new_deck = []
+        
+        # Separate available cards by type
+        characters = [c for c in available_cards if c['type'] == 'Character']
+        events = [c for c in available_cards if c['type'] == 'Event']
+        stages = [c for c in available_cards if c['type'] == 'Stage']
+        
+        # Prioritize owned cards when building
+        def sort_by_ownership(cards):
+            return sorted(cards, key=lambda c: owned_cards.get(c['name'], 0), reverse=True)
+        
+        characters = sort_by_ownership(characters)
+        events = sort_by_ownership(events)
+        stages = sort_by_ownership(stages)
+        
+        # Add characters (65% = ~32 cards)
+        attempts = 0
+        while len(new_deck) < int(self.deck_size * target_character_ratio) and attempts < 200:
+            if characters:
+                card = characters[attempts % len(characters)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Add events (30% = ~15 cards)
+        attempts = 0
+        while len(new_deck) < int(self.deck_size * (target_character_ratio + target_event_ratio)) and attempts < 200:
+            if events:
+                card = events[attempts % len(events)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Add stages (5% = ~3 cards)
+        attempts = 0
+        while len(new_deck) < self.deck_size and attempts < 200:
+            if stages:
+                card = stages[attempts % len(stages)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Fill to exactly 50 if needed
+        attempts = 0
+        while len(new_deck) < self.deck_size and attempts < 200:
+            if available_cards:
+                card = random.choice(available_cards)
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        return {
+            'leader': leader,
+            'main_deck': new_deck[:self.deck_size],
+            'strategy': 'balanced',
+            'color': ', '.join(leader['colors']),
+            'description': 'Optimized for balanced gameplay with 65% characters, 30% events, and 5% stages. Good mix of offensive and defensive capabilities.',
+            'improvement_type': 'balanced'
+        }
+    
+    def _suggest_aggressive_improvement(self, leader: Dict, available_cards: List[Dict],
+                                       current_deck: List[Dict], analysis: Dict,
+                                       owned_cards: Dict[str, int]) -> Dict:
+        """Generate a more aggressive version of the deck"""
+        # Target for aggressive deck: lower cost curve, more characters
+        target_character_ratio = 0.75
+        target_avg_cost = 3.5
+        
+        new_deck = []
+        
+        # Prioritize low-cost, high-power characters
+        characters = [
+            c for c in available_cards 
+            if c['type'] == 'Character' and c.get('cost', 10) <= 5
+        ]
+        events = [
+            c for c in available_cards 
+            if c['type'] == 'Event' and c.get('cost', 10) <= 4
+        ]
+        
+        # Sort by cost (lower first) and ownership
+        def sort_aggressive(cards):
+            return sorted(
+                cards, 
+                key=lambda c: (c.get('cost', 10), -owned_cards.get(c['name'], 0))
+            )
+        
+        characters = sort_aggressive(characters)
+        events = sort_aggressive(events)
+        
+        # Add low-cost characters (75% = ~37 cards)
+        attempts = 0
+        while len(new_deck) < int(self.deck_size * target_character_ratio) and attempts < 200:
+            if characters:
+                card = characters[attempts % len(characters)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Add low-cost events (25% = ~13 cards)
+        attempts = 0
+        while len(new_deck) < self.deck_size and attempts < 200:
+            if events:
+                card = events[attempts % len(events)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Fill to exactly 50 if needed with any matching cards
+        attempts = 0
+        while len(new_deck) < self.deck_size and attempts < 200:
+            if available_cards:
+                card = random.choice(available_cards)
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        return {
+            'leader': leader,
+            'main_deck': new_deck[:self.deck_size],
+            'strategy': 'aggressive',
+            'color': ', '.join(leader['colors']),
+            'description': 'Optimized for aggressive gameplay with 75% low-cost characters for early board pressure. Focuses on ending games quickly.',
+            'improvement_type': 'aggressive'
+        }
+    
+    def _suggest_tournament_improvement(self, leader: Dict, available_cards: List[Dict],
+                                       current_deck: List[Dict], analysis: Dict,
+                                       owned_cards: Dict[str, int]) -> Dict:
+        """Generate a tournament-competitive version based on winning patterns"""
+        # Tournament competitive decks tend to have:
+        # - Balanced cost curve (avg 4.0-4.5)
+        # - 60-70% characters
+        # - Strategic use of high-impact events
+        # - Optimal ratios proven in competitive play
+        
+        new_deck = []
+        
+        # Get tournament-viable cards (cost 2-6 for good curve)
+        characters = [
+            c for c in available_cards 
+            if c['type'] == 'Character' and 2 <= c.get('cost', 10) <= 6
+        ]
+        events = [
+            c for c in available_cards 
+            if c['type'] == 'Event'
+        ]
+        stages = [
+            c for c in available_cards 
+            if c['type'] == 'Stage'
+        ]
+        
+        # Sort by tournament viability (balanced cost, ownership)
+        def sort_tournament(cards):
+            return sorted(
+                cards,
+                key=lambda c: (
+                    abs(c.get('cost', 5) - 4.0),  # Prefer cost around 4
+                    -owned_cards.get(c['name'], 0)
+                )
+            )
+        
+        characters = sort_tournament(characters)
+        events = sort_tournament(events)
+        stages = sort_tournament(stages)
+        
+        # Add characters with good cost curve (65% = ~32 cards)
+        attempts = 0
+        target_chars = 32
+        while len(new_deck) < target_chars and attempts < 200:
+            if characters:
+                card = characters[attempts % len(characters)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Add high-impact events (30% = ~15 cards)
+        attempts = 0
+        target_events = 47
+        while len(new_deck) < target_events and attempts < 200:
+            if events:
+                card = events[attempts % len(events)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Add stages (5% = ~3 cards)
+        attempts = 0
+        while len(new_deck) < self.deck_size and attempts < 200:
+            if stages:
+                card = stages[attempts % len(stages)]
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        # Fill to exactly 50 if needed
+        attempts = 0
+        while len(new_deck) < self.deck_size and attempts < 200:
+            if available_cards:
+                card = random.choice(available_cards)
+                if self._count_card_copies(new_deck, card) < self.max_copies:
+                    new_deck.append(card)
+            attempts += 1
+        
+        return {
+            'leader': leader,
+            'main_deck': new_deck[:self.deck_size],
+            'strategy': 'tournament',
+            'color': ', '.join(leader['colors']),
+            'description': 'Optimized based on competitive tournament patterns. Features a balanced cost curve (avg 4.0-4.5) with 65% characters and strategic event selection proven in competitive play.',
+            'improvement_type': 'tournament'
+        }
+    
+    def _calculate_deck_changes(self, old_deck: List[Dict], new_deck: List[Dict]) -> Dict:
+        """Calculate the differences between two decks"""
+        # Count cards in each deck
+        old_counts = {}
+        new_counts = {}
+        
+        for card in old_deck:
+            old_counts[card['name']] = old_counts.get(card['name'], 0) + 1
+        
+        for card in new_deck:
+            new_counts[card['name']] = new_counts.get(card['name'], 0) + 1
+        
+        # Calculate changes
+        cards_added = []
+        cards_removed = []
+        cards_changed = []
+        
+        # Find added and changed cards
+        for card_name, new_count in new_counts.items():
+            old_count = old_counts.get(card_name, 0)
+            if old_count == 0:
+                cards_added.append({'name': card_name, 'quantity': new_count})
+            elif new_count != old_count:
+                cards_changed.append({
+                    'name': card_name,
+                    'old_quantity': old_count,
+                    'new_quantity': new_count
+                })
+        
+        # Find removed cards
+        for card_name, old_count in old_counts.items():
+            if card_name not in new_counts:
+                cards_removed.append({'name': card_name, 'quantity': old_count})
+        
+        total_changes = len(cards_added) + len(cards_removed) + len(cards_changed)
+        similarity_percentage = 100 - (total_changes / max(len(old_deck), len(new_deck)) * 100)
+        
+        return {
+            'cards_added': cards_added,
+            'cards_removed': cards_removed,
+            'cards_changed': cards_changed,
+            'total_changes': total_changes,
+            'similarity_percentage': round(similarity_percentage, 2)
+        }

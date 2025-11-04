@@ -647,6 +647,46 @@ def simulate_combat():
             'error': 'Failed to simulate combat. Please try again.'
         }), 400
 
+@app.route('/api/suggest-improvements', methods=['POST'])
+def suggest_deck_improvements():
+    """Suggest improvements for an existing deck"""
+    data = request.json
+    deck = data.get('deck')
+    
+    if not deck:
+        return jsonify({
+            'success': False,
+            'error': 'Deck is required'
+        }), 400
+    
+    # Validate deck structure
+    if 'leader' not in deck or 'main_deck' not in deck:
+        return jsonify({
+            'success': False,
+            'error': 'Deck must include leader and main_deck'
+        }), 400
+    
+    try:
+        # Get user's collection if authenticated
+        owned_cards = {}
+        if current_user.is_authenticated:
+            collection = UserCollection.query.filter_by(user_id=current_user.id).all()
+            owned_cards = {item.card_name: item.quantity for item in collection}
+        
+        # Generate improvement suggestions
+        improvements = deck_builder.suggest_improvements(deck, owned_cards)
+        
+        return jsonify({
+            'success': True,
+            'improvements': improvements
+        })
+    except Exception as e:
+        logger.error(f"Error suggesting improvements: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to generate improvement suggestions. Please try again.'
+        }), 400
+
 if __name__ == '__main__':
     # Only enable debug mode in development
     debug_mode = os.environ.get('FLASK_ENV') == 'development'
