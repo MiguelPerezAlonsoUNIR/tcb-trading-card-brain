@@ -240,6 +240,23 @@ class CombatSimulator:
                 my_board.append(deepcopy(card))
                 hand.remove(card)
                 my_don -= card.get('cost', 0)
+                
+                # Handle "On Play" effects
+                effect = card.get('effect', '').lower()
+                if 'on play' in effect:
+                    # Deal damage to opponent's leader
+                    if 'deal 1 damage' in effect:
+                        if is_player1:
+                            state.player2_life -= 1
+                        else:
+                            state.player1_life -= 1
+                    # KO opponent's character effects (simplified - KO lowest power)
+                    elif 'ko' in effect and opp_board:
+                        # Find characters that match the KO condition
+                        if 'cost of 3 or less' in effect:
+                            targets = [c for c in opp_board if c.get('cost', 0) <= 3]
+                            if targets:
+                                opp_board.remove(targets[0])
         
         # Update DON!!
         if is_player1:
