@@ -24,8 +24,8 @@ STRUCTURE_DECKS = {
             'Thriller Bark': 2,
             'Going Merry': 2,
             # Fill remaining slots with common red cards
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -49,11 +49,11 @@ STRUCTURE_DECKS = {
             'Going Merry': 2,
             'Thriller Bark': 2,
             # Fill remaining slots
-            'Basil Hawkins': 3,
-            'Scratchmen Apoo': 3,
+            'Basil Hawkins': 4,
+            'Scratchmen Apoo': 4,
             'Urouge': 3,
             'Tashigi': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-03': {
@@ -74,11 +74,11 @@ STRUCTURE_DECKS = {
             'Going Merry': 2,
             'Thriller Bark': 2,
             # Fill remaining slots
-            'Jinbe': 3,
-            'Gecko Moria': 3,
+            'Jinbe': 4,
+            'Gecko Moria': 4,
             'Bartholomew Kuma': 3,
             'Thunder Bolt Tempo': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-04': {
@@ -99,11 +99,11 @@ STRUCTURE_DECKS = {
             'Going Merry': 2,
             'Thriller Bark': 2,
             # Fill remaining slots
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-05': {
@@ -123,8 +123,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -147,11 +147,11 @@ STRUCTURE_DECKS = {
             'Meteor Volcano': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Issho': 3,
-            'Borsalino': 3,
+            'Issho': 4,
+            'Borsalino': 4,
             'Bartholomew Kuma': 3,
             'Gamma Knife': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-07': {
@@ -170,12 +170,12 @@ STRUCTURE_DECKS = {
             'Mochi Thrust': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Borsalino': 3,
-            'Issho': 3,
+            'Borsalino': 4,
+            'Issho': 4,
             'Boro Breath': 3,
             'Thunder Bagua': 3,
             'Radical Beam': 4,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-08': {
@@ -195,8 +195,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -219,11 +219,11 @@ STRUCTURE_DECKS = {
             'Shambles': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Basil Hawkins': 3,
-            'Scratchmen Apoo': 3,
+            'Basil Hawkins': 4,
+            'Scratchmen Apoo': 4,
             'Urouge': 3,
             'Tashigi': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-10': {
@@ -243,8 +243,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -267,11 +267,11 @@ STRUCTURE_DECKS = {
             'Soul Pocus': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-12': {
@@ -291,11 +291,11 @@ STRUCTURE_DECKS = {
             'Black Blade': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jinbe': 3,
-            'Gecko Moria': 3,
+            'Jinbe': 4,
+            'Gecko Moria': 4,
             'Bartholomew Kuma': 3,
             'Thunder Bolt Tempo': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-13': {
@@ -315,8 +315,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -339,11 +339,11 @@ STRUCTURE_DECKS = {
             'Meteor Volcano': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Issho': 3,
-            'Borsalino': 3,
+            'Issho': 4,
+            'Borsalino': 4,
             'Bartholomew Kuma': 3,
             'Gamma Knife': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-15': {
@@ -362,12 +362,12 @@ STRUCTURE_DECKS = {
             'Mochi Thrust': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Borsalino': 3,
-            'Issho': 3,
+            'Borsalino': 4,
+            'Issho': 4,
             'Boro Breath': 3,
             'Thunder Bagua': 3,
             'Radical Beam': 4,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-16': {
@@ -387,8 +387,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -411,11 +411,11 @@ STRUCTURE_DECKS = {
             'Shambles': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Basil Hawkins': 3,
-            'Scratchmen Apoo': 3,
+            'Basil Hawkins': 4,
+            'Scratchmen Apoo': 4,
             'Urouge': 3,
             'Tashigi': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-18': {
@@ -435,11 +435,11 @@ STRUCTURE_DECKS = {
             'Black Blade': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jinbe': 3,
-            'Gecko Moria': 3,
+            'Jinbe': 4,
+            'Gecko Moria': 4,
             'Bartholomew Kuma': 3,
             'Thunder Bolt Tempo': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-19': {
@@ -459,11 +459,11 @@ STRUCTURE_DECKS = {
             'Soul Pocus': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-20': {
@@ -483,11 +483,11 @@ STRUCTURE_DECKS = {
             'Meteor Volcano': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Issho': 3,
-            'Borsalino': 3,
+            'Issho': 4,
+            'Borsalino': 4,
             'Bartholomew Kuma': 3,
             'Gamma Knife': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
 }
@@ -518,8 +518,8 @@ for i in range(21, 29):
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -536,11 +536,11 @@ for i in range(21, 29):
             'Shambles': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Basil Hawkins': 3,
-            'Scratchmen Apoo': 3,
+            'Basil Hawkins': 4,
+            'Scratchmen Apoo': 4,
             'Urouge': 3,
             'Tashigi': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     elif color == 'Blue':
         cards = {
@@ -554,11 +554,11 @@ for i in range(21, 29):
             'Black Blade': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jinbe': 3,
-            'Gecko Moria': 3,
+            'Jinbe': 4,
+            'Gecko Moria': 4,
             'Bartholomew Kuma': 3,
             'Thunder Bolt Tempo': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     elif color == 'Purple':
         cards = {
@@ -572,11 +572,11 @@ for i in range(21, 29):
             'Soul Pocus': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     elif color == 'Black':
         cards = {
@@ -590,11 +590,11 @@ for i in range(21, 29):
             'Meteor Volcano': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Issho': 3,
-            'Borsalino': 3,
+            'Issho': 4,
+            'Borsalino': 4,
             'Bartholomew Kuma': 3,
             'Gamma Knife': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     else:  # Yellow
         cards = {
@@ -607,12 +607,12 @@ for i in range(21, 29):
             'Mochi Thrust': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Borsalino': 3,
-            'Issho': 3,
+            'Borsalino': 4,
+            'Issho': 4,
             'Boro Breath': 3,
             'Thunder Bagua': 3,
             'Radical Beam': 4,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     
     STRUCTURE_DECKS[code] = {
