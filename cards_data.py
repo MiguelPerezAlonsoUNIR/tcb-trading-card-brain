@@ -624,4 +624,271 @@ ONEPIECE_CARDS = [
         'rarity': 'Rare',
         'image_url': get_card_image_url('OP01', '024')
     },
+    
+    # Additional Red cards to reach 50-card deck capacity
+    {
+        'name': 'Marco',
+        'type': 'Character',
+        'colors': ['Red'],
+        'power': 5000,
+        'cost': 5,
+        'attribute': 'Special',
+        'effect': 'On Play: Give this Character +2000 power during this turn.',
+        'set': 'OP02',
+        'card_number': '013',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP02', '013')
+    },
+    {
+        'name': 'Red Hawk',
+        'type': 'Event',
+        'colors': ['Red'],
+        'cost': 3,
+        'effect': 'Deal 5000 damage to 1 of your opponent\'s Characters.',
+        'set': 'ST01',
+        'card_number': '014',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST01', '014')
+    },
+    
+    # Additional Blue cards to reach 50-card deck capacity
+    {
+        'name': 'Jinbe',
+        'type': 'Character',
+        'colors': ['Blue'],
+        'power': 5000,
+        'cost': 4,
+        'attribute': 'Strike',
+        'effect': 'Blocker. When this Character blocks, it gains +1000 power.',
+        'set': 'OP01',
+        'card_number': '025',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '025')
+    },
+    {
+        'name': 'Fishman Karate',
+        'type': 'Event',
+        'colors': ['Blue'],
+        'cost': 2,
+        'effect': 'Return 1 Character with 4000 power or less to its owner\'s hand.',
+        'set': 'ST03',
+        'card_number': '015',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST03', '015')
+    },
+    {
+        'name': 'Arlong',
+        'type': 'Character',
+        'colors': ['Blue'],
+        'power': 4000,
+        'cost': 3,
+        'attribute': 'Strike',
+        'effect': 'On Play: Draw 1 card if you have 3 or fewer cards in hand.',
+        'set': 'OP01',
+        'card_number': '026',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('OP01', '026')
+    },
+    {
+        'name': 'Water Shot',
+        'type': 'Event',
+        'colors': ['Blue'],
+        'cost': 1,
+        'effect': 'Draw 2 cards, then place 1 card from your hand on top of your deck.',
+        'set': 'ST03',
+        'card_number': '016',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST03', '016')
+    },
+    
+    # Additional Green cards to reach 50-card deck capacity
+    {
+        'name': 'Sanji',
+        'type': 'Character',
+        'colors': ['Green'],
+        'power': 5000,
+        'cost': 4,
+        'attribute': 'Strike',
+        'effect': 'Rush. On Play: You may trash 1 card from your hand to give this Character +2000 power during this turn.',
+        'set': 'ST02',
+        'card_number': '012',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST02', '012')
+    },
+    {
+        'name': 'Diable Jambe',
+        'type': 'Event',
+        'colors': ['Green'],
+        'cost': 2,
+        'effect': 'Give 1 of your Characters +3000 power during this turn.',
+        'set': 'ST02',
+        'card_number': '013',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST02', '013')
+    },
+    {
+        'name': 'Killer',
+        'type': 'Character',
+        'colors': ['Green'],
+        'power': 4000,
+        'cost': 3,
+        'attribute': 'Slash',
+        'effect': 'On K.O.: Draw 1 card.',
+        'set': 'OP01',
+        'card_number': '027',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('OP01', '027')
+    },
+    {
+        'name': 'Oden Two-Sword Style',
+        'type': 'Event',
+        'colors': ['Green'],
+        'cost': 4,
+        'effect': 'KO 1 of your opponent\'s Characters with 6000 power or less.',
+        'set': 'ST02',
+        'card_number': '014',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST02', '014')
+    },
+    {
+        'name': 'Brook',
+        'type': 'Character',
+        'colors': ['Green'],
+        'power': 3000,
+        'cost': 2,
+        'attribute': 'Slash',
+        'effect': 'On Play: Look at the top 2 cards of your deck and put them back in any order.',
+        'set': 'OP01',
+        'card_number': '028',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('OP01', '028')
+    },
+    
+    # Additional Red cards (continued)
+    {
+        'name': 'Gum-Gum Red Hawk',
+        'type': 'Event',
+        'colors': ['Red'],
+        'cost': 4,
+        'effect': 'KO 1 of your opponent\'s Characters with 6000 power or less.',
+        'set': 'ST01',
+        'card_number': '015',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST01', '015')
+    },
+    
+    # Additional Blue cards (continued)
+    {
+        'name': 'Hody Jones',
+        'type': 'Character',
+        'colors': ['Blue'],
+        'power': 5000,
+        'cost': 5,
+        'attribute': 'Strike',
+        'effect': 'On Play: Return up to 1 Character with cost 3 or less to its owner\'s hand.',
+        'set': 'OP01',
+        'card_number': '030',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('OP01', '030')
+    },
+    {
+        'name': 'Coup de Burst',
+        'type': 'Event',
+        'colors': ['Blue'],
+        'cost': 3,
+        'effect': 'Return 1 Character with cost 5 or less to its owner\'s hand.',
+        'set': 'ST03',
+        'card_number': '017',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST03', '017')
+    },
+    
+    # Additional Green cards (continued)
+    {
+        'name': 'Punk Gibson',
+        'type': 'Event',
+        'colors': ['Green'],
+        'cost': 3,
+        'effect': 'Give 1 of your Characters +4000 power during this turn.',
+        'set': 'ST02',
+        'card_number': '015',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST02', '015')
+    },
+    
+    # Additional Purple cards to reach 50-card deck capacity
+    {
+        'name': 'King',
+        'type': 'Character',
+        'colors': ['Purple'],
+        'power': 6000,
+        'cost': 6,
+        'attribute': 'Strike',
+        'effect': 'Rush. This Character cannot be KO\'d by effects.',
+        'set': 'ST04',
+        'card_number': '016',
+        'rarity': 'Super Rare',
+        'image_url': get_card_image_url('ST04', '016')
+    },
+    {
+        'name': 'Queen',
+        'type': 'Character',
+        'colors': ['Purple'],
+        'power': 5000,
+        'cost': 5,
+        'attribute': 'Special',
+        'effect': 'On Play: Trash the top 3 cards of your deck. Then add 1 Character with cost 4 or less from your trash to your hand.',
+        'set': 'ST04',
+        'card_number': '017',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST04', '017')
+    },
+    {
+        'name': 'Jack',
+        'type': 'Character',
+        'colors': ['Purple'],
+        'power': 5000,
+        'cost': 4,
+        'attribute': 'Strike',
+        'effect': 'On Play: KO 1 of your opponent\'s Characters with 4000 power or less.',
+        'set': 'ST04',
+        'card_number': '018',
+        'rarity': 'Rare',
+        'image_url': get_card_image_url('ST04', '018')
+    },
+    {
+        'name': 'Ragnarok',
+        'type': 'Event',
+        'colors': ['Purple'],
+        'cost': 3,
+        'effect': 'KO 1 of your opponent\'s Characters with 5000 power or less.',
+        'set': 'ST04',
+        'card_number': '019',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('ST04', '019')
+    },
+    {
+        'name': 'X Drake',
+        'type': 'Character',
+        'colors': ['Purple'],
+        'power': 4000,
+        'cost': 3,
+        'attribute': 'Strike',
+        'effect': 'Blocker.',
+        'set': 'OP01',
+        'card_number': '029',
+        'rarity': 'Common',
+        'image_url': get_card_image_url('OP01', '029')
+    },
+    {
+        'name': 'Thunder Bagua',
+        'type': 'Event',
+        'colors': ['Purple'],
+        'cost': 2,
+        'effect': 'Give 1 of your Characters +2000 power during this turn. Draw 1 card.',
+        'set': 'ST04',
+        'card_number': '020',
+        'rarity': 'Uncommon',
+        'image_url': get_card_image_url('ST04', '020')
+    },
 ]
