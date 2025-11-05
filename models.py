@@ -115,7 +115,12 @@ class CardSet(db.Model):
         return f'<CardSet {self.code}: {self.name}>'
 
 class Card(db.Model):
-    """Trading card information"""
+    """Trading card information
+    
+    Note: Colors are stored as JSON strings for simplicity. For production systems with
+    large datasets, consider using SQLAlchemy's JSON column type or a many-to-many
+    relationship table for better query performance and normalization.
+    """
     __tablename__ = 'cards'
     
     id = db.Column(db.Integer, primary_key=True)

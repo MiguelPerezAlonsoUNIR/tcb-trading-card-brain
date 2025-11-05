@@ -711,6 +711,8 @@ def list_all_cards():
     
     if color:
         # Filter by color (stored as JSON array)
+        # Note: This uses LIKE with quotes to match exact color names in JSON array
+        # e.g., '["Red", "Blue"]' will match '"Red"' but not 'Bred'
         query = query.filter(Card.colors.like(f'%"{color}"%'))
     
     if set_code:

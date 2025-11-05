@@ -308,13 +308,23 @@ python test_auth.py
 
 Potential improvements to the card database system:
 
-1. **Card versioning** - Track different versions/printings of the same card
-2. **Card legality** - Mark cards as legal/banned for different formats
-3. **Advanced search** - Full-text search on card effects
-4. **Price tracking** - Store and track card market prices
-5. **Card images** - Store images locally or integrate with card image APIs
-6. **Import/export** - Bulk import from CSV/JSON files
-7. **Multi-TCG support** - Extend to support multiple trading card games
+1. **Normalized color storage** - Replace JSON string with a many-to-many relationship table for better query performance and data normalization
+2. **SQLAlchemy JSON column type** - Use native JSON column type for databases that support it (PostgreSQL, MySQL 5.7+)
+3. **Card versioning** - Track different versions/printings of the same card
+4. **Card legality** - Mark cards as legal/banned for different formats
+5. **Advanced search** - Full-text search on card effects
+6. **Price tracking** - Store and track card market prices
+7. **Card images** - Store images locally or integrate with card image APIs
+8. **Import/export** - Bulk import from CSV/JSON files
+9. **Multi-TCG support** - Extend to support multiple trading card games
+
+### Note on Current Color Storage
+
+Colors are currently stored as JSON strings (e.g., `'["Red", "Blue"]'`) for simplicity and to maintain compatibility with the existing card data structure. While this works well for small to medium datasets, production systems with large card collections may benefit from:
+
+- Using SQLAlchemy's JSON column type (supported in PostgreSQL, MySQL 5.7+, SQLite 3.9+)
+- Creating a separate `card_colors` table with a many-to-many relationship
+- This would enable more efficient querying and better normalization
 
 ## Troubleshooting
 
