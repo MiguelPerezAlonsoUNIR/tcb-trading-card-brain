@@ -180,7 +180,7 @@ Click "Export Deck" to download your deck list as a text file, perfect for:
 
 ## Project Structure
 
-The project has been refactored with a modular architecture for better maintainability. See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed documentation.
+The project has been refactored with a modular architecture for better maintainability. See [ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) for detailed documentation.
 
 ```
 tcb-trading-card-brain/
@@ -204,7 +204,12 @@ tcb-trading-card-brain/
 ├── requirements.txt           # Python dependencies
 ├── Dockerfile                 # Docker configuration
 ├── docker-compose.yml         # Docker Compose setup
-├── ARCHITECTURE.md            # Architecture documentation
+├── docs/                      # Documentation
+│   ├── architecture/         # Architecture docs
+│   ├── api/                  # API & database docs
+│   ├── features/             # Feature documentation
+│   ├── guides/               # User & developer guides
+│   └── development/          # Development history
 └── README.md                  # This file
 ```
 
@@ -216,7 +221,7 @@ tcb-trading-card-brain/
 - **Blueprint Pattern**: API routes organized by domain
 - **Backwards Compatible**: Existing code still works with compatibility wrappers
 
-For details on the architecture, design patterns, and development guidelines, see [ARCHITECTURE.md](ARCHITECTURE.md).
+For details on the architecture, design patterns, and development guidelines, see [ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md).
 
 ## API Endpoints
 
