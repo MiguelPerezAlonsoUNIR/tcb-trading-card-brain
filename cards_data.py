@@ -9,17 +9,17 @@ CARD_TYPES = ['Leader', 'Character', 'Event', 'Stage']
 # Available colors in One Piece TCG
 COLORS = ['Red', 'Blue', 'Green', 'Purple', 'Black', 'Yellow']
 
-# Base URL for card images - using a public One Piece TCG image API
-# Format: {BASE_IMAGE_URL}/{set}-{card_id}.jpg
-BASE_IMAGE_URL = 'https://en.onepiece-cardgame.com/images/cardlist'
+# Base URL for card images - using the official One Piece TCG card list
+# Format: {BASE_IMAGE_URL}/card_{set}-{card_id}.png
+BASE_IMAGE_URL = 'https://en.onepiece-cardgame.com/cardlist/img'
 
 def get_card_image_url(card_set, card_number):
     """
     Generate image URL for a card based on set and card number
     Falls back to a placeholder if image is not available
     """
-    # Format: OP01-001.png for card number 001 from set OP01
-    return f"{BASE_IMAGE_URL}/{card_set}-{card_number}.png"
+    # Format: card_OP01-001.png for card number 001 from set OP01
+    return f"{BASE_IMAGE_URL}/card_{card_set}-{card_number}.png"
 
 # Sample One Piece TCG cards database
 ONEPIECE_CARDS = [
