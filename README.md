@@ -157,6 +157,20 @@ After building a deck, click "Analyze Deck" to receive:
 - Color balance assessment
 - AI-powered suggestions for improvement
 
+### Improving Your Deck
+
+After viewing a deck, you can request improvement suggestions:
+1. Click "Suggest Improvements" to get three optimized variations:
+   - **Balanced Deck**: Optimized for versatile gameplay with 65% characters, 30% events, and 5% stages
+   - **Aggressive Deck**: Optimized for early pressure with 75% low-cost characters for fast gameplay
+   - **Tournament Deck**: Optimized based on competitive patterns with balanced cost curves proven in tournament play
+2. Each suggestion shows:
+   - Complete deck list with your chosen leader
+   - Description of the improvement strategy
+   - Changes from your current deck
+   - Collection coverage (if logged in) showing which cards you already own
+3. You can save any suggested improvement as a new deck
+
 ### Exporting Your Deck
 
 Click "Export Deck" to download your deck list as a text file, perfect for:
@@ -293,6 +307,25 @@ Analyzes a deck and provides suggestions
   "deck": [array of card objects]
 }
 ```
+
+#### POST /api/suggest-improvements
+Suggests three improved deck variations (balanced, aggressive, tournament-competitive)
+```json
+{
+  "deck": {
+    "leader": {leader card object},
+    "main_deck": [array of card objects],
+    "strategy": "string",
+    "color": "string"
+  }
+}
+```
+
+Returns three improved deck variations with:
+- Complete deck list for each improvement type
+- Description of optimization strategy
+- Changes from original deck
+- Collection coverage (if authenticated)
 
 ## One Piece TCG Rules Compliance
 
