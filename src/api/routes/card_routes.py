@@ -4,8 +4,11 @@ Handles card database operations and admin endpoints
 """
 from flask import Blueprint, request, jsonify
 from datetime import datetime
+import logging
 
 from ...services import CardService
+
+logger = logging.getLogger(__name__)
 
 card_bp = Blueprint('cards', __name__)
 
@@ -83,9 +86,10 @@ def update_card(card_id):
     success, error = CardService.update_card(card, **data)
     
     if not success:
+        logger.error(f"Card update error for card {card_id}: {error}")
         return jsonify({
             'success': False,
-            'error': error
+            'error': 'Failed to update card. Please try again.'
         }), 500
     
     return jsonify({
@@ -109,9 +113,10 @@ def delete_card(card_id):
     success, error = CardService.delete_card(card)
     
     if not success:
+        logger.error(f"Card deletion error: {error}")
         return jsonify({
             'success': False,
-            'error': error
+            'error': 'Failed to delete card. Please try again.'
         }), 500
     
     return jsonify({
@@ -158,6 +163,13 @@ def add_card_set():
     )
     
     if not success:
+        logger.error(f"Card set creation error: {error}")
+        # Don't expose internal errors
+        if 'Failed to add card set:' in str(error):
+            return jsonify({
+                'success': False,
+                'error': 'Failed to add card set. Please try again.'
+            }), 500
         return jsonify({
             'success': False,
             'error': error

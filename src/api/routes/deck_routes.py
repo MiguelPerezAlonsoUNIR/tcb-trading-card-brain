@@ -4,10 +4,13 @@ Handles deck CRUD operations
 """
 from flask import Blueprint, request, jsonify
 from flask_login import current_user
+import logging
 
 from ...services import DeckService
 from ...core.constants import API_MESSAGES
 from ..utils import login_required_api
+
+logger = logging.getLogger(__name__)
 
 deck_bp = Blueprint('decks', __name__)
 
@@ -38,6 +41,13 @@ def manage_decks():
         )
         
         if not success:
+            logger.error(f"Deck creation error: {error}")
+            # Return generic error for internal failures
+            if 'Failed to save deck:' in str(error):
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to save deck. Please try again.'
+                }), 500
             return jsonify({
                 'success': False,
                 'error': error
@@ -96,9 +106,10 @@ def manage_single_deck(deck_id):
         success, error = DeckService.delete_deck(deck)
         
         if not success:
+            logger.error(f"Deck deletion error: {error}")
             return jsonify({
                 'success': False,
-                'error': error
+                'error': 'Failed to delete deck. Please try again.'
             }), 500
         
         return jsonify({

@@ -19,6 +19,15 @@ RARITIES = ['Common', 'Uncommon', 'Rare', 'Super Rare', 'Secret Rare', 'Leader']
 MIN_USERNAME_LENGTH = 3
 MIN_PASSWORD_LENGTH = 6
 
+
+def get_auth_error_message(error_type: str) -> str:
+    """Get authentication error messages with dynamic values"""
+    messages = {
+        'USERNAME_TOO_SHORT': f'Username must be at least {MIN_USERNAME_LENGTH} characters',
+        'PASSWORD_TOO_SHORT': f'Password must be at least {MIN_PASSWORD_LENGTH} characters',
+    }
+    return messages.get(error_type, '')
+
 # Deck building strategies configuration
 STRATEGY_CONFIG = {
     'aggressive': {
@@ -54,8 +63,8 @@ API_MESSAGES = {
     'INVALID_CREDENTIALS': 'Invalid username or password',
     'USERNAME_EXISTS': 'Username already exists',
     'USERNAME_REQUIRED': 'Username and password are required',
-    'USERNAME_TOO_SHORT': f'Username must be at least {MIN_USERNAME_LENGTH} characters',
-    'PASSWORD_TOO_SHORT': f'Password must be at least {MIN_PASSWORD_LENGTH} characters',
+    'USERNAME_TOO_SHORT': 'Username is too short',
+    'PASSWORD_TOO_SHORT': 'Password is too short',
     'DECK_NAME_REQUIRED': 'Deck name is required',
     'DECK_NOT_FOUND': 'Deck not found',
     'CARD_NAME_REQUIRED': 'Card name is required',

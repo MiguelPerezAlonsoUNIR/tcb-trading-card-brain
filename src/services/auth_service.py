@@ -7,7 +7,7 @@ from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from ..models import db, User
-from ..core.constants import MIN_USERNAME_LENGTH, MIN_PASSWORD_LENGTH
+from ..core.constants import MIN_USERNAME_LENGTH, MIN_PASSWORD_LENGTH, get_auth_error_message
 
 
 class AuthService:
@@ -32,7 +32,7 @@ class AuthService:
         if not username:
             return False, 'Username is required'
         if len(username) < MIN_USERNAME_LENGTH:
-            return False, f'Username must be at least {MIN_USERNAME_LENGTH} characters'
+            return False, get_auth_error_message('USERNAME_TOO_SHORT')
         return True, None
     
     @staticmethod
@@ -41,7 +41,7 @@ class AuthService:
         if not password:
             return False, 'Password is required'
         if len(password) < MIN_PASSWORD_LENGTH:
-            return False, f'Password must be at least {MIN_PASSWORD_LENGTH} characters'
+            return False, get_auth_error_message('PASSWORD_TOO_SHORT')
         return True, None
     
     @staticmethod

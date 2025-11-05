@@ -4,11 +4,14 @@ Handles user card collection operations
 """
 from flask import Blueprint, request, jsonify
 from flask_login import current_user
+import logging
 
 from ...services import CollectionService
 from ...core.constants import API_MESSAGES
 from ..utils import login_required_api
 from structure_decks import get_structure_deck_cards
+
+logger = logging.getLogger(__name__)
 
 collection_bp = Blueprint('collection', __name__)
 
@@ -36,6 +39,13 @@ def manage_collection():
         )
         
         if not success:
+            logger.error(f"Collection update error: {error}")
+            # Return generic error for internal failures
+            if 'Failed to update collection:' in str(error):
+                return jsonify({
+                    'success': False,
+                    'error': 'Failed to update collection. Please try again.'
+                }), 500
             return jsonify({
                 'success': False,
                 'error': error
@@ -55,6 +65,9 @@ def remove_from_collection(item_id):
     
     if not success:
         status_code = 404 if error == API_MESSAGES['COLLECTION_ITEM_NOT_FOUND'] else 500
+        if status_code == 500:
+            logger.error(f"Collection removal error: {error}")
+            error = 'Failed to remove from collection. Please try again.'
         return jsonify({
             'success': False,
             'error': error
@@ -91,9 +104,10 @@ def add_structure_deck_to_collection():
     )
     
     if not success:
+        logger.error(f"Structure deck addition error: {error}")
         return jsonify({
             'success': False,
-            'error': error
+            'error': 'Failed to add structure deck to collection. Please try again.'
         }), 500
     
     return jsonify({

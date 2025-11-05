@@ -4,9 +4,12 @@ Handles user registration, login, and logout
 """
 from flask import Blueprint, request, jsonify
 from flask_login import current_user
+import logging
 
 from ...services import AuthService
 from ...core.constants import API_MESSAGES
+
+logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -21,6 +24,13 @@ def register():
     success, user, error = AuthService.register_user(username, password)
     
     if not success:
+        # Log detailed error but return generic message for unexpected errors
+        if 'Failed to register user:' in str(error):
+            logger.error(f"Registration error: {error}")
+            return jsonify({
+                'success': False,
+                'error': 'Failed to register user. Please try again.'
+            }), 500
         return jsonify({
             'success': False,
             'error': error
@@ -66,9 +76,10 @@ def logout():
     success, error = AuthService.logout_current_user()
     
     if not success:
+        logger.error(f"Logout error: {error}")
         return jsonify({
             'success': False,
-            'error': error
+            'error': 'Failed to logout. Please try again.'
         }), 500
     
     return jsonify({

@@ -152,4 +152,4 @@ class CollectionService:
             }, None
         except Exception as e:
             db.session.rollback()
-            return False, {}, f'Failed to add structure deck: {str(e)}'
+            return False, None, f'Failed to add structure deck: {str(e)}'

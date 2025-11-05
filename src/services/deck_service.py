@@ -64,7 +64,10 @@ class DeckService:
         """
         try:
             if name is not None:
-                deck.name = name.strip()
+                name_stripped = name.strip()
+                if not name_stripped:
+                    return False, 'Deck name cannot be empty'
+                deck.name = name_stripped
             if strategy is not None:
                 deck.strategy = strategy
             if color is not None:
