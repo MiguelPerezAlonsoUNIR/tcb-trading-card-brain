@@ -14,11 +14,12 @@ def test_deck_builder():
     print("=" * 60)
     
     builder = OnePieceDeckBuilder()
-    print(f"\n✓ Deck builder initialized with {len(builder.cards)} cards")
-    print(f"  - Leaders: {len([c for c in builder.cards if c['type'] == 'Leader'])}")
-    print(f"  - Characters: {len([c for c in builder.cards if c['type'] == 'Character'])}")
-    print(f"  - Events: {len([c for c in builder.cards if c['type'] == 'Event'])}")
-    print(f"  - Stages: {len([c for c in builder.cards if c['type'] == 'Stage'])}")
+    cards = builder.get_all_cards()
+    print(f"\n✓ Deck builder initialized with {len(cards)} cards")
+    print(f"  - Leaders: {len([c for c in cards if c['type'] == 'Leader'])}")
+    print(f"  - Characters: {len([c for c in cards if c['type'] == 'Character'])}")
+    print(f"  - Events: {len([c for c in cards if c['type'] == 'Event'])}")
+    print(f"  - Stages: {len([c for c in cards if c['type'] == 'Stage'])}")
     
     # Test 1: Balanced Red deck
     print("\n" + "-" * 60)

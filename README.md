@@ -353,26 +353,97 @@ The deck builder AI automatically enforces these rules:
 
 ## Extending the Application
 
-### Adding More Cards
+### Card Database Management
 
-Edit `cards_data.py` and add card objects to the `ONEPIECE_CARDS` list:
+The application uses a database to store all card information, making it easy to add new cards and expansions.
 
-```python
-{
-    'name': 'Card Name',
-    'type': 'Character|Event|Stage|Leader',
-    'colors': ['Red'],
-    'power': 5000,
-    'cost': 4,
-    'effect': 'Card effect text',
-    'set': 'OP01',
-    'card_number': '025',
-    'rarity': 'Common|Rare|Super Rare|Secret Rare',
-    'image_url': get_card_image_url('OP01', '025')
-}
+#### Initializing the Card Database
+
+When you first set up the application, run the initialization script to populate the database with existing cards:
+
+```bash
+python init_cards_db.py
 ```
 
-The `get_card_image_url()` function automatically generates the correct image URL based on the card set and number.
+This script will:
+- Create all necessary database tables
+- Import cards from `cards_data.py` into the database
+- Set up card sets (expansions)
+- Display statistics about the imported cards
+
+#### Adding New Cards via API
+
+You can add new cards using the API endpoints:
+
+**Add a new card:**
+```bash
+curl -X POST http://localhost:5000/api/admin/cards \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Card Name",
+    "type": "Character",
+    "colors": ["Red", "Blue"],
+    "power": 5000,
+    "cost": 4,
+    "attribute": "Strike",
+    "effect": "Card effect text",
+    "set": "OP03",
+    "card_number": "025",
+    "rarity": "Rare",
+    "image_url": "https://example.com/card.png"
+  }'
+```
+
+**Add a new card set (expansion):**
+```bash
+curl -X POST http://localhost:5000/api/admin/card-sets \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "OP03",
+    "name": "Pillars of Strength",
+    "release_date": "2024-03-01"
+  }'
+```
+
+#### Managing Cards
+
+The following admin API endpoints are available for card management:
+
+- `GET /api/admin/cards` - List all cards (with optional filtering by type, color, set)
+- `POST /api/admin/cards` - Add a new card
+- `PUT /api/admin/cards/<id>` - Update an existing card
+- `DELETE /api/admin/cards/<id>` - Delete a card
+- `GET /api/admin/card-sets` - List all card sets
+- `POST /api/admin/card-sets` - Add a new card set
+
+#### Database Schema
+
+The card database consists of three main tables:
+
+1. **card_sets** - Stores information about card sets/expansions
+   - `id`: Primary key
+   - `code`: Unique set code (e.g., "OP01", "ST01")
+   - `name`: Set name
+   - `release_date`: Release date (optional)
+
+2. **cards** - Stores all card information
+   - `id`: Primary key
+   - `name`: Card name
+   - `card_type`: Leader, Character, Event, or Stage
+   - `colors`: JSON array of colors
+   - `power`, `cost`, `life`: Card stats
+   - `attribute`: Strike, Slash, Special, etc.
+   - `effect`: Card effect text
+   - `set_id`: Foreign key to card_sets
+   - `card_number`: Card number within set
+   - `rarity`: Common, Rare, Super Rare, etc.
+   - `image_url`: URL to card image
+
+3. **user_collections** - Links users to cards they own
+
+### Legacy Card Data
+
+The `cards_data.py` file is still present for backward compatibility and serves as the initial data source. Once the database is initialized, all card data is loaded from the database.
 
 ### Adding New TCGs
 
