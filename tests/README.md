@@ -60,7 +60,22 @@ python tests/system/test_improvements_api.py
 
 ## Running All Tests
 
-### Run all unit tests:
+### Quick Start - Test Runner Script
+
+The easiest way to run all tests is using the test runner script:
+
+```bash
+bash run_tests.sh
+```
+
+This script will automatically:
+- Run all unit tests
+- Check if Flask is installed and run system tests if available
+- Display a summary with pass/fail counts
+
+### Manual Test Execution
+
+#### Run all unit tests:
 ```bash
 for test in tests/unit/test_*.py; do
     echo "Running $test..."
@@ -68,7 +83,7 @@ for test in tests/unit/test_*.py; do
 done
 ```
 
-### Run all system tests:
+#### Run all system tests:
 ```bash
 # Make sure dependencies are installed first
 pip install -r requirements.txt

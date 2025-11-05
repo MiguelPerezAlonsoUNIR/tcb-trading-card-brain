@@ -10,6 +10,21 @@ See `tests/README.md` for detailed information about test organization.
 
 ## Quick Test (No Dependencies Required)
 
+### Run All Tests with Helper Script
+
+The easiest way to run all tests is using the test runner script:
+
+```bash
+bash run_tests.sh
+```
+
+This script will:
+- Run all unit tests (no dependencies required)
+- Run system tests if Flask is installed
+- Display a summary of passed/failed tests
+
+### Run Individual Tests
+
 The core deck building logic can be tested without installing any dependencies:
 
 ```bash
@@ -24,7 +39,7 @@ This will run a comprehensive test suite that verifies:
 - Deck analysis functionality
 - Card copy limit enforcement
 
-### Run all unit tests:
+### Run all unit tests manually:
 ```bash
 for test in tests/unit/test_*.py; do
     echo "Running $test..."
