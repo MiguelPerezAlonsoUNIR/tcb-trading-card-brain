@@ -165,13 +165,13 @@ def test_add_structure_deck_twice():
         
         # Verify quantities doubled
         with app.app_context():
-            zoro = UserCollection.query.filter_by(
+            kid = UserCollection.query.filter_by(
                 user_id=user_id,
-                card_name='Roronoa Zoro'
+                card_name='Eustass Kid'
             ).first()
-            # ST-02 has Zoro as leader (quantity 1), so after adding twice we should have 2
-            assert zoro.quantity == 2, f"Zoro quantity should be 2, got {zoro.quantity}"
-            print(f"✓ Verified Zoro quantity doubled: {zoro.quantity}")
+            # ST-02 has Eustass Kid as leader (quantity 1), so after adding twice we should have 2
+            assert kid.quantity == 2, f"Eustass Kid quantity should be 2, got {kid.quantity}"
+            print(f"✓ Verified Eustass Kid quantity doubled: {kid.quantity}")
 
 def test_invalid_structure_deck():
     """Test adding an invalid structure deck"""
