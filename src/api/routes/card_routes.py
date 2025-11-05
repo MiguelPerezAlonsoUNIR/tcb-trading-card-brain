@@ -7,6 +7,7 @@ from datetime import datetime
 import logging
 
 from ...services import CardService
+from ..utils import safe_error_response
 
 logger = logging.getLogger(__name__)
 
@@ -86,11 +87,12 @@ def update_card(card_id):
     success, error = CardService.update_card(card, **data)
     
     if not success:
-        logger.error(f"Card update error for card {card_id}: {error}")
-        return jsonify({
-            'success': False,
-            'error': 'Failed to update card. Please try again.'
-        }), 500
+        return safe_error_response(
+            error,
+            'Failed to update card. Please try again.',
+            500,
+            f"Card update error for card {card_id}"
+        )
     
     return jsonify({
         'success': True,
@@ -113,11 +115,12 @@ def delete_card(card_id):
     success, error = CardService.delete_card(card)
     
     if not success:
-        logger.error(f"Card deletion error: {error}")
-        return jsonify({
-            'success': False,
-            'error': 'Failed to delete card. Please try again.'
-        }), 500
+        return safe_error_response(
+            error,
+            'Failed to delete card. Please try again.',
+            500,
+            f"Card deletion error for card {card_id}"
+        )
     
     return jsonify({
         'success': True,
@@ -163,17 +166,13 @@ def add_card_set():
     )
     
     if not success:
-        logger.error(f"Card set creation error: {error}")
-        # Don't expose internal errors
-        if 'Failed to add card set:' in str(error):
-            return jsonify({
-                'success': False,
-                'error': 'Failed to add card set. Please try again.'
-            }), 500
-        return jsonify({
-            'success': False,
-            'error': error
-        }), 400
+        status_code = 500 if 'Failed to add card set:' in str(error) else 400
+        return safe_error_response(
+            error,
+            'Failed to add card set. Please try again.',
+            status_code,
+            "Card set creation error"
+        )
     
     return jsonify({
         'success': True,

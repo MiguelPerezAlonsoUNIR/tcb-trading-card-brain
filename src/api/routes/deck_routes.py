@@ -8,7 +8,7 @@ import logging
 
 from ...services import DeckService
 from ...core.constants import API_MESSAGES
-from ..utils import login_required_api
+from ..utils import login_required_api, safe_error_response
 
 logger = logging.getLogger(__name__)
 
@@ -41,17 +41,13 @@ def manage_decks():
         )
         
         if not success:
-            logger.error(f"Deck creation error: {error}")
-            # Return generic error for internal failures
-            if 'Failed to save deck:' in str(error):
-                return jsonify({
-                    'success': False,
-                    'error': 'Failed to save deck. Please try again.'
-                }), 500
-            return jsonify({
-                'success': False,
-                'error': error
-            }), 400
+            status_code = 500 if 'Failed to save deck:' in str(error) else 400
+            return safe_error_response(
+                error,
+                'Failed to save deck. Please try again.',
+                status_code,
+                f"Deck creation error for user {current_user.id}"
+            )
         
         return jsonify({
             'success': True,
@@ -106,11 +102,12 @@ def manage_single_deck(deck_id):
         success, error = DeckService.delete_deck(deck)
         
         if not success:
-            logger.error(f"Deck deletion error: {error}")
-            return jsonify({
-                'success': False,
-                'error': 'Failed to delete deck. Please try again.'
-            }), 500
+            return safe_error_response(
+                error,
+                'Failed to delete deck. Please try again.',
+                500,
+                f"Deck deletion error for deck {deck_id}"
+            )
         
         return jsonify({
             'success': True

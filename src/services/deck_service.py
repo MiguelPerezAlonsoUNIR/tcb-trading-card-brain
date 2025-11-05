@@ -6,6 +6,7 @@ from typing import List, Dict, Optional, Tuple
 from datetime import datetime
 
 from ..models import db, Deck, User
+from ..core.constants import API_MESSAGES
 
 
 class DeckService:
@@ -32,7 +33,7 @@ class DeckService:
             (success, deck, error_message)
         """
         if not name or not name.strip():
-            return False, None, 'Deck name is required'
+            return False, None, API_MESSAGES['DECK_NAME_REQUIRED']
         
         try:
             deck = Deck(
@@ -66,7 +67,7 @@ class DeckService:
             if name is not None:
                 name_stripped = name.strip()
                 if not name_stripped:
-                    return False, 'Deck name cannot be empty'
+                    return False, API_MESSAGES['DECK_NAME_EMPTY']
                 deck.name = name_stripped
             if strategy is not None:
                 deck.strategy = strategy

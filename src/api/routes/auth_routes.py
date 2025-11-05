@@ -8,6 +8,7 @@ import logging
 
 from ...services import AuthService
 from ...core.constants import API_MESSAGES
+from ..utils import safe_error_response
 
 logger = logging.getLogger(__name__)
 
@@ -24,17 +25,14 @@ def register():
     success, user, error = AuthService.register_user(username, password)
     
     if not success:
-        # Log detailed error but return generic message for unexpected errors
-        if 'Failed to register user:' in str(error):
-            logger.error(f"Registration error: {error}")
-            return jsonify({
-                'success': False,
-                'error': 'Failed to register user. Please try again.'
-            }), 500
-        return jsonify({
-            'success': False,
-            'error': error
-        }), 400
+        # Use safe error response helper
+        status_code = 500 if 'Failed to register user:' in str(error) else 400
+        return safe_error_response(
+            error, 
+            'Failed to register user. Please try again.',
+            status_code,
+            f"Registration error for user: {username}"
+        )
     
     return jsonify({
         'success': True,

@@ -58,6 +58,7 @@ CHARACTER_ATTACK_LEADER_CHANCE = 0.7
 DEFAULT_SIMULATIONS = 1000
 
 # API Response messages
+# These are safe to expose to users
 API_MESSAGES = {
     'AUTH_REQUIRED': 'Authentication required',
     'INVALID_CREDENTIALS': 'Invalid username or password',
@@ -66,6 +67,7 @@ API_MESSAGES = {
     'USERNAME_TOO_SHORT': 'Username is too short',
     'PASSWORD_TOO_SHORT': 'Password is too short',
     'DECK_NAME_REQUIRED': 'Deck name is required',
+    'DECK_NAME_EMPTY': 'Deck name cannot be empty',
     'DECK_NOT_FOUND': 'Deck not found',
     'CARD_NAME_REQUIRED': 'Card name is required',
     'COLLECTION_ITEM_NOT_FOUND': 'Collection item not found',
@@ -82,3 +84,30 @@ API_MESSAGES = {
     'IMPROVEMENTS_FAILED': 'Failed to generate improvement suggestions. Please try again.',
     'COMBAT_SIMULATION_FAILED': 'Failed to simulate combat. Please try again.',
 }
+
+# Safe validation error prefixes (these are user-facing validation errors, safe to expose)
+SAFE_ERROR_PREFIXES = [
+    'Username',
+    'Password',
+    'Deck name',
+    'Card name',
+    'Invalid',
+    'required',
+    'not found',
+    'already exists',
+    'must be',
+    'cannot be empty',
+    'too short'
+]
+
+
+def is_safe_error_message(error: str) -> bool:
+    """Check if an error message is safe to expose to users"""
+    if not error:
+        return False
+    # Check if error is in our safe messages
+    if error in API_MESSAGES.values():
+        return True
+    # Check if error starts with a safe prefix
+    error_lower = error.lower()
+    return any(prefix.lower() in error_lower for prefix in SAFE_ERROR_PREFIXES)
