@@ -1090,6 +1090,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cancelStructureDeckBtn) {
         cancelStructureDeckBtn.addEventListener('click', () => closeModal('structure-deck-modal'));
     }
+    
+    const simulateStructureDeckBtn = document.getElementById('simulate-structure-deck-btn');
+    if (simulateStructureDeckBtn) {
+        simulateStructureDeckBtn.addEventListener('click', handleSimulateStructureDeck);
+    }
 });
 
 async function showStructureDecks() {
@@ -1248,5 +1253,48 @@ async function handleAddStructureDeck() {
         // Re-enable button
         addBtn.disabled = false;
         addBtn.textContent = 'Add to Collection';
+    }
+}
+
+async function handleSimulateStructureDeck() {
+    if (!currentStructureDeck) {
+        alert('No structure deck selected');
+        return;
+    }
+    
+    const errorDiv = document.getElementById('structure-deck-error');
+    const simulateBtn = document.getElementById('simulate-structure-deck-btn');
+    
+    // Disable button and show loading
+    simulateBtn.disabled = true;
+    simulateBtn.textContent = 'Loading...';
+    errorDiv.style.display = 'none';
+    
+    try {
+        // Convert structure deck to combat format
+        const response = await fetch(`/api/structure-decks/${currentStructureDeck.code}/convert`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Set the converted deck as current deck for simulation
+            currentDeck = data.deck;
+            
+            // Close structure deck modal
+            closeModal('structure-deck-modal');
+            
+            // Open simulation modal
+            await openSimulationModal();
+        } else {
+            errorDiv.textContent = data.error || 'Failed to prepare deck for simulation';
+            errorDiv.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error preparing structure deck for simulation:', error);
+        errorDiv.textContent = 'Failed to prepare deck for simulation. Please try again.';
+        errorDiv.style.display = 'block';
+    } finally {
+        // Re-enable button
+        simulateBtn.disabled = false;
+        simulateBtn.textContent = '⚔️ Simulate Combat';
     }
 }
