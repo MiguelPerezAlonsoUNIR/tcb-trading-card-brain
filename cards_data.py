@@ -627,16 +627,16 @@ ONEPIECE_CARDS = [
     
     # Additional Red cards to reach 50-card deck capacity
     {
-        'name': 'Portgas D. Ace',
+        'name': 'Marco',
         'type': 'Character',
         'colors': ['Red'],
-        'power': 6000,
+        'power': 5000,
         'cost': 5,
         'attribute': 'Special',
-        'effect': 'On Play: Deal 2000 damage to 1 of your opponent\'s Characters.',
+        'effect': 'On Play: Give this Character +2000 power during this turn.',
         'set': 'OP02',
         'card_number': '013',
-        'rarity': 'Super Rare',
+        'rarity': 'Rare',
         'image_url': get_card_image_url('OP02', '013')
     },
     {

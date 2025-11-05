@@ -524,13 +524,46 @@ class OnePieceDeckBuilder:
                     new_deck.append(card)
             attempts += 1
         
-        # Fill to exactly 50 if needed
+        # Fill to exactly 50 if needed, maintaining balanced distribution
         attempts = 0
         while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
-            if available_cards:
-                card = random.choice(available_cards)
-                if self._count_card_copies(new_deck, card) < self.max_copies:
-                    new_deck.append(card)
+            # Try to maintain the target ratios when filling
+            current_chars = sum(1 for c in new_deck if c['type'] == 'Character')
+            current_events = sum(1 for c in new_deck if c['type'] == 'Event')
+            current_stages = sum(1 for c in new_deck if c['type'] == 'Stage')
+            
+            # Determine what type to add based on current ratios
+            char_deficit = (self.deck_size * target_character_ratio) - current_chars
+            event_deficit = (self.deck_size * target_event_ratio) - current_events
+            stage_deficit = (self.deck_size * target_stage_ratio) - current_stages
+            
+            if char_deficit > 0 and characters:
+                addable = [c for c in characters if self._count_card_copies(new_deck, c) < self.max_copies]
+                if addable:
+                    new_deck.append(random.choice(addable))
+                    attempts += 1
+                    continue
+            if event_deficit > 0 and events:
+                addable = [c for c in events if self._count_card_copies(new_deck, c) < self.max_copies]
+                if addable:
+                    new_deck.append(random.choice(addable))
+                    attempts += 1
+                    continue
+            if stage_deficit > 0 and stages:
+                addable = [c for c in stages if self._count_card_copies(new_deck, c) < self.max_copies]
+                if addable:
+                    new_deck.append(random.choice(addable))
+                    attempts += 1
+                    continue
+            
+            # Fall back to any available card
+            addable_any = [
+                c for c in available_cards
+                if self._count_card_copies(new_deck, c) < self.max_copies
+            ]
+            if not addable_any:
+                break
+            new_deck.append(random.choice(addable_any))
             attempts += 1
         
         return {
@@ -590,13 +623,26 @@ class OnePieceDeckBuilder:
                     new_deck.append(card)
             attempts += 1
         
-        # Fill to exactly 50 if needed with any matching cards
+        # Fill to exactly 50 if needed, preferring characters to maintain aggressive style
         attempts = 0
         while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
-            if available_cards:
-                card = random.choice(available_cards)
-                if self._count_card_copies(new_deck, card) < self.max_copies:
-                    new_deck.append(card)
+            # First try to add any character (not just low-cost)
+            all_characters = [c for c in available_cards if c['type'] == 'Character']
+            addable_chars = [
+                c for c in all_characters
+                if self._count_card_copies(new_deck, c) < self.max_copies
+            ]
+            if addable_chars:
+                new_deck.append(random.choice(addable_chars))
+            else:
+                # Fall back to any card if no characters available
+                addable_any = [
+                    c for c in available_cards
+                    if self._count_card_copies(new_deck, c) < self.max_copies
+                ]
+                if not addable_any:
+                    break
+                new_deck.append(random.choice(addable_any))
             attempts += 1
         
         return {
@@ -677,13 +723,45 @@ class OnePieceDeckBuilder:
                     new_deck.append(card)
             attempts += 1
         
-        # Fill to exactly 50 if needed
+        # Fill to exactly 50 if needed, maintaining tournament-viable distribution
         attempts = 0
         while len(new_deck) < self.deck_size and attempts < self.max_improvement_attempts:
-            if available_cards:
-                card = random.choice(available_cards)
-                if self._count_card_copies(new_deck, card) < self.max_copies:
-                    new_deck.append(card)
+            # Try to maintain 65/30/5 distribution
+            current_chars = sum(1 for c in new_deck if c['type'] == 'Character')
+            current_events = sum(1 for c in new_deck if c['type'] == 'Event')
+            current_stages = sum(1 for c in new_deck if c['type'] == 'Stage')
+            
+            char_deficit = (self.deck_size * 0.65) - current_chars
+            event_deficit = (self.deck_size * 0.30) - current_events
+            stage_deficit = (self.deck_size * 0.05) - current_stages
+            
+            if char_deficit > 0 and characters:
+                addable = [c for c in characters if self._count_card_copies(new_deck, c) < self.max_copies]
+                if addable:
+                    new_deck.append(random.choice(addable))
+                    attempts += 1
+                    continue
+            if event_deficit > 0 and events:
+                addable = [c for c in events if self._count_card_copies(new_deck, c) < self.max_copies]
+                if addable:
+                    new_deck.append(random.choice(addable))
+                    attempts += 1
+                    continue
+            if stage_deficit > 0 and stages:
+                addable = [c for c in stages if self._count_card_copies(new_deck, c) < self.max_copies]
+                if addable:
+                    new_deck.append(random.choice(addable))
+                    attempts += 1
+                    continue
+            
+            # Fall back to any available card
+            addable_any = [
+                c for c in available_cards
+                if self._count_card_copies(new_deck, c) < self.max_copies
+            ]
+            if not addable_any:
+                break
+            new_deck.append(random.choice(addable_any))
             attempts += 1
         
         return {
