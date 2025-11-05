@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCB Trading Card Brain - Select Your Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>🎴 TCB Trading Card Brain</h1>
+                <p>AI-Powered Deck Building for Trading Card Games</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="tcg-selection">
+                <h2>Select Your Trading Card Game</h2>
+                <p class="section-description">Choose which deck builder you want to access</p>
+                
+                <div class="tcg-grid">
+                    <a href="/onepiece" class="tcg-card">
+                        <div class="tcg-icon">🏴‍☠️</div>
+                        <h3>One Piece TCG</h3>
+                        <p>Build optimized decks for the One Piece Trading Card Game</p>
+                        <div class="tcg-status active">Active</div>
+                    </a>
+
+                    <!-- Placeholder for future TCGs -->
+                    <div class="tcg-card coming-soon">
+                        <div class="tcg-icon">🎮</div>
+                        <h3>Coming Soon</h3>
+                        <p>More trading card games will be added in the future</p>
+                        <div class="tcg-status">Coming Soon</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>TCB Trading Card Brain - AI-Powered Deck Building</p>
+        </footer>
+    </div>
+</body>
+</html>

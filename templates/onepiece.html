@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece TCG Deck Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>🏴‍☠️ One Piece TCG Deck Builder</h1>
+                    <p>AI-Powered Deck Building for One Piece Trading Card Game</p>
+                </div>
+                <div class="header-right">
+                    <div id="auth-section">
+                        <button id="login-btn" class="btn btn-secondary">Login</button>
+                        <button id="register-btn" class="btn btn-secondary">Register</button>
+                    </div>
+                    <div id="user-section" style="display: none;">
+                        <span id="username-display"></span>
+                        <button id="my-decks-btn" class="btn btn-secondary">My Decks</button>
+                        <button id="my-collection-btn" class="btn btn-secondary">My Collection</button>
+                        <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="deck-builder">
+                <h2>Build Your Deck</h2>
+                <form id="deck-builder-form">
+                    <div class="form-group">
+                        <label for="strategy">Strategy:</label>
+                        <select id="strategy" name="strategy">
+                            <option value="balanced">Balanced</option>
+                            <option value="aggressive">Aggressive</option>
+                            <option value="control">Control</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Primary Color:</label>
+                        <select id="color" name="color">
+                            <option value="any">Any</option>
+                            <option value="Red">Red</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Green">Green</option>
+                            <option value="Purple">Purple</option>
+                            <option value="Black">Black</option>
+                            <option value="Yellow">Yellow</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="leader">Leader (Optional):</label>
+                        <input type="text" id="leader" name="leader" placeholder="e.g., Monkey D. Luffy">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Build Deck</button>
+                </form>
+            </section>
+
+            <section class="deck-display" id="deck-display" style="display: none;">
+                <h2>Your Deck</h2>
+                
+                <div class="leader-section">
+                    <h3>Leader</h3>
+                    <div id="leader-card" class="card-display"></div>
+                </div>
+
+                <div class="deck-stats">
+                    <h3>Deck Statistics</h3>
+                    <div id="deck-stats-content"></div>
+                </div>
+
+                <div class="main-deck">
+                    <h3>Main Deck (50 cards)</h3>
+                    <div class="card-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="Character">Characters</button>
+                        <button class="filter-btn" data-filter="Event">Events</button>
+                        <button class="filter-btn" data-filter="Stage">Stages</button>
+                    </div>
+                    <div id="main-deck-cards" class="cards-grid"></div>
+                </div>
+
+                <div class="deck-actions">
+                    <button id="simulate-combat-btn" class="btn btn-primary">⚔️ Simulation</button>
+                    <button id="analyze-deck-btn" class="btn btn-secondary">Analyze Deck</button>
+                    <button id="export-deck-btn" class="btn btn-secondary">Export Deck</button>
+                    <button id="save-deck-btn" class="btn btn-primary" style="display: none;">Save Deck</button>
+                </div>
+            </section>
+
+            <section class="user-decks-section" id="user-decks-section" style="display: none;">
+                <h2>My Saved Decks</h2>
+                <div id="saved-decks-list"></div>
+            </section>
+
+            <section class="user-collection-section" id="user-collection-section" style="display: none;">
+                <h2>My Card Collection</h2>
+                <div class="collection-actions">
+                    <button id="add-card-btn" class="btn btn-primary">Add Card to Collection</button>
+                    <button id="structure-decks-btn" class="btn btn-primary">Add Structure Deck</button>
+                    <button id="suggest-deck-btn" class="btn btn-primary">Suggest Deck from Collection</button>
+                </div>
+                <div id="collection-list"></div>
+            </section>
+
+            <section class="structure-decks-section" id="structure-decks-section" style="display: none;">
+                <h2>Structure Decks</h2>
+                <p class="section-description">Browse and add complete structure decks to your collection. When you add a structure deck, all cards from that deck will be added to your collection.</p>
+                <div class="structure-decks-filters">
+                    <label for="structure-deck-color-filter">Filter by Color:</label>
+                    <select id="structure-deck-color-filter">
+                        <option value="all">All Colors</option>
+                        <option value="Red">Red</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Green">Green</option>
+                        <option value="Purple">Purple</option>
+                        <option value="Black">Black</option>
+                        <option value="Yellow">Yellow</option>
+                    </select>
+                </div>
+                <div id="structure-decks-list" class="structure-decks-grid">
+                    <div class="loading">Loading structure decks...</div>
+                </div>
+                <button id="back-to-collection-btn" class="btn btn-secondary">Back to Collection</button>
+            </section>
+
+            <section class="analysis-section" id="analysis-section" style="display: none;">
+                <h2>Deck Analysis</h2>
+                <div id="analysis-content"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>One Piece TCG Deck Builder - Powered by AI</p>
+        </footer>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Username:</label>
+                    <input type="text" id="login-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <div id="login-error" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-username">Username:</label>
+                    <input type="text" id="register-username" name="username" required minlength="3">
+                    <small>At least 3 characters</small>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password:</label>
+                    <input type="password" id="register-password" name="password" required minlength="6">
+                    <small>At least 6 characters</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+                <div id="register-error" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Save Deck Modal -->
+    <div id="save-deck-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Save Deck</h2>
+            <form id="save-deck-form">
+                <div class="form-group">
+                    <label for="deck-name">Deck Name:</label>
+                    <input type="text" id="deck-name" name="name" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <div id="save-deck-error" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Card to Collection Modal -->
+    <div id="add-card-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Card to Collection</h2>
+            <form id="add-card-form">
+                <div class="form-group">
+                    <label for="card-name">Card Name:</label>
+                    <input type="text" id="card-name-input" name="card_name" required list="cards-list">
+                    <datalist id="cards-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="card-quantity">Quantity:</label>
+                    <input type="number" id="card-quantity" name="quantity" value="1" min="1" max="99">
+                </div>
+                <button type="submit" class="btn btn-primary">Add</button>
+                <div id="add-card-error" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Combat Simulation Modal -->
+    <div id="simulation-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2>⚔️ Combat Simulation</h2>
+            <p>Select an opponent deck to simulate combat and see how your deck performs!</p>
+            
+            <div id="opponent-selection" style="margin: 20px 0;">
+                <h3>Select Opponent Deck:</h3>
+                <div id="opponent-decks-list" class="opponent-decks-grid">
+                    <div class="loading">Loading opponent decks...</div>
+                </div>
+            </div>
+            
+            <div id="simulation-results" style="display: none;">
+                <h3>Simulation Results</h3>
+                <div id="simulation-stats" class="simulation-stats"></div>
+                <div id="simulation-insights" class="simulation-insights"></div>
+                <button id="run-another-simulation" class="btn btn-secondary">Run Another Simulation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Structure Deck Details Modal -->
+    <div id="structure-deck-modal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <span class="close">&times;</span>
+            <h2 id="structure-deck-modal-title">Structure Deck Details</h2>
+            <div id="structure-deck-details">
+                <div id="structure-deck-info"></div>
+                <div id="structure-deck-cards-list" class="structure-deck-cards"></div>
+            </div>
+            <div class="modal-actions">
+                <button id="add-structure-deck-confirm-btn" class="btn btn-primary">Add to Collection</button>
+                <button id="cancel-structure-deck-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+            <div id="structure-deck-error" class="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

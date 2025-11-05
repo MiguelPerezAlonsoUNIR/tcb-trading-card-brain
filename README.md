@@ -285,7 +285,10 @@ Build a deck based on user's collection
 ### Public Endpoints
 
 #### GET /
-Returns the main application interface
+Returns the landing page with TCG selection grid
+
+#### GET /onepiece
+Returns the One Piece TCG deck builder interface
 
 #### GET /api/cards
 Returns all available One Piece TCG cards with image URLs
