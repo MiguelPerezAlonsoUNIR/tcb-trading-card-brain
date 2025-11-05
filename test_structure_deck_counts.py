@@ -7,7 +7,7 @@ import sys
 from structure_decks import STRUCTURE_DECKS
 
 def test_all_structure_decks_have_50_cards():
-    """Verify that all structure decks have exactly 50 cards (excluding leader)"""
+    """Verify that all structure decks have exactly 50 cards total (including leader)"""
     print("\n" + "="*70)
     print("Testing Structure Deck Card Counts")
     print("="*70)
