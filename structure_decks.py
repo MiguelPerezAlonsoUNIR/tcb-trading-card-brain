@@ -500,7 +500,19 @@ STRUCTURE_DECKS = {
     },
 }
 
-# Generate ST-21 through ST-28 with variations
+# TODO: ST-21 through ST-28 need actual card data from official One Piece TCG website
+# Card lists can be found at: https://en.onepiece-cardgame.com/cardlist/?series=569XXX
+# where XXX is the structure deck number (e.g., ST-28 = 569028)
+#
+# Use scrape_structure_decks.py to fetch the official card data when internet access
+# to en.onepiece-cardgame.com is available, or use update_structure_decks_manual.py
+# for manual data entry. See STRUCTURE_DECK_UPDATE_GUIDE.md for detailed instructions.
+#
+# The placeholder data below uses generic templates and should be replaced with
+# official card lists for accurate deck building and collection tracking.
+
+# Generate ST-21 through ST-28 with placeholder data
+# IMPORTANT: These are generic templates and NOT the official structure deck contents
 for i in range(21, 29):
     code = f'ST-{i:02d}'
     color_map = ['Red', 'Green', 'Blue', 'Purple', 'Black', 'Yellow', 'Red', 'Green']
@@ -513,7 +525,7 @@ for i in range(21, 29):
     color = color_map[idx]
     leader = leader_map[idx]
     
-    # Build base card list
+    # Build base card list (PLACEHOLDER - needs official data)
     if color == 'Red':
         cards = {
             'Monkey D. Luffy': 1,  # Leader
@@ -623,10 +635,14 @@ for i in range(21, 29):
             'Thousand Sunny': 3,
         }
     
+    # Calculate series number for URL (e.g., ST-21 = 569021)
+    deck_number = int(code.split('-')[1])
+    series_number = 569000 + deck_number
+    
     STRUCTURE_DECKS[code] = {
         'code': code,
-        'name': f'Structure Deck {code} [{color}]',
-        'description': f'A {color.lower()}-themed structure deck',
+        'name': f'[PLACEHOLDER] Structure Deck {code} [{color}]',
+        'description': f'Placeholder for {code}. Official card list needed from https://en.onepiece-cardgame.com/cardlist/?series={series_number}',
         'color': color,
         'leader': leader,
         'cards': cards
