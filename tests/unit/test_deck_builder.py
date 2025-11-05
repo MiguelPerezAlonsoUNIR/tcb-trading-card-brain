@@ -3,6 +3,11 @@
 Test script for the One Piece TCG Deck Builder
 Run this to verify the deck building logic works correctly
 """
+import sys
+import os
+
+# Add the project root directory to the path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from deck_builder import OnePieceDeckBuilder
 from cards_data import ONEPIECE_CARDS

@@ -54,7 +54,7 @@ https://en.onepiece-cardgame.com/pdf/rule_manual.pdf
 
 ## Testing
 
-Color rule enforcement is tested in `test_color_rules.py`:
+Color rule enforcement is tested in `tests/unit/test_color_rules.py`:
 
 1. **Single Color Leader Test**: Verifies single-color leaders only get matching cards
 2. **Multi-Color Leader Test**: Verifies multi-color leaders accept cards from any of their colors
@@ -63,7 +63,7 @@ Color rule enforcement is tested in `test_color_rules.py`:
 
 Run the tests:
 ```bash
-python test_color_rules.py
+python tests/unit/test_color_rules.py
 ```
 
 ## Code Changes
@@ -77,7 +77,7 @@ python test_color_rules.py
 
 ### Added Files
 
-1. **test_color_rules.py**
+1. **tests/unit/test_color_rules.py**
    - Comprehensive test suite for color rule enforcement
    - Tests single-color, multi-color, and parameter combinations
    - Validates color distribution in generated decks

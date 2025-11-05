@@ -3,6 +3,11 @@
 Complete feature validation test
 Ensures the deck improvement feature meets all requirements
 """
+import sys
+import os
+
+# Add the project root directory to the path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from deck_builder import OnePieceDeckBuilder
 
