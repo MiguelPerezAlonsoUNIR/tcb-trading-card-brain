@@ -1,11 +1,19 @@
 # Testing Guide for One Piece TCG Deck Builder
 
+## Test Organization
+
+Tests are now organized in the `tests/` directory by type:
+- **`tests/unit/`** - Unit tests that don't require dependencies
+- **`tests/system/`** - Integration/system tests that require Flask and database
+
+See `tests/README.md` for detailed information about test organization.
+
 ## Quick Test (No Dependencies Required)
 
 The core deck building logic can be tested without installing any dependencies:
 
 ```bash
-python test_deck_builder.py
+python tests/unit/test_deck_builder.py
 ```
 
 This will run a comprehensive test suite that verifies:
@@ -15,6 +23,14 @@ This will run a comprehensive test suite that verifies:
 - Specific leader selection
 - Deck analysis functionality
 - Card copy limit enforcement
+
+### Run all unit tests:
+```bash
+for test in tests/unit/test_*.py; do
+    echo "Running $test..."
+    python "$test"
+done
+```
 
 ## Full Application Testing (Requires Flask)
 
@@ -184,10 +200,18 @@ The web interface has been tested and works on:
 
 4. **Multi-player Features**: No deck sharing or community features in this version.
 
+## Test Organization
+
+All tests are now organized in the `tests/` directory:
+- **Unit tests**: `tests/unit/` - No dependencies required
+- **System tests**: `tests/system/` - Requires Flask and database setup
+
+For more details, see `tests/README.md`.
+
 ## Next Steps for Testing
 
-1. Add unit tests with pytest
-2. Add integration tests for API endpoints
-3. Add end-to-end tests with Selenium
-4. Add performance tests with locust
-5. Add security tests (OWASP Top 10)
+1. Add pytest integration for automated test discovery
+2. Add end-to-end tests with Selenium
+3. Add performance tests with locust
+4. Add security tests (OWASP Top 10)
+5. Add continuous integration pipeline

@@ -3,6 +3,11 @@
 Test script to verify One Piece TCG color rules are enforced
 According to the official rules, cards in a deck must match the leader's color(s)
 """
+import sys
+import os
+
+# Add the project root directory to the path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from deck_builder import OnePieceDeckBuilder
 from cards_data import ONEPIECE_CARDS

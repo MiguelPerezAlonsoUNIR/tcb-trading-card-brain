@@ -2,6 +2,11 @@
 """
 Test to verify that deck builder creates 50-card decks (without counting the leader)
 """
+import sys
+import os
+
+# Add the project root directory to the path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from deck_builder import OnePieceDeckBuilder
 from cards_data import ONEPIECE_CARDS

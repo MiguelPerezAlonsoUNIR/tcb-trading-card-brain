@@ -198,7 +198,9 @@ tcb-trading-card-brain/
 ├── cards_data.py              # Card database
 ├── templates/                  # HTML templates
 ├── static/                     # Static assets (CSS, JS)
-├── test_*.py                   # Test suite
+├── tests/                      # Test suite
+│   ├── unit/                  # Unit tests (no dependencies)
+│   └── system/                # System/integration tests
 ├── requirements.txt           # Python dependencies
 ├── Dockerfile                 # Docker configuration
 ├── docker-compose.yml         # Docker Compose setup

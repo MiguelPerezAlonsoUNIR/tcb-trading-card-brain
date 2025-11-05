@@ -6,8 +6,8 @@ Verifies that the new landing page and routing work correctly
 import sys
 import os
 
-# Add the current directory to the path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add the project root directory to the path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 from app import app
 
