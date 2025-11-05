@@ -32,8 +32,7 @@ login_manager.login_view = 'index'
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize the deck builder and combat simulator
-deck_builder = OnePieceDeckBuilder()
+# Initialize the combat simulator
 combat_simulator = CombatSimulator()
 
 @login_manager.user_loader
@@ -166,6 +165,7 @@ def get_current_user():
 @app.route('/api/cards', methods=['GET'])
 def get_cards():
     """Get all available One Piece TCG cards"""
+    deck_builder = OnePieceDeckBuilder(db_session=db.session)
     return jsonify(deck_builder.get_all_cards())
 
 @app.route('/api/build-deck', methods=['POST'])
@@ -177,6 +177,7 @@ def build_deck():
     leader = data.get('leader', None)
     
     try:
+        deck_builder = OnePieceDeckBuilder(db_session=db.session)
         deck = deck_builder.build_deck(strategy=strategy, color=color, leader=leader)
         return jsonify({
             'success': True,
@@ -196,6 +197,7 @@ def analyze_deck():
     deck = data.get('deck', [])
     
     try:
+        deck_builder = OnePieceDeckBuilder(db_session=db.session)
         analysis = deck_builder.analyze_deck(deck)
         return jsonify({
             'success': True,
@@ -435,6 +437,7 @@ def suggest_deck_from_collection():
     
     try:
         # Build deck with collection awareness
+        deck_builder = OnePieceDeckBuilder(db_session=db.session)
         deck = deck_builder.build_deck_from_collection(
             strategy=strategy,
             color=color,
@@ -619,6 +622,7 @@ def simulate_combat():
             }), 400
         
         # Build the actual opponent deck
+        deck_builder = OnePieceDeckBuilder(db_session=db.session)
         opponent_deck = deck_builder.build_deck(
             strategy=opponent_info['strategy'],
             color=opponent_info['color']
@@ -674,6 +678,7 @@ def suggest_deck_improvements():
             owned_cards = {item.card_name: item.quantity for item in collection}
         
         # Generate improvement suggestions
+        deck_builder = OnePieceDeckBuilder(db_session=db.session)
         improvements = deck_builder.suggest_improvements(deck, owned_cards)
         
         return jsonify({
@@ -686,6 +691,264 @@ def suggest_deck_improvements():
             'success': False,
             'error': 'Failed to generate improvement suggestions. Please try again.'
         }), 400
+
+# Card Management API Endpoints
+@app.route('/api/admin/cards', methods=['GET'])
+def list_all_cards():
+    """List all cards with filtering options (admin endpoint)"""
+    from models import Card, CardSet
+    
+    # Get query parameters for filtering
+    card_type = request.args.get('type')
+    color = request.args.get('color')
+    set_code = request.args.get('set')
+    
+    # Build query
+    query = Card.query
+    
+    if card_type:
+        query = query.filter_by(card_type=card_type)
+    
+    if color:
+        # Filter by color (stored as JSON array)
+        query = query.filter(Card.colors.like(f'%"{color}"%'))
+    
+    if set_code:
+        card_set = CardSet.query.filter_by(code=set_code).first()
+        if card_set:
+            query = query.filter_by(set_id=card_set.id)
+    
+    cards = query.all()
+    
+    return jsonify({
+        'success': True,
+        'cards': [card.to_dict() for card in cards],
+        'count': len(cards)
+    })
+
+@app.route('/api/admin/cards', methods=['POST'])
+def add_card():
+    """Add a new card to the database (admin endpoint)"""
+    from models import Card, CardSet
+    
+    data = request.json
+    
+    # Validate required fields
+    required_fields = ['name', 'type', 'colors', 'cost', 'set', 'card_number']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({
+                'success': False,
+                'error': f'Missing required field: {field}'
+            }), 400
+    
+    # Get or create card set
+    set_code = data['set']
+    card_set = CardSet.query.filter_by(code=set_code).first()
+    if not card_set:
+        # Create new set
+        card_set = CardSet(
+            code=set_code,
+            name=data.get('set_name', f'Set {set_code}')
+        )
+        db.session.add(card_set)
+        db.session.flush()
+    
+    # Check if card already exists
+    existing_card = Card.query.filter_by(
+        set_id=card_set.id,
+        card_number=data['card_number']
+    ).first()
+    
+    if existing_card:
+        return jsonify({
+            'success': False,
+            'error': f'Card {set_code}-{data["card_number"]} already exists'
+        }), 400
+    
+    try:
+        # Create new card
+        card = Card(
+            name=data['name'],
+            card_type=data['type'],
+            power=data.get('power'),
+            cost=data['cost'],
+            life=data.get('life'),
+            attribute=data.get('attribute'),
+            effect=data.get('effect'),
+            set_id=card_set.id,
+            card_number=data['card_number'],
+            rarity=data.get('rarity'),
+            image_url=data.get('image_url')
+        )
+        
+        # Set colors
+        card.set_colors(data['colors'])
+        
+        db.session.add(card)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'card': card.to_dict(),
+            'message': 'Card added successfully'
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error adding card: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to add card'
+        }), 500
+
+@app.route('/api/admin/cards/<int:card_id>', methods=['PUT'])
+def update_card(card_id):
+    """Update an existing card (admin endpoint)"""
+    from models import Card, CardSet
+    
+    card = Card.query.get(card_id)
+    if not card:
+        return jsonify({
+            'success': False,
+            'error': 'Card not found'
+        }), 404
+    
+    data = request.json
+    
+    try:
+        # Update fields if provided
+        if 'name' in data:
+            card.name = data['name']
+        if 'type' in data:
+            card.card_type = data['type']
+        if 'colors' in data:
+            card.set_colors(data['colors'])
+        if 'power' in data:
+            card.power = data['power']
+        if 'cost' in data:
+            card.cost = data['cost']
+        if 'life' in data:
+            card.life = data['life']
+        if 'attribute' in data:
+            card.attribute = data['attribute']
+        if 'effect' in data:
+            card.effect = data['effect']
+        if 'rarity' in data:
+            card.rarity = data['rarity']
+        if 'image_url' in data:
+            card.image_url = data['image_url']
+        
+        # Update set if provided
+        if 'set' in data:
+            card_set = CardSet.query.filter_by(code=data['set']).first()
+            if card_set:
+                card.set_id = card_set.id
+        
+        if 'card_number' in data:
+            card.card_number = data['card_number']
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'card': card.to_dict(),
+            'message': 'Card updated successfully'
+        })
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error updating card: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to update card'
+        }), 500
+
+@app.route('/api/admin/cards/<int:card_id>', methods=['DELETE'])
+def delete_card(card_id):
+    """Delete a card (admin endpoint)"""
+    from models import Card
+    
+    card = Card.query.get(card_id)
+    if not card:
+        return jsonify({
+            'success': False,
+            'error': 'Card not found'
+        }), 404
+    
+    try:
+        card_name = card.name
+        db.session.delete(card)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Card "{card_name}" deleted successfully'
+        })
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error deleting card: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to delete card'
+        }), 500
+
+@app.route('/api/admin/card-sets', methods=['GET'])
+def list_card_sets():
+    """List all card sets (admin endpoint)"""
+    from models import CardSet
+    
+    card_sets = CardSet.query.all()
+    
+    return jsonify({
+        'success': True,
+        'card_sets': [cs.to_dict() for cs in card_sets],
+        'count': len(card_sets)
+    })
+
+@app.route('/api/admin/card-sets', methods=['POST'])
+def add_card_set():
+    """Add a new card set (admin endpoint)"""
+    from models import CardSet
+    
+    data = request.json
+    
+    if 'code' not in data or 'name' not in data:
+        return jsonify({
+            'success': False,
+            'error': 'Missing required fields: code and name'
+        }), 400
+    
+    # Check if set already exists
+    existing_set = CardSet.query.filter_by(code=data['code']).first()
+    if existing_set:
+        return jsonify({
+            'success': False,
+            'error': f'Card set {data["code"]} already exists'
+        }), 400
+    
+    try:
+        from datetime import datetime as dt
+        
+        card_set = CardSet(
+            code=data['code'],
+            name=data['name'],
+            release_date=dt.fromisoformat(data['release_date']) if 'release_date' in data else None
+        )
+        
+        db.session.add(card_set)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'card_set': card_set.to_dict(),
+            'message': 'Card set added successfully'
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error adding card set: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to add card set'
+        }), 500
 
 if __name__ == '__main__':
     # Only enable debug mode in development

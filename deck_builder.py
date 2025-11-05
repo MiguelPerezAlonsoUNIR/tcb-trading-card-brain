@@ -5,21 +5,35 @@ This module contains the core deck building logic using AI
 import json
 import random
 from typing import List, Dict, Optional
-from cards_data import ONEPIECE_CARDS, CARD_TYPES, COLORS
+from cards_data import CARD_TYPES, COLORS
 
 class OnePieceDeckBuilder:
     """AI-powered deck builder for One Piece TCG"""
     
-    def __init__(self):
+    def __init__(self, db_session=None):
         """Initialize the deck builder with card database"""
-        self.cards = ONEPIECE_CARDS
+        self.db = db_session
+        self.cards = None  # Will be loaded from database
         self.deck_size = 50  # Standard One Piece TCG deck size
         self.max_copies = 4  # Maximum copies of a card (except for leaders)
         self.max_deck_build_attempts = 1000  # Maximum attempts to build a complete deck
         self.max_improvement_attempts = 200  # Maximum attempts to build improvement variations
+    
+    def _load_cards_from_db(self) -> List[Dict]:
+        """Load all cards from the database"""
+        if self.db is None:
+            # Fallback to hardcoded cards if no database session provided
+            from cards_data import ONEPIECE_CARDS
+            return ONEPIECE_CARDS
         
+        from models import Card
+        cards = Card.query.all()
+        return [card.to_dict() for card in cards]
+    
     def get_all_cards(self) -> List[Dict]:
         """Return all available cards"""
+        if self.cards is None:
+            self.cards = self._load_cards_from_db()
         return self.cards
     
     def build_deck(self, strategy: str = 'balanced', 
@@ -55,7 +69,8 @@ class OnePieceDeckBuilder:
     
     def _select_leader(self, color: str, leader_name: Optional[str]) -> Dict:
         """Select a leader card"""
-        leaders = [c for c in self.cards if c['type'] == 'Leader']
+        cards = self.get_all_cards()
+        leaders = [c for c in cards if c['type'] == 'Leader']
         
         if leader_name:
             # Find specific leader
@@ -76,7 +91,7 @@ class OnePieceDeckBuilder:
         leaders_with_pool_size = []
         for leader in leaders:
             available_cards = [
-                c for c in self.cards
+                c for c in cards
                 if c['type'] != 'Leader' and
                 any(lc in c['colors'] for lc in leader['colors'])
             ]
@@ -100,8 +115,9 @@ class OnePieceDeckBuilder:
         
         # Filter cards by color (matching leader's colors)
         # According to One Piece TCG rules, cards must share at least one color with the leader
+        cards = self.get_all_cards()
         available_cards = [
-            c for c in self.cards 
+            c for c in cards 
             if c['type'] != 'Leader' and 
             any(lc in c['colors'] for lc in leader['colors'])
         ]
@@ -432,8 +448,9 @@ class OnePieceDeckBuilder:
         current_analysis = self.analyze_deck(main_deck)
         
         # Get available cards that match the leader's colors
+        cards = self.get_all_cards()
         available_cards = [
-            c for c in self.cards 
+            c for c in cards 
             if c['type'] != 'Leader' and 
             any(lc in c['colors'] for lc in leader['colors'])
         ]
