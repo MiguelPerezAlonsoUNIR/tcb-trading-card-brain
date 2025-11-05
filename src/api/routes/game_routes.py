@@ -196,6 +196,67 @@ def get_structure_deck_details(deck_code):
         }), 500
 
 
+@game_bp.route('/structure-decks/<deck_code>/convert', methods=['GET'])
+def convert_structure_deck_to_combat_format(deck_code):
+    """Convert a structure deck to combat-ready format"""
+    try:
+        structure_deck = get_structure_deck(deck_code)
+        if not structure_deck:
+            return jsonify({
+                'success': False,
+                'error': API_MESSAGES['STRUCTURE_DECK_NOT_FOUND']
+            }), 404
+        
+        # Initialize deck builder to access card database
+        deck_builder = OnePieceDeckBuilder(db_session=db.session)
+        all_cards = deck_builder.get_all_cards()
+        
+        # Create a map of card names to card objects
+        card_map = {card['name']: card for card in all_cards}
+        
+        # Find the leader card
+        leader_name = structure_deck['leader']
+        leader_card = card_map.get(leader_name)
+        
+        if not leader_card:
+            return jsonify({
+                'success': False,
+                'error': f'Leader card "{leader_name}" not found in database'
+            }), 404
+        
+        # Build the main deck from card list
+        main_deck = []
+        for card_name, quantity in structure_deck['cards'].items():
+            # Skip the leader (it's already set)
+            if card_name == leader_name:
+                continue
+            
+            card = card_map.get(card_name)
+            if card:
+                # Add the card 'quantity' times to the deck
+                for _ in range(quantity):
+                    main_deck.append(card)
+        
+        # Create the deck in combat format
+        combat_deck = {
+            'leader': leader_card,
+            'main_deck': main_deck,
+            'strategy': 'balanced',  # Default strategy for structure decks
+            'color': structure_deck['color']
+        }
+        
+        return jsonify({
+            'success': True,
+            'deck': combat_deck
+        })
+    except Exception as e:
+        logger.error(f"Error converting structure deck: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': 'Failed to convert structure deck'
+        }), 500
+
+
 @game_bp.route('/opponent-decks', methods=['GET'])
 def get_opponent_decks():
     """Get list of available opponent decks for simulation"""
