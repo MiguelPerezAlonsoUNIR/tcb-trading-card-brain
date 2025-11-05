@@ -1,0 +1,178 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 60px 40px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.3em;
+    opacity: 0.9;
+}
+
+main {
+    padding: 60px 40px;
+}
+
+.tcg-selection {
+    text-align: center;
+}
+
+.tcg-selection h2 {
+    color: #333;
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.section-description {
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: 50px;
+}
+
+.tcg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.tcg-card {
+    background: white;
+    border: 3px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 40px 30px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    position: relative;
+}
+
+.tcg-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.tcg-card.coming-soon {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+.tcg-card.coming-soon:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #e0e0e0;
+}
+
+.tcg-icon {
+    font-size: 5em;
+    margin-bottom: 20px;
+}
+
+.tcg-card h3 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.tcg-card p {
+    color: #666;
+    font-size: 1.1em;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.tcg-status {
+    margin-top: 20px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    background: #e0e0e0;
+    color: #666;
+}
+
+.tcg-status.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+footer {
+    background: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+    
+    header p {
+        font-size: 1em;
+    }
+    
+    .tcg-selection h2 {
+        font-size: 1.8em;
+    }
+    
+    .section-description {
+        font-size: 1em;
+    }
+    
+    .tcg-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .tcg-card {
+        padding: 30px 20px;
+        min-height: 280px;
+    }
+    
+    .tcg-icon {
+        font-size: 4em;
+    }
+    
+    .tcg-card h3 {
+        font-size: 1.5em;
+    }
+}

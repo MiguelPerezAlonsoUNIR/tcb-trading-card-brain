@@ -46,8 +46,13 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    """Serve the main application page"""
-    return render_template('index.html')
+    """Serve the landing page with TCG selection"""
+    return render_template('landing.html')
+
+@app.route('/onepiece')
+def onepiece():
+    """Serve the One Piece TCG deck builder page"""
+    return render_template('onepiece.html')
 
 @app.route('/api/register', methods=['POST'])
 def register():
