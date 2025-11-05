@@ -24,8 +24,8 @@ STRUCTURE_DECKS = {
             'Thriller Bark': 2,
             'Going Merry': 2,
             # Fill remaining slots with common red cards
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -34,13 +34,13 @@ STRUCTURE_DECKS = {
     'ST-02': {
         'code': 'ST-02',
         'name': 'Worst Generation [Green]',
-        'description': 'A green-themed deck featuring Roronoa Zoro and swordsmen',
+        'description': 'A green-themed deck featuring Eustass Kid and the Worst Generation',
         'color': 'Green',
-        'leader': 'Roronoa Zoro',
+        'leader': 'Eustass Kid',
         'cards': {
-            'Roronoa Zoro': 1,  # Leader
+            'Eustass Kid': 1,  # Leader
+            'Roronoa Zoro': 4,
             'Trafalgar Law': 4,
-            'Eustass Kid': 4,
             'Killer': 4,
             'X Drake': 4,
             'Onigiri': 4,
@@ -49,22 +49,22 @@ STRUCTURE_DECKS = {
             'Going Merry': 2,
             'Thriller Bark': 2,
             # Fill remaining slots
-            'Basil Hawkins': 3,
-            'Scratchmen Apoo': 3,
+            'Basil Hawkins': 4,
+            'Scratchmen Apoo': 4,
             'Urouge': 3,
             'Tashigi': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-03': {
         'code': 'ST-03',
-        'name': 'The Seven Warlords [Blue]',
-        'description': 'A blue-themed deck featuring Nami and tactical plays',
+        'name': 'The Seven Warlords of the Sea [Blue]',
+        'description': 'A blue-themed deck featuring Crocodile and the Seven Warlords',
         'color': 'Blue',
-        'leader': 'Nami',
+        'leader': 'Crocodile',
         'cards': {
-            'Nami': 1,  # Leader
-            'Crocodile': 4,
+            'Crocodile': 1,  # Leader
+            'Nami': 4,
             'Dracule Mihawk': 4,
             'Boa Hancock': 4,
             'Donquixote Doflamingo': 4,
@@ -74,11 +74,11 @@ STRUCTURE_DECKS = {
             'Going Merry': 2,
             'Thriller Bark': 2,
             # Fill remaining slots
-            'Jinbe': 3,
-            'Gecko Moria': 3,
+            'Jinbe': 4,
+            'Gecko Moria': 4,
             'Bartholomew Kuma': 3,
             'Thunder Bolt Tempo': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-04': {
@@ -99,11 +99,11 @@ STRUCTURE_DECKS = {
             'Going Merry': 2,
             'Thriller Bark': 2,
             # Fill remaining slots
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-05': {
@@ -123,8 +123,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -133,12 +133,12 @@ STRUCTURE_DECKS = {
     'ST-06': {
         'code': 'ST-06',
         'name': 'Navy [Black]',
-        'description': 'A black-themed deck featuring the Navy/Marines',
+        'description': 'A black-themed deck featuring Smoker and the Navy/Marines',
         'color': 'Black',
-        'leader': 'Trafalgar Law',
+        'leader': 'Smoker',
         'cards': {
-            'Trafalgar Law': 1,
-            'Smoker': 4,
+            'Smoker': 1,  # Leader
+            'Trafalgar Law': 4,
             'Sengoku': 4,
             'Aokiji': 4,
             'Kizaru': 4,
@@ -147,22 +147,22 @@ STRUCTURE_DECKS = {
             'Meteor Volcano': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Issho': 3,
-            'Borsalino': 3,
+            'Issho': 4,
+            'Borsalino': 4,
             'Bartholomew Kuma': 3,
             'Gamma Knife': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-07': {
         'code': 'ST-07',
         'name': 'Big Mom Pirates [Yellow]',
-        'description': 'A yellow-themed deck featuring Big Mom and her crew',
+        'description': 'A yellow-themed deck featuring Charlotte Linlin and her crew',
         'color': 'Yellow',
-        'leader': 'Kaido',
+        'leader': 'Charlotte Linlin',
         'cards': {
-            'Kaido': 1,
-            'Charlotte Linlin': 4,
+            'Charlotte Linlin': 1,  # Leader
+            'Kaido': 4,
             'Charlotte Katakuri': 4,
             'Perospero': 4,
             'Smoothie': 4,
@@ -170,12 +170,12 @@ STRUCTURE_DECKS = {
             'Mochi Thrust': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Borsalino': 3,
-            'Issho': 3,
+            'Borsalino': 4,
+            'Issho': 4,
             'Boro Breath': 3,
             'Thunder Bagua': 3,
             'Radical Beam': 4,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-08': {
@@ -195,8 +195,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -207,9 +207,10 @@ STRUCTURE_DECKS = {
         'name': 'Yamato [Green]',
         'description': 'A green deck featuring Yamato',
         'color': 'Green',
-        'leader': 'Roronoa Zoro',
+        'leader': 'Yamato',
         'cards': {
-            'Roronoa Zoro': 1,
+            'Yamato': 1,  # Leader
+            'Roronoa Zoro': 4,
             'Trafalgar Law': 4,
             'Eustass Kid': 4,
             'Killer': 4,
@@ -222,7 +223,7 @@ STRUCTURE_DECKS = {
             'Basil Hawkins': 3,
             'Scratchmen Apoo': 3,
             'Urouge': 3,
-            'Tashigi': 3,
+            'Tashigi': 2,
             'Thousand Sunny': 2,
         }
     },
@@ -243,8 +244,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -255,9 +256,9 @@ STRUCTURE_DECKS = {
         'name': 'Uta [Purple]',
         'description': 'A purple deck featuring Uta from Film Red',
         'color': 'Purple',
-        'leader': 'Kaido',
+        'leader': 'Uta',
         'cards': {
-            'Kaido': 1,
+            'Uta': 1,  # Leader
             'Charlotte Katakuri': 4,
             'Charlotte Linlin': 4,
             'King': 4,
@@ -267,11 +268,11 @@ STRUCTURE_DECKS = {
             'Soul Pocus': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     },
     'ST-12': {
@@ -279,9 +280,10 @@ STRUCTURE_DECKS = {
         'name': 'Zoro and Sanji [Blue/Black]',
         'description': 'A blue-black deck featuring the Wings of the Pirate King',
         'color': 'Blue',
-        'leader': 'Nami',
+        'leader': 'Roronoa Zoro and Sanji',
         'cards': {
-            'Nami': 1,
+            'Roronoa Zoro and Sanji': 1,  # Leader
+            'Nami': 4,
             'Crocodile': 4,
             'Dracule Mihawk': 4,
             'Boa Hancock': 4,
@@ -294,7 +296,7 @@ STRUCTURE_DECKS = {
             'Jinbe': 3,
             'Gecko Moria': 3,
             'Bartholomew Kuma': 3,
-            'Thunder Bolt Tempo': 3,
+            'Thunder Bolt Tempo': 2,
             'Thousand Sunny': 2,
         }
     },
@@ -315,8 +317,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -327,9 +329,10 @@ STRUCTURE_DECKS = {
         'name': 'Absolute Justice [Black]',
         'description': 'A black deck focused on the Navy\'s Absolute Justice',
         'color': 'Black',
-        'leader': 'Trafalgar Law',
+        'leader': 'Sakazuki',
         'cards': {
-            'Trafalgar Law': 1,
+            'Sakazuki': 1,  # Leader
+            'Trafalgar Law': 4,
             'Smoker': 4,
             'Sengoku': 4,
             'Aokiji': 4,
@@ -342,7 +345,7 @@ STRUCTURE_DECKS = {
             'Issho': 3,
             'Borsalino': 3,
             'Bartholomew Kuma': 3,
-            'Gamma Knife': 3,
+            'Gamma Knife': 2,
             'Thousand Sunny': 2,
         }
     },
@@ -351,9 +354,10 @@ STRUCTURE_DECKS = {
         'name': 'Edward Newgate [Yellow]',
         'description': 'A yellow deck featuring Whitebeard',
         'color': 'Yellow',
-        'leader': 'Kaido',
+        'leader': 'Edward Newgate',
         'cards': {
-            'Kaido': 1,
+            'Edward Newgate': 1,  # Leader
+            'Kaido': 4,
             'Charlotte Linlin': 4,
             'Charlotte Katakuri': 4,
             'Perospero': 4,
@@ -366,7 +370,7 @@ STRUCTURE_DECKS = {
             'Issho': 3,
             'Boro Breath': 3,
             'Thunder Bagua': 3,
-            'Radical Beam': 4,
+            'Radical Beam': 3,
             'Thousand Sunny': 2,
         }
     },
@@ -387,8 +391,8 @@ STRUCTURE_DECKS = {
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
@@ -399,9 +403,10 @@ STRUCTURE_DECKS = {
         'name': 'Dressrosa [Green]',
         'description': 'A green deck themed around the Dressrosa arc',
         'color': 'Green',
-        'leader': 'Roronoa Zoro',
+        'leader': 'Donquixote Doflamingo',
         'cards': {
-            'Roronoa Zoro': 1,
+            'Donquixote Doflamingo': 1,  # Leader
+            'Roronoa Zoro': 4,
             'Trafalgar Law': 4,
             'Eustass Kid': 4,
             'Killer': 4,
@@ -414,7 +419,7 @@ STRUCTURE_DECKS = {
             'Basil Hawkins': 3,
             'Scratchmen Apoo': 3,
             'Urouge': 3,
-            'Tashigi': 3,
+            'Tashigi': 2,
             'Thousand Sunny': 2,
         }
     },
@@ -423,9 +428,10 @@ STRUCTURE_DECKS = {
         'name': 'Paramount War [Blue]',
         'description': 'A blue deck themed around the Marineford War',
         'color': 'Blue',
-        'leader': 'Nami',
+        'leader': 'Portgas D. Ace',
         'cards': {
-            'Nami': 1,
+            'Portgas D. Ace': 1,  # Leader
+            'Nami': 4,
             'Crocodile': 4,
             'Dracule Mihawk': 4,
             'Boa Hancock': 4,
@@ -438,7 +444,7 @@ STRUCTURE_DECKS = {
             'Jinbe': 3,
             'Gecko Moria': 3,
             'Bartholomew Kuma': 3,
-            'Thunder Bolt Tempo': 3,
+            'Thunder Bolt Tempo': 2,
             'Thousand Sunny': 2,
         }
     },
@@ -447,9 +453,10 @@ STRUCTURE_DECKS = {
         'name': 'Emperors Clash [Purple/Yellow]',
         'description': 'A purple-yellow deck featuring emperor battles',
         'color': 'Purple',
-        'leader': 'Kaido',
+        'leader': 'Shanks',
         'cards': {
-            'Kaido': 1,
+            'Shanks': 1,  # Leader
+            'Kaido': 4,
             'Charlotte Katakuri': 4,
             'Charlotte Linlin': 4,
             'King': 4,
@@ -462,18 +469,19 @@ STRUCTURE_DECKS = {
             'Jack': 3,
             'Perospero': 3,
             'Smoothie': 3,
-            'Thunder Bagua': 3,
+            'Thunder Bagua': 2,
             'Thousand Sunny': 2,
         }
     },
     'ST-20': {
         'code': 'ST-20',
-        'name': 'Egghead Incident [Black]',
+        'name': 'Side - Egghead [Black]',
         'description': 'A black deck themed around Egghead Island',
         'color': 'Black',
-        'leader': 'Trafalgar Law',
+        'leader': 'Jewelry Bonney',
         'cards': {
-            'Trafalgar Law': 1,
+            'Jewelry Bonney': 1,  # Leader
+            'Trafalgar Law': 4,
             'Smoker': 4,
             'Sengoku': 4,
             'Aokiji': 4,
@@ -486,7 +494,7 @@ STRUCTURE_DECKS = {
             'Issho': 3,
             'Borsalino': 3,
             'Bartholomew Kuma': 3,
-            'Gamma Knife': 3,
+            'Gamma Knife': 2,
             'Thousand Sunny': 2,
         }
     },
@@ -497,8 +505,8 @@ for i in range(21, 29):
     code = f'ST-{i:02d}'
     color_map = ['Red', 'Green', 'Blue', 'Purple', 'Black', 'Yellow', 'Red', 'Green']
     leader_map = [
-        'Monkey D. Luffy', 'Roronoa Zoro', 'Nami', 'Kaido',
-        'Trafalgar Law', 'Kaido', 'Monkey D. Luffy', 'Roronoa Zoro'
+        'Monkey D. Luffy', 'Eustass Kid', 'Crocodile', 'Kaido',
+        'Smoker', 'Charlotte Linlin', 'Monkey D. Luffy', 'Eustass Kid'
     ]
     
     idx = (i - 21) % 8
@@ -508,7 +516,7 @@ for i in range(21, 29):
     # Build base card list
     if color == 'Red':
         cards = {
-            'Monkey D. Luffy': 1,
+            'Monkey D. Luffy': 1,  # Leader
             'Portgas D. Ace': 4,
             'Tony Tony Chopper': 4,
             'Sanji': 4,
@@ -518,17 +526,17 @@ for i in range(21, 29):
             'Fire Fist': 4,
             'Thriller Bark': 2,
             'Going Merry': 2,
-            'Nico Robin': 3,
-            'Usopp': 3,
+            'Nico Robin': 4,
+            'Usopp': 4,
             'Diable Jambe': 3,
             'Radical Beam': 4,
             'Thousand Sunny': 2,
         }
     elif color == 'Green':
         cards = {
-            'Roronoa Zoro': 1,
+            'Eustass Kid': 1,  # Leader
+            'Roronoa Zoro': 4,
             'Trafalgar Law': 4,
-            'Eustass Kid': 4,
             'Killer': 4,
             'X Drake': 4,
             'Onigiri': 4,
@@ -536,16 +544,16 @@ for i in range(21, 29):
             'Shambles': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Basil Hawkins': 3,
-            'Scratchmen Apoo': 3,
+            'Basil Hawkins': 4,
+            'Scratchmen Apoo': 4,
             'Urouge': 3,
             'Tashigi': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     elif color == 'Blue':
         cards = {
-            'Nami': 1,
-            'Crocodile': 4,
+            'Crocodile': 1,  # Leader
+            'Nami': 4,
             'Dracule Mihawk': 4,
             'Boa Hancock': 4,
             'Donquixote Doflamingo': 4,
@@ -554,11 +562,11 @@ for i in range(21, 29):
             'Black Blade': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jinbe': 3,
-            'Gecko Moria': 3,
+            'Jinbe': 4,
+            'Gecko Moria': 4,
             'Bartholomew Kuma': 3,
             'Thunder Bolt Tempo': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     elif color == 'Purple':
         cards = {
@@ -572,16 +580,16 @@ for i in range(21, 29):
             'Soul Pocus': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Jack': 3,
-            'Perospero': 3,
+            'Jack': 4,
+            'Perospero': 4,
             'Smoothie': 3,
             'Thunder Bagua': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     elif color == 'Black':
         cards = {
-            'Trafalgar Law': 1,
-            'Smoker': 4,
+            'Smoker': 1,  # Leader
+            'Trafalgar Law': 4,
             'Sengoku': 4,
             'Aokiji': 4,
             'Kizaru': 4,
@@ -590,16 +598,16 @@ for i in range(21, 29):
             'Meteor Volcano': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Issho': 3,
-            'Borsalino': 3,
+            'Issho': 4,
+            'Borsalino': 4,
             'Bartholomew Kuma': 3,
             'Gamma Knife': 3,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     else:  # Yellow
         cards = {
-            'Kaido': 1,
-            'Charlotte Linlin': 4,
+            'Charlotte Linlin': 1,  # Leader
+            'Kaido': 4,
             'Charlotte Katakuri': 4,
             'Perospero': 4,
             'Smoothie': 4,
@@ -607,12 +615,12 @@ for i in range(21, 29):
             'Mochi Thrust': 4,
             'Going Merry': 2,
             'Thriller Bark': 2,
-            'Borsalino': 3,
-            'Issho': 3,
+            'Borsalino': 4,
+            'Issho': 4,
             'Boro Breath': 3,
             'Thunder Bagua': 3,
             'Radical Beam': 4,
-            'Thousand Sunny': 2,
+            'Thousand Sunny': 3,
         }
     
     STRUCTURE_DECKS[code] = {
