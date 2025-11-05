@@ -635,10 +635,14 @@ for i in range(21, 29):
             'Thousand Sunny': 3,
         }
     
+    # Calculate series number for URL (e.g., ST-21 = 569021)
+    deck_number = int(code.split('-')[1])
+    series_number = 569000 + deck_number
+    
     STRUCTURE_DECKS[code] = {
         'code': code,
         'name': f'[PLACEHOLDER] Structure Deck {code} [{color}]',
-        'description': f'Placeholder for {code}. Official card list needed from https://en.onepiece-cardgame.com/cardlist/?series={569000 + i}',
+        'description': f'Placeholder for {code}. Official card list needed from https://en.onepiece-cardgame.com/cardlist/?series={series_number}',
         'color': color,
         'leader': leader,
         'cards': cards

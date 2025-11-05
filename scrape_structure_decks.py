@@ -5,15 +5,21 @@ This script fetches card data from https://en.onepiece-cardgame.com/cardlist/?se
 where XXX corresponds to the structure deck number (e.g., ST-28 = 569028).
 """
 
-import requests
-from bs4 import BeautifulSoup
+import sys
 import json
 import time
-import sys
+
+try:
+    import requests
+    from bs4 import BeautifulSoup
+except ImportError as e:
+    print(f"Error: Required library not found: {e}")
+    print("Install dependencies with: pip install beautifulsoup4 requests")
+    sys.exit(1)
 
 # Structure deck codes to fetch
 STRUCTURE_DECK_CODES = [
-    'ST-22', 'ST-23', 'ST-24', 'ST-25', 'ST-26', 'ST-27', 'ST-28'
+    'ST-21', 'ST-22', 'ST-23', 'ST-24', 'ST-25', 'ST-26', 'ST-27', 'ST-28'
 ]
 
 def get_series_number(deck_code):
@@ -201,12 +207,4 @@ def main():
     return 0 if not failed else 1
 
 if __name__ == '__main__':
-    try:
-        # Check if BeautifulSoup is available
-        import bs4
-    except ImportError:
-        print("Error: BeautifulSoup4 is required. Install it with:")
-        print("  pip install beautifulsoup4")
-        sys.exit(1)
-    
     sys.exit(main())

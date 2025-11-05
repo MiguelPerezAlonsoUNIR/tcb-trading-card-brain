@@ -19,9 +19,10 @@ def input_structure_deck():
     color = input("Enter primary color (Red/Blue/Green/Purple/Black/Yellow): ").strip()
     leader = input("Enter leader card name: ").strip()
     
-    print("\nEnter cards (one per line, format: CardName|Quantity)")
+    print("\nEnter cards (one per line, format: CardName::Quantity)")
     print("Enter 'done' when finished")
-    print("Example: Monkey D. Luffy|1")
+    print("Example: Monkey D. Luffy::1")
+    print("Note: Using '::' as delimiter to avoid issues with card names containing special characters")
     
     cards = {}
     while True:
@@ -30,11 +31,11 @@ def input_structure_deck():
             break
         
         try:
-            if '|' in card_input:
-                name, qty = card_input.rsplit('|', 1)
+            if '::' in card_input:
+                name, qty = card_input.rsplit('::', 1)
                 cards[name.strip()] = int(qty.strip())
             else:
-                print("Invalid format. Use: CardName|Quantity")
+                print("Invalid format. Use: CardName::Quantity")
         except ValueError:
             print("Invalid quantity. Please enter a number.")
     
