@@ -68,12 +68,6 @@ class OnePieceDeckBuilder:
             color_leaders = [l for l in leaders if color.lower() in [c.lower() for c in l['colors']]]
             if color_leaders:
                 leaders = color_leaders
-                # Within color-matching leaders, prefer multi-color ones as they have larger card pools
-                multi_color_leaders = [l for l in leaders if len(l['colors']) > 1]
-                # Calculate card pool sizes for these leaders
-                if multi_color_leaders:
-                    # We'll use multi-color leaders preferentially in the pool size calculation below
-                    pass  # The logic below will handle this
         
         # Calculate the card pool size for each leader
         # To build a 50-card deck, we need at least 13 unique cards (13 * 4 = 52)
