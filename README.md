@@ -180,27 +180,41 @@ Click "Export Deck" to download your deck list as a text file, perfect for:
 
 ## Project Structure
 
+The project has been refactored with a modular architecture for better maintainability. See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed documentation.
+
 ```
 tcb-trading-card-brain/
-├── app.py                  # Flask web application with auth routes
-├── models.py               # Database models (User, Deck, Collection)
-├── auth.py                 # Authentication utilities
-├── deck_builder.py         # AI deck building logic
-├── cards_data.py           # One Piece TCG card database
-├── requirements.txt        # Python dependencies
-├── Dockerfile             # Docker configuration
-├── docker-compose.yml     # Docker Compose configuration
-├── templates/
-│   └── index.html        # Main web interface with auth UI
-├── static/
-│   ├── css/
-│   │   └── style.css     # Styling with auth components
-│   └── js/
-│       └── app.js        # Frontend JavaScript with auth logic
-├── test_auth.py           # Authentication tests
-├── test_deck_builder.py   # Deck builder tests
-└── README.md             # This file
+├── src/                        # Source code package
+│   ├── api/                    # API layer (routes, blueprints)
+│   │   └── routes/            # Organized route blueprints
+│   ├── config/                 # Configuration management
+│   ├── core/                   # Constants and utilities
+│   ├── models/                 # Database models
+│   └── services/               # Business logic layer
+├── app.py                      # Application entry point
+├── deck_builder.py             # AI deck building logic
+├── combat_simulator.py         # Combat simulation
+├── structure_decks.py          # Structure deck definitions
+├── cards_data.py              # Card database
+├── templates/                  # HTML templates
+├── static/                     # Static assets (CSS, JS)
+├── test_*.py                   # Test suite
+├── requirements.txt           # Python dependencies
+├── Dockerfile                 # Docker configuration
+├── docker-compose.yml         # Docker Compose setup
+├── ARCHITECTURE.md            # Architecture documentation
+└── README.md                  # This file
 ```
+
+### Architecture Highlights
+
+- **Modular Design**: Code organized into logical packages (api, services, models, config)
+- **Service Layer**: Business logic separated from API routes
+- **Centralized Configuration**: All settings in one place
+- **Blueprint Pattern**: API routes organized by domain
+- **Backwards Compatible**: Existing code still works with compatibility wrappers
+
+For details on the architecture, design patterns, and development guidelines, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## API Endpoints
 
