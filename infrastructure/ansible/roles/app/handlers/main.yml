@@ -1,0 +1,15 @@
+---
+# Application handlers
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: restart tcb-app
+  systemd:
+    name: tcb-app
+    state: restarted
+
+- name: restart supervisor
+  systemd:
+    name: supervisor
+    state: restarted

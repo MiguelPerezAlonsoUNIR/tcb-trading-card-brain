@@ -1,0 +1,25 @@
+# Azure Terraform Variables Example
+# Copy this file to terraform.tfvars and update with your values
+
+# Azure Configuration
+location = "eastus"
+
+# Project Configuration
+project_name = "tcb-trading-card-brain"
+environment  = "production"
+
+# Network Configuration
+vnet_cidr   = "10.0.0.0/16"
+subnet_cidr = "10.0.1.0/24"
+
+# VM Configuration
+vm_size        = "Standard_B2s"
+admin_username = "azureuser"
+ssh_public_key = "ssh-rsa AAAAB3Nza..."  # Your SSH public key
+
+# Database Configuration (Optional)
+use_postgresql = false  # Set to true to create PostgreSQL server
+db_sku_name    = "B_Standard_B1ms"
+db_name        = "tcb_db"
+db_username    = "tcbadmin"
+db_password    = "ChangeThisToSecurePassword123!"  # Change this!

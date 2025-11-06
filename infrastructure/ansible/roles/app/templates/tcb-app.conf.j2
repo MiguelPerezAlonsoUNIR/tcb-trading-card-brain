@@ -1,0 +1,9 @@
+[program:tcb-app]
+directory={{ app_dir }}
+command={{ app_dir }}/venv/bin/gunicorn --bind 0.0.0.0:5000 --workers {{ gunicorn_workers | default(2) }} --timeout 120 app:app
+user={{ app_user }}
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/tcb-app.log
+environment=DATABASE_URL="{{ database_url | default('sqlite:///tcb.db') }}",SECRET_KEY="{{ secret_key }}",FLASK_ENV="{{ flask_env | default('production') }}"

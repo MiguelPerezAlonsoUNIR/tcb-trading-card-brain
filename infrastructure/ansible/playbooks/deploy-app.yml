@@ -1,0 +1,25 @@
+---
+# Main playbook for deploying TCB Trading Card Brain application
+- name: Deploy TCB Trading Card Brain Application
+  hosts: app_servers
+  become: yes
+  vars:
+    app_name: tcb-trading-card-brain
+    app_user: tcbapp
+    app_dir: /opt/{{ app_name }}
+    repo_url: https://github.com/MiguelPerezAlonsoUNIR/tcb-trading-card-brain.git
+    repo_branch: main
+    
+  roles:
+    - common
+    - app
+    - nginx
+    
+  tasks:
+    - name: Display deployment summary
+      debug:
+        msg: |
+          Deployment completed successfully!
+          Application URL: http://{{ ansible_default_ipv4.address }}
+          Application directory: {{ app_dir }}
+          Service status: Active

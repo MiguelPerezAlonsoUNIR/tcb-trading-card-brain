@@ -1,0 +1,30 @@
+# GCP Terraform Variables Example
+# Copy this file to terraform.tfvars and update with your values
+
+# GCP Configuration
+project_id = "your-gcp-project-id"
+region     = "us-east1"
+zone       = "us-east1-b"
+
+# Project Configuration
+project_name = "tcb-trading-card-brain"
+environment  = "production"
+
+# Network Configuration
+subnet_cidr = "10.0.1.0/24"
+
+# Compute Configuration
+machine_type   = "e2-small"
+ssh_username   = "gcpuser"
+ssh_public_key = "ssh-rsa AAAAB3Nza..."  # Your SSH public key
+image_id       = ""                       # Optional: Use custom image ID
+
+# Security Configuration
+ssh_allowed_ips = ["0.0.0.0/0"]  # Restrict this to your IP in production
+
+# Database Configuration (Optional)
+use_cloud_sql = false  # Set to true to create Cloud SQL instance
+db_tier       = "db-f1-micro"
+db_name       = "tcb_db"
+db_username   = "tcbadmin"
+db_password   = "ChangeThisToSecurePassword123!"  # Change this!

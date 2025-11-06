@@ -487,6 +487,39 @@ The current implementation uses rule-based AI. To add ML capabilities:
 3. Replace or augment the deck building logic in `deck_builder.py`
 4. Update `requirements.txt` with new dependencies
 
+## Cloud Deployment
+
+The application can be deployed to AWS, Azure, or GCP using Infrastructure as Code (IaC) tools.
+
+### Quick Cloud Deployment
+
+```bash
+# Navigate to infrastructure directory
+cd infrastructure
+
+# Choose your cloud provider and follow the deployment guide
+# See infrastructure/README.md for detailed instructions
+```
+
+### Supported Deployment Options
+
+- **AWS**: EC2 instances with optional RDS PostgreSQL
+- **Azure**: Virtual Machines with optional Azure Database
+- **GCP**: Compute Engine with optional Cloud SQL
+
+### Infrastructure Tools
+
+- **Terraform**: Infrastructure provisioning (AWS, Azure, GCP)
+- **Ansible**: Application deployment and configuration
+- **Packer**: Pre-built machine images for faster deployments
+- **Vagrant**: Local infrastructure testing
+
+### Documentation
+
+- **[Deployment Guide](docs/DEPLOYMENT.md)**: Step-by-step cloud deployment instructions
+- **[Infrastructure README](infrastructure/README.md)**: Detailed infrastructure documentation
+- **[Infrastructure Analysis](infrastructure/ANALYSIS.md)**: Tool comparison and recommendations
+
 ## Development
 
 ### Running in Development Mode
@@ -494,6 +527,19 @@ The current implementation uses rule-based AI. To add ML capabilities:
 ```bash
 export FLASK_ENV=development
 python app.py
+```
+
+### Local Infrastructure Testing with Vagrant
+
+Test the deployment locally before pushing to cloud:
+
+```bash
+cd infrastructure/vagrant
+vagrant up
+
+# Access application at:
+# - Flask: http://localhost:5000
+# - Nginx: http://localhost:8080
 ```
 
 ### Running Tests

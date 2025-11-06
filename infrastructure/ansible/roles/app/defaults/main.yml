@@ -1,0 +1,13 @@
+---
+# Default variables for app role
+python_version: "3.11"
+app_name: "tcb-trading-card-brain"
+app_user: "tcbapp"
+app_dir: "/opt/tcb-trading-card-brain"
+repo_url: "https://github.com/MiguelPerezAlonsoUNIR/tcb-trading-card-brain.git"
+repo_branch: "main"
+flask_env: "production"
+gunicorn_workers: 2
+initialize_db: true
+secret_key: "change-this-in-production"
+database_url: "sqlite:///tcb.db"
