@@ -1,0 +1,6 @@
+name,type,colors,cost,power,life,attribute,effect,set,card_number,rarity,image_url
+Monkey D. Luffy,Leader,"[""Red""]",0,5000,5,Strike,Your Characters gain +1000 power during your turn.,ST01,001,Leader,https://en.onepiece-cardgame.com/cardlist/img/card_ST01-001.png
+Roronoa Zoro,Character,"[""Red""]",3,4000,,Slash,DON!! -1: This Character gains +1000 power during this turn.,ST01,002,Common,https://en.onepiece-cardgame.com/cardlist/img/card_ST01-002.png
+Nami,Character,"[""Red""]",1,2000,,Special,This Character can attack on the turn it was played.,ST01,003,Common,https://en.onepiece-cardgame.com/cardlist/img/card_ST01-003.png
+Gum-Gum Jet Pistol,Event,"[""Red""]",3,,,Strike,Your Leader or 1 of your Characters gains +4000 power during this turn.,ST01,004,Rare,https://en.onepiece-cardgame.com/cardlist/img/card_ST01-004.png
+Going Merry,Stage,"[""Red""]",1,,,,"[On Play] Draw 1 card if you have a Leader or Character with ""Straw Hat Crew"" in its type.",ST01,005,Uncommon,https://en.onepiece-cardgame.com/cardlist/img/card_ST01-005.png

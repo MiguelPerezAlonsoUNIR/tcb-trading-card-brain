@@ -62,9 +62,9 @@ class KaggleDataLoader:
             return False, error_msg
     
     def _dataset_exists(self) -> bool:
-        """Check if dataset files exist"""
-        expected_files = ['cards.csv', 'sets.csv', 'structure_decks.csv']
-        return all((self.data_dir / f).exists() for f in expected_files)
+        """Check if dataset files exist (at minimum, cards.csv must exist)"""
+        # Only require cards.csv - other files are optional
+        return (self.data_dir / 'cards.csv').exists()
     
     def load_cards(self) -> Tuple[List[Dict], Optional[str]]:
         """
