@@ -9,9 +9,9 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
 import json
-from app import app, db
-from models import User, UserCollection
-from auth import hash_password
+from app import app
+from src.models import db, User, UserCollection
+from src.services import AuthService
 
 def setup_test_db():
     """Setup test database with a test user"""
@@ -23,7 +23,7 @@ def setup_test_db():
         # Create a test user
         test_user = User(
             username='testuser',
-            password_hash=hash_password('password123')
+            password_hash=AuthService.hash_password('password123')
         )
         db.session.add(test_user)
         db.session.commit()

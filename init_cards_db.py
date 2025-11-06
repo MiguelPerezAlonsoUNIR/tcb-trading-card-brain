@@ -9,8 +9,8 @@ import os
 # Add the current directory to the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from app import app, db
-from models import Card, CardSet
+from app import app
+from src.models import db, Card, CardSet
 from cards_data import ONEPIECE_CARDS
 from datetime import datetime
 
