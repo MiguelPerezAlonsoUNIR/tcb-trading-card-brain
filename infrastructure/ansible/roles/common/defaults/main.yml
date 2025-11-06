@@ -1,0 +1,4 @@
+---
+# Default variables for common role
+python_version: "3.11"
+app_user: "tcbapp"

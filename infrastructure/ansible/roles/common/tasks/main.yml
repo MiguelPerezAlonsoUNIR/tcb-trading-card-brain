@@ -39,11 +39,11 @@
     shell: /bin/bash
     create_home: yes
 
-- name: Install Python 3.11 and pip
+- name: Install Python {{ python_version }} and pip
   apt:
     name:
-      - python3.11
-      - python3.11-venv
+      - "python{{ python_version }}"
+      - "python{{ python_version }}-venv"
       - python3-pip
     state: present
 

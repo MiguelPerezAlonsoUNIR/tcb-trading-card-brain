@@ -8,13 +8,13 @@ apt-get upgrade -y
 # Install required packages
 apt-get install -y \
     python3.11 \
+    python3.11-venv \
     python3-pip \
-    python3-venv \
     git \
     nginx \
     supervisor \
     docker.io \
-    docker-compose
+    docker-compose-plugin
 
 # Enable and start services
 systemctl enable docker

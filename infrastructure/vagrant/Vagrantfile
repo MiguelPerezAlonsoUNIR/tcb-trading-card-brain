@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
       app_dir: "/opt/tcb-trading-card-brain",
       repo_url: "https://github.com/MiguelPerezAlonsoUNIR/tcb-trading-card-brain.git",
       repo_branch: "main",
-      secret_key: "dev-secret-key-for-vagrant",
+      secret_key: ENV['TCB_SECRET_KEY'] || "dev-secret-key-for-vagrant-#{rand(10**20)}",
       database_url: "sqlite:///tcb.db",
       flask_env: "development",
       gunicorn_workers: 2,

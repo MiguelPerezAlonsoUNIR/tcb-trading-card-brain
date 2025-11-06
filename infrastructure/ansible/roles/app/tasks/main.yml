@@ -18,7 +18,7 @@
   notify: restart tcb-app
 
 - name: Create Python virtual environment
-  command: python3.11 -m venv {{ app_dir }}/venv
+  command: "python{{ python_version }} -m venv {{ app_dir }}/venv"
   args:
     creates: "{{ app_dir }}/venv/bin/activate"
   become_user: "{{ app_user }}"
@@ -27,7 +27,7 @@
   pip:
     requirements: "{{ app_dir }}/requirements.txt"
     virtualenv: "{{ app_dir }}/venv"
-    virtualenv_python: python3.11
+    virtualenv_python: "python{{ python_version }}"
   become_user: "{{ app_user }}"
   notify: restart tcb-app
 
