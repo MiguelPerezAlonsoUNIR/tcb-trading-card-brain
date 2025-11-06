@@ -381,9 +381,30 @@ The deck builder AI automatically enforces these rules:
 
 The application uses a database to store all card information, making it easy to add new cards and expansions.
 
-#### Initializing the Card Database
+#### Loading Data from Kaggle (Recommended)
 
-When you first set up the application, run the initialization script to populate the database with existing cards:
+The application now supports loading card data from the comprehensive [One Piece TCG Card Database on Kaggle](https://www.kaggle.com/datasets/jbowski/one-piece-tcg-card-database):
+
+```bash
+# Download and load data from Kaggle
+python load_kaggle_data.py --download
+```
+
+This provides:
+- Complete card database with all expansions
+- Up-to-date card information
+- Structure deck definitions
+- Community-maintained data
+
+**Setup Requirements:**
+1. Install dependencies: `pip install -r requirements.txt`
+2. Setup Kaggle API credentials (see [docs/KAGGLE_DATASET.md](docs/KAGGLE_DATASET.md))
+
+For detailed instructions, see [Kaggle Dataset Integration Guide](docs/KAGGLE_DATASET.md).
+
+#### Initializing the Card Database (Legacy)
+
+Alternatively, you can use the legacy initialization script with hardcoded cards:
 
 ```bash
 python init_cards_db.py
