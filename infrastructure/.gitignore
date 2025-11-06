@@ -1,0 +1,53 @@
+# Terraform files
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/terraform.tfvars
+**/.terraform.tfstate.lock.info
+**/tfplan
+**/crash.log
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
+
+# Ansible files
+ansible/inventory/hosts
+**/retry
+**/*.retry
+ansible/.ansible_facts/
+
+# Packer files
+packer/packer_cache/
+packer/*.box
+
+# Vagrant files
+vagrant/.vagrant/
+vagrant/*.log
+
+# SSH keys
+**/*.pem
+**/*.key
+!*.pub
+
+# Environment files
+**/.env
+**/*.env
+
+# Backup files
+**/*.backup
+**/backup/
+
+# Log files
+**/*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+**/tmp/
+**/*.tmp
+**/*.swp
+**/*.swo

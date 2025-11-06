@@ -1,0 +1,41 @@
+---
+# Nginx web server configuration tasks
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Create Nginx configuration for TCB app
+  template:
+    src: tcb-app.conf.j2
+    dest: /etc/nginx/sites-available/tcb-app.conf
+    mode: '0644'
+  notify: restart nginx
+
+- name: Enable TCB app site
+  file:
+    src: /etc/nginx/sites-available/tcb-app.conf
+    dest: /etc/nginx/sites-enabled/tcb-app.conf
+    state: link
+  notify: restart nginx
+
+- name: Test Nginx configuration
+  command: nginx -t
+  changed_when: false
+
+- name: Enable and start Nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    state: started
+
+- name: Allow Nginx through firewall
+  ufw:
+    rule: allow
+    name: 'Nginx Full'

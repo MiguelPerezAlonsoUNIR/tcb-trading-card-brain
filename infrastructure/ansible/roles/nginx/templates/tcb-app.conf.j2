@@ -1,0 +1,37 @@
+upstream tcb_app {
+    server 127.0.0.1:5000;
+}
+
+server {
+    listen 80;
+    server_name {{ server_name | default('_') }};
+
+    # Max upload size
+    client_max_body_size 10M;
+
+    # Logging
+    access_log /var/log/nginx/tcb-app-access.log;
+    error_log /var/log/nginx/tcb-app-error.log;
+
+    # Static files
+    location /static {
+        alias {{ app_dir }}/static;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Proxy to Flask application
+    location / {
+        proxy_pass http://tcb_app;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+        
+        # Timeouts
+        proxy_connect_timeout 300;
+        proxy_send_timeout 300;
+        proxy_read_timeout 300;
+    }
+}

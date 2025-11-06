@@ -1,0 +1,28 @@
+# AWS Terraform Variables Example
+# Copy this file to terraform.tfvars and update with your values
+
+# AWS Configuration
+aws_region = "us-east-1"
+availability_zones = ["us-east-1a", "us-east-1b"]
+
+# Project Configuration
+project_name = "tcb-trading-card-brain"
+environment  = "production"
+
+# Network Configuration
+vpc_cidr = "10.0.0.0/16"
+
+# EC2 Configuration
+instance_type = "t3.small"
+key_name      = "your-ssh-key-name"  # Name of your EC2 key pair
+ami_id        = ""                    # Optional: Use custom AMI ID
+
+# Security Configuration
+ssh_allowed_ips = ["0.0.0.0/0"]  # Restrict this to your IP in production
+
+# Database Configuration (Optional)
+use_rds          = false  # Set to true to create RDS instance
+db_instance_class = "db.t3.micro"
+db_name          = "tcb_db"
+db_username      = "tcbadmin"
+db_password      = "ChangeThisToSecurePassword123!"  # Change this!

@@ -1,0 +1,68 @@
+---
+# PostgreSQL database setup tasks
+- name: Install PostgreSQL
+  apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+    state: present
+
+- name: Ensure PostgreSQL is running
+  systemd:
+    name: postgresql
+    enabled: yes
+    state: started
+
+- name: Create application database
+  postgresql_db:
+    name: "{{ db_name }}"
+    encoding: UTF-8
+    lc_collate: en_US.UTF-8
+    lc_ctype: en_US.UTF-8
+    template: template0
+  become_user: postgres
+
+- name: Create application database user
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    encrypted: yes
+  become_user: postgres
+
+- name: Grant privileges to application user
+  postgresql_privs:
+    database: "{{ db_name }}"
+    roles: "{{ db_user }}"
+    privs: ALL
+    type: database
+  become_user: postgres
+
+- name: Configure PostgreSQL to allow password authentication
+  lineinfile:
+    path: "/etc/postgresql/{{ postgresql_version | default('14') }}/main/pg_hba.conf"
+    regexp: "^local\\s+all\\s+all\\s+"
+    line: "local   all             all                                     md5"
+  notify: restart postgresql
+
+- name: Configure PostgreSQL to listen on all addresses
+  lineinfile:
+    path: "/etc/postgresql/{{ postgresql_version | default('14') }}/main/postgresql.conf"
+    regexp: "^#?listen_addresses"
+    line: "listen_addresses = '*'"
+  notify: restart postgresql
+  when: allow_remote_connections | default(false)
+
+- name: Allow remote connections in pg_hba.conf
+  lineinfile:
+    path: "/etc/postgresql/{{ postgresql_version | default('14') }}/main/pg_hba.conf"
+    line: "host    all             all             0.0.0.0/0               md5"
+  notify: restart postgresql
+  when: allow_remote_connections | default(false)
+
+- name: Allow PostgreSQL through firewall
+  ufw:
+    rule: allow
+    port: '5432'
+    proto: tcp
+  when: allow_remote_connections | default(false)

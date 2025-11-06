@@ -1,0 +1,20 @@
+---
+# Playbook for setting up PostgreSQL database
+- name: Setup PostgreSQL Database
+  hosts: db_servers
+  become: yes
+  vars:
+    db_name: tcb_db
+    db_user: tcbapp
+    
+  roles:
+    - common
+    - database
+    
+  tasks:
+    - name: Display database setup summary
+      debug:
+        msg: |
+          Database setup completed successfully!
+          Database name: {{ db_name }}
+          Database user: {{ db_user }}
