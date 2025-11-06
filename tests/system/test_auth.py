@@ -9,9 +9,9 @@ import os
 # Add the project root directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 
-from app import app, db
-from models import User, Deck, UserCollection
-from auth import hash_password, verify_password
+from app import app
+from src.models import db, User, Deck, UserCollection
+from src.services import AuthService
 import json
 
 def test_authentication():
@@ -35,15 +35,15 @@ def test_authentication():
         print("Test 1: Password Hashing and Verification")
         print("-" * 60)
         password = "test_password_123"
-        hashed = hash_password(password)
+        hashed = AuthService.hash_password(password)
         print(f"✓ Password hashed successfully")
         
         # Verify correct password
-        assert verify_password(password, hashed), "Password verification failed"
+        assert AuthService.verify_password(password, hashed), "Password verification failed"
         print(f"✓ Correct password verified")
         
         # Verify incorrect password
-        assert not verify_password("wrong_password", hashed), "Wrong password accepted"
+        assert not AuthService.verify_password("wrong_password", hashed), "Wrong password accepted"
         print(f"✓ Incorrect password rejected")
         
         # Test 2: User Creation
@@ -52,7 +52,7 @@ def test_authentication():
         print("-" * 60)
         user = User(
             username="testuser",
-            password_hash=hash_password("testpass123")
+            password_hash=AuthService.hash_password("testpass123")
         )
         db.session.add(user)
         db.session.commit()
@@ -147,7 +147,7 @@ def test_authentication():
         print("-" * 60)
         user2 = User(
             username="testuser2",
-            password_hash=hash_password("testpass456")
+            password_hash=AuthService.hash_password("testpass456")
         )
         db.session.add(user2)
         db.session.commit()

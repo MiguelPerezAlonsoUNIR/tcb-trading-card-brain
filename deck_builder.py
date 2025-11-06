@@ -26,7 +26,7 @@ class OnePieceDeckBuilder:
             from cards_data import ONEPIECE_CARDS
             return ONEPIECE_CARDS
         
-        from models import Card
+        from src.models import Card
         cards = Card.query.all()
         return [card.to_dict() for card in cards]
     
