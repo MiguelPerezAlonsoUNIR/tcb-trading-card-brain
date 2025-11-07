@@ -19,8 +19,11 @@ services:
       - cluster.name=tcb-monitoring-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # Memory settings: Development default 512MB, Production recommended 1-2GB
+      # Override with .env file: ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - "ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms512m -Xmx512m}"
       # WARNING: Security disabled for development only
+      # For production, set xpack.security.enabled=true and configure passwords
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
     ulimits:
@@ -52,7 +55,9 @@ services:
       - "5000:5000/udp"
       - "9600:9600"
     environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      # Memory settings: Development default 256MB, Production recommended 512MB
+      # Override with .env file: LS_JAVA_OPTS=-Xmx512m -Xms512m
+      LS_JAVA_OPTS: "${LS_JAVA_OPTS:--Xmx256m -Xms256m}"
     networks:
       - elk
     depends_on:
