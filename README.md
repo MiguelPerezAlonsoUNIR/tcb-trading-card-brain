@@ -1,4 +1,5 @@
-# TCB Trading Card Brain 🏴‍☠️ ✨
+
+# TCB Trading Card Brain 🧠 
 
 An AI-powered web application for building optimized decks for Trading Card Games. Supports multiple TCGs including One Piece TCG and Disney Lorcana.
 
