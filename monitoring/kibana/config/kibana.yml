@@ -1,0 +1,7 @@
+server.host: "0.0.0.0"
+server.port: 5601
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+server.name: "tcb-kibana"
+
+# Monitoring
+monitoring.ui.container.elasticsearch.enabled: true

@@ -1,0 +1,76 @@
+###################### Heartbeat Configuration ######################
+
+# ============================== Heartbeat monitors ============================
+heartbeat.monitors:
+  # Monitor TCB Application
+  - type: http
+    id: tcb-app-http
+    name: TCB Application HTTP
+    schedule: '@every 30s'
+    urls: ["http://web:5000"]
+    check.response.status: [200, 301, 302]
+    timeout: 10s
+    
+  # Monitor health endpoint if available
+  - type: http
+    id: tcb-app-health
+    name: TCB Application Health
+    schedule: '@every 30s'
+    urls: ["http://web:5000/health"]
+    check.response.status: [200]
+    timeout: 5s
+
+  # Monitor Elasticsearch
+  - type: http
+    id: elasticsearch-http
+    name: Elasticsearch HTTP
+    schedule: '@every 30s'
+    urls: ["http://elasticsearch:9200"]
+    check.response.status: [200]
+    timeout: 5s
+
+  # Monitor Kibana
+  - type: http
+    id: kibana-http
+    name: Kibana HTTP
+    schedule: '@every 30s'
+    urls: ["http://kibana:5601/api/status"]
+    check.response.status: [200]
+    timeout: 5s
+
+  # Monitor Logstash
+  - type: http
+    id: logstash-http
+    name: Logstash HTTP
+    schedule: '@every 30s'
+    urls: ["http://logstash:9600"]
+    check.response.status: [200]
+    timeout: 5s
+
+# ================================ Processors ==================================
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+
+# ================================ Output ======================================
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "heartbeat-tcb-%{+yyyy.MM.dd}"
+
+# ============================== Setup =========================================
+setup.template.name: "heartbeat-tcb"
+setup.template.pattern: "heartbeat-tcb-*"
+setup.ilm.enabled: false
+
+# ============================== Kibana ========================================
+setup.kibana:
+  host: "kibana:5601"
+
+# ================================ Logging =====================================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/heartbeat
+  name: heartbeat
+  keepfiles: 7
+  permissions: 0644

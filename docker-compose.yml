@@ -9,3 +9,22 @@ services:
       - FLASK_ENV=production
     restart: unless-stopped
     container_name: onepiece-deck-builder
+    networks:
+      - app
+      - elk
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service,environment"
+    labels:
+      service: "tcb-app"
+      environment: "production"
+
+networks:
+  app:
+    driver: bridge
+  elk:
+    external: true
+    name: monitoring_elk

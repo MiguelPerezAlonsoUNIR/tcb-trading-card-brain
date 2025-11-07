@@ -22,6 +22,7 @@ An AI-powered web application for building optimized decks for Trading Card Game
 - **Export Functionality**: Export your decks as text files
 - **Docker Support**: Easy deployment with Docker containers
 - **Universal Architecture**: Extensible base framework for adding new TCGs
+- **Monitoring & Observability**: Complete ELK stack with Beats for comprehensive monitoring
 
 ## Technology Stack
 
@@ -31,6 +32,7 @@ An AI-powered web application for building optimized decks for Trading Card Game
 - **AI Library**: Python-based deck building algorithms (extensible to use ML models)
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
 - **Containerization**: Docker with multi-stage builds
+- **Monitoring**: ELK Stack (Elasticsearch, Logstash, Kibana) with Beats (Filebeat, Metricbeat, Heartbeat)
 
 ## Quick Start
 
@@ -91,6 +93,65 @@ The application can be configured using environment variables:
 - `FLASK_ENV`: Set to 'development' for debug mode
 
 **Important**: For production deployments, always set a strong `SECRET_KEY` and use a production-grade database.
+
+## Monitoring and Observability
+
+The application includes a comprehensive monitoring stack based on the ELK (Elasticsearch, Logstash, Kibana) platform with Elastic Beats.
+
+### Features
+
+- **Log Aggregation**: Centralized logging with Filebeat and Logstash
+- **Metrics Collection**: System and application metrics with Metricbeat
+- **Uptime Monitoring**: Service health checks with Heartbeat
+- **Visualization**: Interactive dashboards in Kibana
+- **Real-time Insights**: Monitor application performance and health in real-time
+
+### Quick Start Monitoring
+
+1. **Start the monitoring stack:**
+```bash
+cd monitoring
+./manage-monitoring.sh start
+```
+
+2. **Access monitoring tools:**
+- Kibana Dashboard: `http://localhost:5601`
+- Elasticsearch API: `http://localhost:9200`
+- Logstash API: `http://localhost:9600`
+
+3. **View your application logs and metrics:**
+- Open Kibana at `http://localhost:5601`
+- Go to "Discover" to view logs
+- Create dashboards for custom visualizations
+
+### What Gets Monitored
+
+- **Application Logs**: All Flask application logs, errors, and access logs
+- **System Metrics**: CPU, memory, disk, and network usage
+- **Docker Metrics**: Container resource usage and health
+- **Uptime**: HTTP endpoint availability and response times
+- **Service Health**: Elasticsearch, Kibana, and Logstash status
+
+### Management Commands
+
+```bash
+# Start monitoring stack
+./monitoring/manage-monitoring.sh start
+
+# Stop monitoring stack
+./monitoring/manage-monitoring.sh stop
+
+# Check status
+./monitoring/manage-monitoring.sh status
+
+# View logs
+./monitoring/manage-monitoring.sh logs
+
+# Backup data
+./monitoring/manage-monitoring.sh backup
+```
+
+For detailed monitoring documentation, see [monitoring/README.md](monitoring/README.md).
 
 ## Usage Guide
 
