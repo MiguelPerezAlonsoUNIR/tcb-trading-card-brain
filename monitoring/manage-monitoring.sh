@@ -176,6 +176,12 @@ cleanup_data() {
     if [[ "$response" =~ ^[Yy]$ ]]; then
         print_info "Cleaning up old indices..."
         
+        # Check if Elasticsearch is running
+        if ! curl -s http://localhost:9200/_cluster/health > /dev/null 2>&1; then
+            print_error "Elasticsearch is not running or not accessible"
+            return 1
+        fi
+        
         # Delete indices older than 7 days
         # Get current date minus 7 days
         if date -v-7d &>/dev/null; then
@@ -188,16 +194,31 @@ cleanup_data() {
         
         print_info "Deleting indices older than $cutoff_date..."
         
+        deleted_count=0
+        failed_count=0
+        
         # Get list of indices and delete old ones
         curl -s "localhost:9200/_cat/indices/tcb-logs-*?h=index" | while read index; do
+            [ -z "$index" ] && continue
+            
             index_date=$(echo "$index" | grep -oE '[0-9]{4}\.[0-9]{2}\.[0-9]{2}' || echo "")
             if [ ! -z "$index_date" ] && [ "$index_date" \< "$cutoff_date" ]; then
                 print_info "Deleting index: $index"
-                curl -X DELETE "localhost:9200/$index"
+                
+                # Delete with error checking
+                response=$(curl -s -w "\n%{http_code}" -X DELETE "localhost:9200/$index")
+                http_code=$(echo "$response" | tail -1)
+                
+                if [ "$http_code" = "200" ]; then
+                    ((deleted_count++))
+                else
+                    print_warning "Failed to delete index $index (HTTP $http_code)"
+                    ((failed_count++))
+                fi
             fi
         done
         
-        print_info "Cleanup complete"
+        print_info "Cleanup complete: $deleted_count deleted, $failed_count failed"
     else
         print_info "Cleanup cancelled"
     fi

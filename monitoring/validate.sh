@@ -63,6 +63,17 @@ echo "✓ Validating YAML syntax..."
 if command -v python3 &> /dev/null; then
     for file in "${REQUIRED_FILES[@]}"; do
         if [[ $file == *.yml ]]; then
+            # Check if file exists and is readable
+            if [ ! -f "$file" ]; then
+                echo -e "${RED}✗ $(basename $file) does not exist${NC}"
+                exit 1
+            fi
+            if [ ! -r "$file" ]; then
+                echo -e "${RED}✗ $(basename $file) is not readable${NC}"
+                exit 1
+            fi
+            
+            # Validate YAML
             if python3 -c "import yaml; yaml.safe_load(open('$file'))" 2>/dev/null; then
                 echo -e "${GREEN}✓ $(basename $file) has valid YAML${NC}"
             else

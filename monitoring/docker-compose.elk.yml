@@ -1,5 +1,15 @@
 version: '3.8'
 
+# TCB Trading Card Brain - ELK Stack Monitoring
+# 
+# SECURITY NOTE: This configuration has security disabled for development/testing.
+# For production deployments:
+# 1. Enable xpack.security.enabled=true
+# 2. Set strong passwords for elastic, kibana_system users
+# 3. Configure SSL/TLS for all connections
+# 4. Restrict network access to monitoring ports
+# See monitoring/README.md for production security setup
+
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
@@ -10,6 +20,7 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # WARNING: Security disabled for development only
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
     ulimits:
