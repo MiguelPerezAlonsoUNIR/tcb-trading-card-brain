@@ -1,6 +1,6 @@
 ###################### Metricbeat Configuration ######################
 
-# ============================== Metricbeat modules ============================
+# ============================== Metricbeat module config ======================
 metricbeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false

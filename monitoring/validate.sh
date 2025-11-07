@@ -113,7 +113,27 @@ for i in "${!PORTS[@]}"; do
     port=${PORTS[$i]}
     name=${PORT_NAMES[$i]}
     
-    if ! lsof -i:$port > /dev/null 2>&1 && ! netstat -tuln 2>/dev/null | grep ":$port " > /dev/null 2>&1; then
+    # Try multiple methods to check port availability
+    port_in_use=false
+    
+    # Method 1: lsof (if available)
+    if command -v lsof &> /dev/null; then
+        if lsof -i:$port > /dev/null 2>&1; then
+            port_in_use=true
+        fi
+    # Method 2: netstat (if available)
+    elif command -v netstat &> /dev/null; then
+        if netstat -tuln 2>/dev/null | grep ":$port " > /dev/null 2>&1; then
+            port_in_use=true
+        fi
+    # Method 3: ss (if available)
+    elif command -v ss &> /dev/null; then
+        if ss -tuln 2>/dev/null | grep ":$port " > /dev/null 2>&1; then
+            port_in_use=true
+        fi
+    fi
+    
+    if [ "$port_in_use" = false ]; then
         echo -e "${GREEN}✓ Port $port ($name) is available${NC}"
     else
         echo -e "${YELLOW}! Port $port ($name) is already in use${NC}"
@@ -137,11 +157,25 @@ if [[ -f /proc/meminfo ]]; then
 fi
 
 # Check available disk space
-available_space=$(df -BG "$SCRIPT_DIR" | tail -1 | awk '{print $4}' | sed 's/G//')
-if [ $available_space -ge 10 ]; then
-    echo -e "${GREEN}✓ Available disk space: ${available_space}GB (sufficient)${NC}"
-else
-    echo -e "${YELLOW}! Available disk space: ${available_space}GB (recommended: 10GB+)${NC}"
+if command -v df &> /dev/null; then
+    # Try with --output for better reliability
+    if df --output=avail -BG "$SCRIPT_DIR" &> /dev/null; then
+        available_space=$(df --output=avail -BG "$SCRIPT_DIR" | tail -1 | sed 's/G//' | tr -d ' ')
+    else
+        # Fallback to standard df with error handling
+        available_space=$(df -BG "$SCRIPT_DIR" 2>/dev/null | tail -1 | awk '{print $4}' | sed 's/G//')
+    fi
+    
+    # Verify we got a number
+    if [[ "$available_space" =~ ^[0-9]+$ ]]; then
+        if [ $available_space -ge 10 ]; then
+            echo -e "${GREEN}✓ Available disk space: ${available_space}GB (sufficient)${NC}"
+        else
+            echo -e "${YELLOW}! Available disk space: ${available_space}GB (recommended: 10GB+)${NC}"
+        fi
+    else
+        echo -e "${YELLOW}! Could not determine disk space${NC}"
+    fi
 fi
 
 # Summary

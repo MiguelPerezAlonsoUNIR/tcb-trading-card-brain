@@ -177,10 +177,25 @@ cleanup_data() {
         print_info "Cleaning up old indices..."
         
         # Delete indices older than 7 days
-        curl -X DELETE "localhost:9200/tcb-logs-*" -H 'Content-Type: application/json' -d'
-        {
-          "max_age": "7d"
-        }'
+        # Get current date minus 7 days
+        if date -v-7d &>/dev/null; then
+            # BSD date (macOS)
+            cutoff_date=$(date -v-7d +%Y.%m.%d)
+        else
+            # GNU date (Linux)
+            cutoff_date=$(date -d '7 days ago' +%Y.%m.%d)
+        fi
+        
+        print_info "Deleting indices older than $cutoff_date..."
+        
+        # Get list of indices and delete old ones
+        curl -s "localhost:9200/_cat/indices/tcb-logs-*?h=index" | while read index; do
+            index_date=$(echo "$index" | grep -oE '[0-9]{4}\.[0-9]{2}\.[0-9]{2}' || echo "")
+            if [ ! -z "$index_date" ] && [ "$index_date" \< "$cutoff_date" ]; then
+                print_info "Deleting index: $index"
+                curl -X DELETE "localhost:9200/$index"
+            fi
+        done
         
         print_info "Cleanup complete"
     else
@@ -197,8 +212,19 @@ backup_data() {
     
     BACKUP_FILE="$BACKUP_DIR/elasticsearch-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
     
+    # Get the actual volume name from docker-compose
+    cd "$SCRIPT_DIR"
+    VOLUME_NAME=$(docker-compose -f docker-compose.elk.yml config --volumes | grep elasticsearch-data | head -1)
+    
+    if [ -z "$VOLUME_NAME" ]; then
+        print_warning "Could not determine volume name, using default"
+        VOLUME_NAME="monitoring_elasticsearch-data"
+    fi
+    
+    print_info "Using volume: $VOLUME_NAME"
+    
     docker run --rm \
-        -v monitoring_elasticsearch-data:/data \
+        -v "${VOLUME_NAME}:/data" \
         -v "$BACKUP_DIR:/backup" \
         ubuntu tar czf "/backup/$(basename $BACKUP_FILE)" /data
     
