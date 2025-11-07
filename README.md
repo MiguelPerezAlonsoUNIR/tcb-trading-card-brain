@@ -1,4 +1,4 @@
-# TCB Trading Card Brain 🏴‍☠️
+# TCB Trading Card Brain 🧠 
 
 An AI-powered web application for building optimized decks for Trading Card Games, starting with One Piece TCG.
 
