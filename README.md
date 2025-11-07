@@ -392,9 +392,10 @@ This application follows the official Disney Lorcana deck building rules:
 
 1. **Deck Size**: Each deck must contain exactly 60 cards
 2. **Card Copies**: Maximum of 4 copies of any single card
-3. **Ink Colors**: Six ink colors available - Amber, Amethyst, Emerald, Ruby, Sapphire, and Steel
-4. **No Leader Card**: Unlike One Piece TCG, Lorcana does not use leader cards
-5. **Inkable Cards**: Many cards can be used as ink resources
+3. **Two-Color Requirement**: Each deck must be composed of exactly 2 different ink colors
+4. **Ink Colors**: Six ink colors available - Amber, Amethyst, Emerald, Ruby, Sapphire, and Steel
+5. **No Leader Card**: Unlike One Piece TCG, Lorcana does not use leader cards
+6. **Inkable Cards**: Many cards can be used as ink resources
 
 ### Card Types
 
@@ -410,7 +411,7 @@ Builds a Lorcana deck based on preferences
 ```json
 {
   "strategy": "balanced|aggressive|control",
-  "color": "Amber|Amethyst|Emerald|Ruby|Sapphire|Steel|any"
+  "colors": ["Amber", "Sapphire"]  // Array of exactly 2 different ink colors
 }
 ```
 

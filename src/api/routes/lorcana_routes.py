@@ -32,15 +32,28 @@ def build_lorcana_deck():
     """Build a Lorcana deck based on user preferences"""
     data = request.json
     strategy = data.get('strategy', 'balanced')
-    color = data.get('color', 'any')
+    colors = data.get('colors', None)
+    
+    # Validate colors parameter
+    if colors and len(colors) != 2:
+        return jsonify({
+            'success': False,
+            'error': 'Lorcana decks require exactly 2 ink colors'
+        }), 400
     
     try:
         deck_builder = LorcanaDeckBuilder(db_session=db.session)
-        deck = deck_builder.build_deck(strategy=strategy, color=color)
+        deck = deck_builder.build_deck(strategy=strategy, colors=colors)
         return jsonify({
             'success': True,
             'deck': deck
         })
+    except ValueError as e:
+        logger.error(f"Validation error building Lorcana deck: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
     except Exception as e:
         logger.error(f"Error building Lorcana deck: {e}", exc_info=True)
         return jsonify({
@@ -81,7 +94,14 @@ def suggest_lorcana_deck_from_collection():
     
     data = request.json
     strategy = data.get('strategy', 'balanced')
-    color = data.get('color', 'any')
+    colors = data.get('colors', None)
+    
+    # Validate colors parameter
+    if colors and len(colors) != 2:
+        return jsonify({
+            'success': False,
+            'error': 'Lorcana decks require exactly 2 ink colors'
+        }), 400
     
     # Get user's collection
     owned_cards = CollectionService.get_collection_as_dict(current_user.id)
@@ -91,13 +111,19 @@ def suggest_lorcana_deck_from_collection():
         deck_builder = LorcanaDeckBuilder(db_session=db.session)
         deck = deck_builder.build_deck_from_collection(
             strategy=strategy,
-            color=color,
+            colors=colors,
             owned_cards=owned_cards
         )
         return jsonify({
             'success': True,
             'deck': deck
         })
+    except ValueError as e:
+        logger.error(f"Validation error suggesting Lorcana deck: {e}", exc_info=True)
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
     except Exception as e:
         logger.error(f"Error suggesting Lorcana deck: {e}", exc_info=True)
         return jsonify({

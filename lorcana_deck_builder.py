@@ -123,44 +123,53 @@ class LorcanaDeckBuilder(BaseDeckBuilder):
         return sample_cards
     
     def build_deck(self, strategy: str = 'balanced', 
-                   color: str = 'any', 
+                   colors: List[str] = None, 
                    **kwargs) -> Dict:
         """
         Build a Lorcana deck based on strategy and color preferences
         
         Args:
             strategy: Deck strategy ('aggressive', 'balanced', 'control')
-            color: Primary ink color ('Amber', 'Amethyst', 'Emerald', 'Ruby', 'Sapphire', 'Steel', 'any')
+            colors: List of exactly 2 ink colors for the deck (Lorcana rule)
             **kwargs: Additional parameters (unused for Lorcana)
         
         Returns:
             Dictionary containing the built deck
         """
+        # Validate colors parameter
+        if colors is None:
+            # Default to two random colors if not specified
+            import random
+            colors = random.sample(self.colors, 2)
+        elif len(colors) != 2:
+            raise ValueError("Lorcana decks must have exactly 2 ink colors")
+        
+        # Ensure exactly 2 different colors
+        if len(set(colors)) != 2:
+            raise ValueError("Lorcana decks must have exactly 2 different ink colors")
+        
         deck = {
             'main_deck': [],
             'strategy': strategy,
-            'color': color,
+            'colors': colors,  # Store both colors
             'game': self.game_name
         }
         
         # Build 60-card deck (no leader in Lorcana)
-        main_deck = self._build_main_deck(strategy, color)
+        main_deck = self._build_main_deck(strategy, colors)
         deck['main_deck'] = main_deck
         
         return deck
     
-    def _build_main_deck(self, strategy: str, color: str) -> List[Dict]:
-        """Build the main deck for Lorcana"""
+    def _build_main_deck(self, strategy: str, colors: List[str]) -> List[Dict]:
+        """Build the main deck for Lorcana with exactly 2 colors"""
         cards = self.get_all_cards()
         
-        # Filter by color if specified
-        if color != 'any':
-            available_cards = [
-                c for c in cards 
-                if color in c.get('colors', [])
-            ]
-        else:
-            available_cards = cards
+        # Filter cards that match either of the two colors
+        available_cards = [
+            c for c in cards 
+            if any(color in c.get('colors', []) for color in colors)
+        ]
         
         if not available_cards:
             # Fallback to all cards if no matches
@@ -183,14 +192,14 @@ class LorcanaDeckBuilder(BaseDeckBuilder):
         return main_deck
     
     def build_deck_from_collection(self, strategy: str = 'balanced',
-                                  color: str = 'any',
+                                  colors: List[str] = None,
                                   owned_cards: Dict[str, int] = None) -> Dict:
         """
         Build a Lorcana deck prioritizing cards from the user's collection
         
         Args:
             strategy: Deck strategy
-            color: Primary color
+            colors: List of exactly 2 ink colors
             owned_cards: Dictionary mapping card names to quantities owned
         
         Returns:
@@ -200,7 +209,7 @@ class LorcanaDeckBuilder(BaseDeckBuilder):
             owned_cards = {}
         
         # Build deck normally
-        deck = self.build_deck(strategy, color)
+        deck = self.build_deck(strategy, colors)
         
         # Calculate which cards the user owns
         owned_count = 0
@@ -243,13 +252,21 @@ class LorcanaDeckBuilder(BaseDeckBuilder):
         }
         
         strategy = deck.get('strategy', 'balanced')
-        color = deck.get('color', 'any')
+        colors = deck.get('colors', None)
+        
+        # If colors not in deck (old format), try to get color and convert to list
+        if colors is None:
+            color = deck.get('color', None)
+            if color and color != 'any':
+                colors = [color, 'Amber']  # Add a default second color
+            else:
+                colors = None  # Will use random colors
         
         # Generate three variations
         for improvement_type in improvements.keys():
             improved_deck = self.build_deck(
                 strategy=improvement_type,
-                color=color
+                colors=colors
             )
             
             # Add collection info

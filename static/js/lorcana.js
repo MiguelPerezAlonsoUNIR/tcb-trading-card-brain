@@ -97,12 +97,24 @@ function handleBuildDeck(event) {
     event.preventDefault();
     
     const strategy = document.getElementById('strategy').value;
-    const color = document.getElementById('color').value;
+    const color1 = document.getElementById('color1').value;
+    const color2 = document.getElementById('color2').value;
+    
+    // Validate that two different colors are selected
+    if (!color1 || !color2) {
+        alert('Please select both ink colors');
+        return;
+    }
+    
+    if (color1 === color2) {
+        alert('Please select two different ink colors');
+        return;
+    }
     
     fetch('/api/lorcana/build-deck', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ strategy, color })
+        body: JSON.stringify({ strategy, colors: [color1, color2] })
     })
     .then(response => response.json())
     .then(data => {
@@ -455,14 +467,20 @@ function removeFromCollection(itemId) {
 
 function handleSuggestFromCollection() {
     const strategy = prompt('Enter strategy (balanced/aggressive/control):', 'balanced');
-    const color = prompt('Enter color (Amber/Amethyst/Emerald/Ruby/Sapphire/Steel/any):', 'any');
+    const color1 = prompt('Enter first ink color (Amber/Amethyst/Emerald/Ruby/Sapphire/Steel):', 'Amber');
+    const color2 = prompt('Enter second ink color (Amber/Amethyst/Emerald/Ruby/Sapphire/Steel):', 'Sapphire');
     
-    if (!strategy) return;
+    if (!strategy || !color1 || !color2) return;
+    
+    if (color1 === color2) {
+        alert('Please select two different ink colors');
+        return;
+    }
     
     fetch('/api/lorcana/suggest-deck', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ strategy, color })
+        body: JSON.stringify({ strategy, colors: [color1, color2] })
     })
     .then(response => response.json())
     .then(data => {
