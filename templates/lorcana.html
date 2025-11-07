@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney Lorcana Deck Builder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lorcana.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>✨ Disney Lorcana Deck Builder 🏰</h1>
+                    <p>AI-Powered Deck Building for Disney Lorcana Trading Card Game</p>
+                </div>
+                <div class="header-right">
+                    <div id="auth-section">
+                        <button id="login-btn" class="btn btn-secondary">Login</button>
+                        <button id="register-btn" class="btn btn-secondary">Register</button>
+                    </div>
+                    <div id="user-section" style="display: none;">
+                        <span id="username-display"></span>
+                        <button id="my-decks-btn" class="btn btn-secondary">My Decks</button>
+                        <button id="my-collection-btn" class="btn btn-secondary">My Collection</button>
+                        <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="deck-builder">
+                <h2>Build Your Lorcana Deck</h2>
+                <form id="deck-builder-form">
+                    <div class="form-group">
+                        <label for="strategy">Strategy:</label>
+                        <select id="strategy" name="strategy">
+                            <option value="balanced">Balanced</option>
+                            <option value="aggressive">Aggressive</option>
+                            <option value="control">Control</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Primary Ink Color:</label>
+                        <select id="color" name="color">
+                            <option value="any">Any</option>
+                            <option value="Amber">Amber 🟡</option>
+                            <option value="Amethyst">Amethyst 🟣</option>
+                            <option value="Emerald">Emerald 🟢</option>
+                            <option value="Ruby">Ruby 🔴</option>
+                            <option value="Sapphire">Sapphire 🔵</option>
+                            <option value="Steel">Steel ⚪</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Build Deck ⭐</button>
+                </form>
+            </section>
+
+            <section class="deck-display" id="deck-display" style="display: none;">
+                <h2>Your Lorcana Deck</h2>
+                
+                <div class="deck-stats">
+                    <h3>Deck Statistics</h3>
+                    <div id="deck-stats-content"></div>
+                </div>
+
+                <div class="main-deck">
+                    <h3>Main Deck (60 cards)</h3>
+                    <div class="card-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="Character">Characters</button>
+                        <button class="filter-btn" data-filter="Action">Actions</button>
+                        <button class="filter-btn" data-filter="Item">Items</button>
+                        <button class="filter-btn" data-filter="Location">Locations</button>
+                    </div>
+                    <div id="main-deck-cards" class="cards-grid"></div>
+                </div>
+
+                <div class="deck-actions">
+                    <button id="analyze-deck-btn" class="btn btn-secondary">Analyze Deck</button>
+                    <button id="export-deck-btn" class="btn btn-secondary">Export Deck</button>
+                    <button id="save-deck-btn" class="btn btn-primary" style="display: none;">Save Deck</button>
+                    <button id="suggest-improvements-btn" class="btn btn-secondary">Suggest Improvements</button>
+                </div>
+            </section>
+
+            <section class="user-decks-section" id="user-decks-section" style="display: none;">
+                <h2>My Saved Decks</h2>
+                <div id="user-decks-list"></div>
+                <button id="back-to-builder-btn" class="btn btn-secondary">Back to Builder</button>
+            </section>
+
+            <section class="collection-section" id="collection-section" style="display: none;">
+                <h2>My Card Collection</h2>
+                <div class="collection-actions">
+                    <button id="add-card-btn" class="btn btn-primary">Add Card to Collection</button>
+                    <button id="suggest-from-collection-btn" class="btn btn-secondary">Suggest Deck from Collection</button>
+                </div>
+                <div id="collection-list"></div>
+                <button id="back-from-collection-btn" class="btn btn-secondary">Back to Builder</button>
+            </section>
+
+            <section class="analysis-section" id="analysis-section" style="display: none;">
+                <h2>Deck Analysis</h2>
+                <div id="analysis-content"></div>
+                <button id="back-from-analysis-btn" class="btn btn-secondary">Back to Deck</button>
+            </section>
+
+            <section class="improvements-section" id="improvements-section" style="display: none;">
+                <h2>Deck Improvement Suggestions</h2>
+                <div id="improvements-content"></div>
+                <button id="back-from-improvements-btn" class="btn btn-secondary">Back to Deck</button>
+            </section>
+        </main>
+
+        <footer>
+            <p>Disney Lorcana Deck Builder - Powered by TCB Trading Card Brain</p>
+            <p class="disclaimer">Disney Lorcana is a trademark of Disney. This is a fan-made deck building tool.</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" id="login-username" placeholder="Username" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Register</h2>
+            <form id="register-form">
+                <input type="text" id="register-username" placeholder="Username (min 3 chars)" required>
+                <input type="password" id="register-password" placeholder="Password (min 6 chars)" required>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="save-deck-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Save Deck</h2>
+            <form id="save-deck-form">
+                <input type="text" id="deck-name" placeholder="Deck Name" required>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-card-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Card to Collection</h2>
+            <form id="add-card-form">
+                <input type="text" id="card-name" placeholder="Card Name" required>
+                <input type="number" id="card-quantity" placeholder="Quantity" min="1" value="1" required>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/lorcana.js') }}"></script>
+</body>
+</html>

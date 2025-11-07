@@ -68,6 +68,11 @@ def register_view_routes(app):
     def onepiece():
         """Serve the One Piece TCG deck builder page"""
         return render_template('onepiece.html')
+    
+    @app.route('/lorcana')
+    def lorcana():
+        """Serve the Disney Lorcana deck builder page"""
+        return render_template('lorcana.html')
 
 
 # Create the application instance

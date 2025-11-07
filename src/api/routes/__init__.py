@@ -5,6 +5,7 @@ from .deck_routes import deck_bp
 from .collection_routes import collection_bp
 from .card_routes import card_bp
 from .game_routes import game_bp
+from .lorcana_routes import lorcana_bp
 
 
 def register_blueprints(app: Flask):
@@ -14,6 +15,7 @@ def register_blueprints(app: Flask):
     app.register_blueprint(collection_bp, url_prefix='/api')
     app.register_blueprint(card_bp, url_prefix='/api')
     app.register_blueprint(game_bp, url_prefix='/api')
+    app.register_blueprint(lorcana_bp, url_prefix='/api/lorcana')
 
 
 __all__ = ['register_blueprints']
