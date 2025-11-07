@@ -1,0 +1,73 @@
+###################### Metricbeat Configuration ######################
+
+# ============================== Metricbeat modules ============================
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+# ============================== Metricbeat modules ============================
+metricbeat.modules:
+  # System metrics
+  - module: system
+    period: 10s
+    metricsets:
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - process_summary
+      - socket_summary
+      - filesystem
+      - fsstat
+    process.include_top_n:
+      by_cpu: 5
+      by_memory: 5
+
+  # Docker metrics
+  - module: docker
+    period: 10s
+    hosts: ["unix:///var/run/docker.sock"]
+    metricsets:
+      - container
+      - cpu
+      - diskio
+      - healthcheck
+      - info
+      - memory
+      - network
+
+  # Python metrics (if available)
+  - module: python
+    enabled: false
+    period: 10s
+    hosts: ["localhost:8080"]
+
+# ================================ Processors ==================================
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+
+# ================================ Output ======================================
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "metricbeat-tcb-%{+yyyy.MM.dd}"
+
+# ============================== Setup =========================================
+setup.template.name: "metricbeat-tcb"
+setup.template.pattern: "metricbeat-tcb-*"
+setup.ilm.enabled: false
+
+# ============================== Kibana ========================================
+setup.kibana:
+  host: "kibana:5601"
+
+# ================================ Logging =====================================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/metricbeat
+  name: metricbeat
+  keepfiles: 7
+  permissions: 0644

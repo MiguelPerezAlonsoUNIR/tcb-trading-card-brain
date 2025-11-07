@@ -1,0 +1,18 @@
+# Elasticsearch data
+elasticsearch-data/
+
+# Beat data
+filebeat-data/
+metricbeat-data/
+heartbeat-data/
+
+# Logs
+*.log
+logs/
+
+# Backups
+backups/
+
+# Temporary files
+*.tmp
+.DS_Store
