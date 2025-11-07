@@ -622,6 +622,157 @@ For issues or questions:
 2. Review Terraform/Ansible/Packer documentation
 3. Open an issue on GitHub
 
+## Monitoring and Observability
+
+The application includes comprehensive monitoring using the ELK (Elasticsearch, Logstash, Kibana) stack with Elastic Beats. The monitoring infrastructure can be deployed alongside the application in any environment.
+
+### Monitoring Stack Components
+
+- **Elasticsearch**: Centralized data storage for logs and metrics
+- **Logstash**: Log processing and transformation pipeline
+- **Kibana**: Visualization and dashboard interface
+- **Filebeat**: Log shipping from application containers
+- **Metricbeat**: System and Docker metrics collection
+- **Heartbeat**: Uptime and health monitoring
+
+### Deploying Monitoring Stack
+
+#### Local Development
+
+```bash
+# Navigate to monitoring directory
+cd ../monitoring
+
+# Start the monitoring stack
+./manage-monitoring.sh start
+
+# Access Kibana
+open http://localhost:5601
+```
+
+#### Production Deployment
+
+The monitoring stack can be deployed on the same infrastructure as your application:
+
+**Option 1: Co-located with Application**
+```bash
+# On the application server
+cd /opt/tcb-trading-card-brain/monitoring
+./manage-monitoring.sh start
+```
+
+**Option 2: Dedicated Monitoring Server**
+```bash
+# Deploy on a separate server for better resource isolation
+# Update Filebeat/Metricbeat configs to point to remote Elasticsearch
+# Configure network security groups to allow traffic
+```
+
+### Ansible Integration
+
+Add monitoring setup to your Ansible playbooks:
+
+```yaml
+# Add to playbooks/deploy-app.yml
+- name: Deploy monitoring stack
+  hosts: app_servers
+  roles:
+    - monitoring
+```
+
+Create a monitoring role:
+
+```bash
+# Create monitoring role structure
+mkdir -p ansible/roles/monitoring/{tasks,templates,files}
+
+# Copy monitoring configs to role
+cp -r monitoring/. ansible/roles/monitoring/files/
+```
+
+### Terraform Integration
+
+Add monitoring resources to your Terraform configuration:
+
+```hcl
+# Add to terraform/modules/monitoring/main.tf
+resource "aws_security_group_rule" "monitoring" {
+  type              = "ingress"
+  from_port         = 9200
+  to_port           = 9200
+  protocol          = "tcp"
+  security_group_id = var.security_group_id
+  cidr_blocks       = var.monitoring_allowed_ips
+}
+
+resource "aws_security_group_rule" "kibana" {
+  type              = "ingress"
+  from_port         = 5601
+  to_port           = 5601
+  protocol          = "tcp"
+  security_group_id = var.security_group_id
+  cidr_blocks       = var.monitoring_allowed_ips
+}
+```
+
+### Cloud-Specific Monitoring Options
+
+#### AWS
+- Use Amazon Elasticsearch Service (OpenSearch) for managed Elasticsearch
+- Deploy Beats on EC2 instances
+- Store logs in CloudWatch as backup
+- Use S3 for long-term log archival
+
+#### Azure
+- Use Azure Elasticsearch Service
+- Deploy on Azure VMs
+- Integrate with Azure Monitor
+- Use Azure Blob Storage for backups
+
+#### GCP
+- Use Google Cloud Elasticsearch
+- Deploy on Compute Engine
+- Integrate with Cloud Monitoring
+- Use Cloud Storage for archival
+
+### Monitoring Best Practices for Production
+
+1. **Resource Allocation**
+   - Elasticsearch: 4-8GB RAM minimum
+   - Dedicated monitoring server recommended for production
+   - SSD storage for better performance
+
+2. **Data Retention**
+   - Configure Index Lifecycle Management (ILM)
+   - Set up automated cleanup of old indices
+   - Regular backups to S3/Azure Blob/GCS
+
+3. **Security**
+   - Enable Elasticsearch security features
+   - Use HTTPS/TLS for all connections
+   - Restrict access to monitoring ports
+   - Use VPN or bastion host for Kibana access
+
+4. **High Availability**
+   - Deploy Elasticsearch cluster (3+ nodes)
+   - Use load balancer for Logstash
+   - Deploy Beats on all application servers
+
+5. **Alerting**
+   - Configure alerts in Kibana for critical errors
+   - Set up email/Slack notifications
+   - Monitor disk usage and set alerts
+
+### Monitoring Endpoints
+
+After deployment, monitoring is available at:
+
+- **Kibana UI**: `http://<server-ip>:5601`
+- **Elasticsearch API**: `http://<server-ip>:9200`
+- **Logstash API**: `http://<server-ip>:9600`
+
+For detailed monitoring setup and usage, see [monitoring/README.md](../monitoring/README.md) and [monitoring/QUICKSTART.md](../monitoring/QUICKSTART.md).
+
 ## License
 
 This infrastructure code is part of the TCB Trading Card Brain project and follows the same license.
