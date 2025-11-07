@@ -50,9 +50,11 @@ def build_lorcana_deck():
         })
     except ValueError as e:
         logger.error(f"Validation error building Lorcana deck: {e}", exc_info=True)
+        # Only expose safe, predefined error messages
+        error_msg = 'Lorcana decks require exactly 2 different ink colors'
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': error_msg
         }), 400
     except Exception as e:
         logger.error(f"Error building Lorcana deck: {e}", exc_info=True)
@@ -120,9 +122,11 @@ def suggest_lorcana_deck_from_collection():
         })
     except ValueError as e:
         logger.error(f"Validation error suggesting Lorcana deck: {e}", exc_info=True)
+        # Only expose safe, predefined error messages
+        error_msg = 'Lorcana decks require exactly 2 different ink colors'
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': error_msg
         }), 400
     except Exception as e:
         logger.error(f"Error suggesting Lorcana deck: {e}", exc_info=True)
