@@ -11,8 +11,9 @@ import sys
 import os
 from unittest.mock import Mock, patch, MagicMock
 
-# Add parent directory to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add parent directory (repository root) to path
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, repo_root)
 
 # Import the scraper
 from scrape_lorcana_cards import LorcanaCardScraper
