@@ -582,9 +582,22 @@ function displayImprovements(improvements) {
 }
 
 function adoptImprovement(type) {
-    // This would load the improved deck - for now just alert
-    alert(`Loading ${type} deck improvement... ✨`);
-    backToDeck();
+    // Load the improved deck
+    fetch('/api/lorcana/suggest-improvements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deck: currentDeck })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.improvements[type]) {
+            currentDeck = data.improvements[type].deck;
+            displayDeck(currentDeck);
+            backToDeck();
+            alert(`${type.charAt(0).toUpperCase() + type.slice(1)} deck loaded! ✨`);
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 // Export Deck

@@ -5,8 +5,13 @@ Handles deck building, analysis, and Lorcana-specific operations
 from flask import Blueprint, request, jsonify
 from flask_login import current_user
 import logging
+import sys
+import os
 
+# Add parent directory to path to import lorcana_deck_builder
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 from lorcana_deck_builder import LorcanaDeckBuilder
+
 from ...services import CollectionService
 from ...models import db
 from ...core.constants import API_MESSAGES
