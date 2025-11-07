@@ -35,6 +35,9 @@ class LorcanaCardScraper:
     CARDS_URL = f"{BASE_URL}/es/cards"
     API_URL = f"{BASE_URL}/api/cards"  # Potential API endpoint
     
+    # Configuration constants
+    CODE_GENERATION_LIMIT = 50  # Max cards to include in generated Python code
+    
     def __init__(self, verbose: bool = True):
         self.verbose = verbose
         self.session = requests.Session()
@@ -196,7 +199,8 @@ class LorcanaCardScraper:
             try:
                 card['cost'] = int(cost_text)
             except (ValueError, TypeError):
-                card['cost'] = 0
+                # Use None instead of 0 to distinguish from actual zero-cost cards
+                card['cost'] = None
         
         # Try to extract power
         power_elem = element.find(class_='card-power') or element.get('data-power')
@@ -312,7 +316,9 @@ class LorcanaCardScraper:
         print("-"*70)
         print("sample_cards = [")
         
-        for card in cards[:50]:  # Limit to first 50 cards for readability
+        # Use the configured limit
+        limit = min(len(cards), self.CODE_GENERATION_LIMIT)
+        for card in cards[:limit]:
             print(f"    {{")
             print(f"        'name': {repr(card.get('name', 'Unknown'))},")
             print(f"        'type': {repr(card.get('type', 'Character'))},")
@@ -334,8 +340,8 @@ class LorcanaCardScraper:
                 print(f"        'image_url': {repr(card.get('image_url'))},")
             print(f"    }},")
         
-        if len(cards) > 50:
-            print(f"    # ... and {len(cards) - 50} more cards")
+        if len(cards) > self.CODE_GENERATION_LIMIT:
+            print(f"    # ... and {len(cards) - self.CODE_GENERATION_LIMIT} more cards")
         
         print("]")
         print("-"*70)
