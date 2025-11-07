@@ -1,23 +1,27 @@
+
 # TCB Trading Card Brain 🧠 
 
-An AI-powered web application for building optimized decks for Trading Card Games, starting with One Piece TCG.
+An AI-powered web application for building optimized decks for Trading Card Games. Supports multiple TCGs including One Piece TCG and Disney Lorcana.
 
 ## Features
 
+- **Multi-TCG Support**: Build decks for One Piece TCG and Disney Lorcana
 - **User Authentication**: Secure user registration and login system
 - **Personal Deck Storage**: Save and manage your decks in your user profile
 - **Card Collection Tracking**: Track which cards you own for better deck suggestions
 - **AI-Powered Deck Building**: Intelligent deck construction based on strategy and color preferences
-- **One Piece TCG Rules Enforcement**: Follows official One Piece TCG deck building rules, including color matching
+- **TCG Rules Enforcement**: Follows official deck building rules for each supported game
 - **Collection-Based Suggestions**: Get deck suggestions based on cards you already own
-- **One Piece TCG Support**: Built-in database of One Piece Trading Card Game cards
-- **Card Images**: Visual card display with images from official One Piece TCG API
+- **One Piece TCG Support**: Built-in database of One Piece Trading Card Game cards with 50-card decks and leader cards
+- **Disney Lorcana Support**: Build 60-card decks with all six ink colors (Amber, Amethyst, Emerald, Ruby, Sapphire, Steel)
+- **Card Images**: Visual card display with images from official TCG APIs
 - **Strategy Options**: Choose from Aggressive, Balanced, or Control strategies
 - **Color Filtering**: Build decks focused on specific colors or multi-color combinations
 - **Deck Analysis**: Get AI-powered insights and suggestions for your deck
-- **Interactive Web UI**: Beautiful, responsive interface for deck building
+- **Interactive Web UI**: Beautiful, responsive interface for deck building with game-specific themes
 - **Export Functionality**: Export your decks as text files
 - **Docker Support**: Easy deployment with Docker containers
+- **Universal Architecture**: Extensible base framework for adding new TCGs
 
 ## Technology Stack
 
@@ -311,8 +315,14 @@ Returns the landing page with TCG selection grid
 #### GET /onepiece
 Returns the One Piece TCG deck builder interface
 
+#### GET /lorcana
+Returns the Disney Lorcana deck builder interface
+
 #### GET /api/cards
 Returns all available One Piece TCG cards with image URLs
+
+#### GET /api/lorcana/cards
+Returns all available Disney Lorcana cards
 
 #### POST /api/build-deck
 Builds a deck based on preferences
@@ -374,6 +384,57 @@ The deck builder AI automatically enforces these rules:
 - ✓ Color validation works for both single and multi-color leaders
 
 **Note**: Some color combinations may result in decks with fewer than 50 cards due to the current card database size. To build full 50-card decks, add more cards to `cards_data.py` that match the desired colors.
+
+## Disney Lorcana Rules Compliance
+
+This application follows the official Disney Lorcana deck building rules:
+
+### Deck Construction Rules
+
+1. **Deck Size**: Each deck must contain exactly 60 cards
+2. **Card Copies**: Maximum of 4 copies of any single card
+3. **Two-Color Requirement**: Each deck must be composed of exactly 2 different ink colors
+4. **Ink Colors**: Six ink colors available - Amber, Amethyst, Emerald, Ruby, Sapphire, and Steel
+5. **No Leader Card**: Unlike One Piece TCG, Lorcana does not use leader cards
+6. **Inkable Cards**: Many cards can be used as ink resources
+
+### Card Types
+
+- **Characters**: The primary card type with power and abilities
+- **Actions**: One-time effect cards
+- **Items**: Permanent effect cards that stay in play
+- **Locations**: Special cards that provide ongoing benefits
+
+### Lorcana API Endpoints
+
+#### POST /api/lorcana/build-deck
+Builds a Lorcana deck based on preferences
+```json
+{
+  "strategy": "balanced|aggressive|control",
+  "colors": ["Amber", "Sapphire"]  // Array of exactly 2 different ink colors
+}
+```
+
+#### POST /api/lorcana/analyze-deck
+Analyzes a Lorcana deck and provides suggestions
+```json
+{
+  "deck": [array of card objects]
+}
+```
+
+#### POST /api/lorcana/suggest-improvements
+Suggests three improved Lorcana deck variations
+```json
+{
+  "deck": {
+    "main_deck": [array of card objects],
+    "strategy": "string",
+    "color": "string"
+  }
+}
+```
 
 ## Extending the Application
 
@@ -492,12 +553,59 @@ The `cards_data.py` file is still present for backward compatibility and serves 
 
 ### Adding New TCGs
 
-To support additional Trading Card Games:
+The application now features a universal architecture for supporting any Trading Card Game:
 
-1. Create a new card database file (e.g., `pokemon_cards.py`)
-2. Implement a new deck builder class
-3. Add routing in `app.py` for the new game
-4. Update the frontend to support multiple games
+#### Universal Base Framework
+
+1. **BaseDeckBuilder** (`base_deck_builder.py`): Abstract base class providing common functionality:
+   - Card selection algorithms
+   - Deck analysis methods
+   - Type distribution calculations
+   - Extensible for any TCG
+
+2. **Create a TCG-Specific Builder**: Extend `BaseDeckBuilder` for your game:
+
+```python
+from base_deck_builder import BaseDeckBuilder
+
+class YourTCGDeckBuilder(BaseDeckBuilder):
+    @property
+    def deck_size(self) -> int:
+        return 60  # Your game's deck size
+    
+    @property
+    def game_name(self) -> str:
+        return "Your TCG Name"
+    
+    @property
+    def colors(self) -> List[str]:
+        return ['Color1', 'Color2', 'Color3']
+    
+    @property
+    def card_types(self) -> List[str]:
+        return ['Type1', 'Type2', 'Type3']
+    
+    def _load_cards_from_db(self) -> List[Dict]:
+        # Load your game's cards
+        pass
+    
+    def build_deck(self, strategy: str = 'balanced', **kwargs) -> Dict:
+        # Implement deck building logic
+        pass
+```
+
+3. **Add API Routes**: Create routes in `src/api/routes/your_tcg_routes.py`
+
+4. **Add Frontend**: Create HTML template and CSS with game-specific theming
+
+5. **Register**: Add to `app.py` and update landing page
+
+#### Examples in Codebase
+
+- **One Piece TCG**: See `deck_builder.py` (50-card decks with leader cards)
+- **Disney Lorcana**: See `lorcana_deck_builder.py` (60-card decks, no leaders)
+
+This architecture eliminates code duplication and makes adding new TCGs quick and maintainable.
 
 ### Integrating Machine Learning
 
