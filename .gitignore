@@ -56,3 +56,11 @@ data/
 # Backup files from refactoring
 *_old.py
 *_new.py
+
+# Monitoring data volumes and backups
+monitoring/elasticsearch-data/
+monitoring/filebeat-data/
+monitoring/metricbeat-data/
+monitoring/heartbeat-data/
+backups/
+
