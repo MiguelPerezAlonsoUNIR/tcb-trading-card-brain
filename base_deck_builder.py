@@ -118,10 +118,13 @@ class BaseDeckBuilder(ABC):
                 continue
             
             type_count = int(target_count * percentage)
-            type_cards = cards_by_type[card_type]
+            type_cards = cards_by_type[card_type].copy()  # Create a copy to avoid modifying original
             
             # Select cards of this type
-            while len([c for c in selected if c['type'] == card_type]) < type_count and type_cards:
+            attempts = 0
+            max_attempts = 1000
+            while len([c for c in selected if c['type'] == card_type]) < type_count and type_cards and attempts < max_attempts:
+                attempts += 1
                 card = random.choice(type_cards)
                 # Check if we haven't exceeded max copies
                 card_count = len([c for c in selected if c['name'] == card['name']])
@@ -129,13 +132,28 @@ class BaseDeckBuilder(ABC):
                     selected.append(card)
                 else:
                     type_cards.remove(card)
+                
+                # If no more cards available, break
+                if not type_cards:
+                    break
         
         # Fill remaining slots with random cards
-        while len(selected) < target_count and available_cards:
-            card = random.choice(available_cards)
+        attempts = 0
+        max_attempts = 1000
+        available_copy = available_cards.copy()
+        while len(selected) < target_count and available_copy and attempts < max_attempts:
+            attempts += 1
+            card = random.choice(available_copy)
             card_count = len([c for c in selected if c['name'] == card['name']])
             if card_count < self.max_copies:
                 selected.append(card)
+            else:
+                # Remove from available if we've maxed out this card
+                available_copy = [c for c in available_copy if c['name'] != card['name']]
+            
+            # Safety check
+            if not available_copy:
+                break
         
         return selected
     
