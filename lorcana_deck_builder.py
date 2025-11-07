@@ -139,7 +139,6 @@ class LorcanaDeckBuilder(BaseDeckBuilder):
         # Validate colors parameter
         if colors is None:
             # Default to two random colors if not specified
-            import random
             colors = random.sample(self.colors, 2)
         elif len(colors) != 2:
             raise ValueError("Lorcana decks must have exactly 2 ink colors")
@@ -258,7 +257,10 @@ class LorcanaDeckBuilder(BaseDeckBuilder):
         if colors is None:
             color = deck.get('color', None)
             if color and color != 'any':
-                colors = [color, 'Amber']  # Add a default second color
+                # Select a second color that's different from the first
+                available_colors = [c for c in self.colors if c != color]
+                second_color = available_colors[0] if available_colors else self.colors[0]
+                colors = [color, second_color]
             else:
                 colors = None  # Will use random colors
         
